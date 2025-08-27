@@ -1,0 +1,27 @@
+{
+  "name": "asd-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently -k \"npm:dev:client\" \"npm:dev:server\"",
+    "dev:client": "npm --prefix client run dev",
+    "dev:server": "npm --prefix server run dev",
+    "build": "npm --prefix client run build && npm --prefix server run build",
+    "start": "npm --prefix server run start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AmanSinghNp/ASD-App.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AmanSinghNp/ASD-App/issues"
+  },
+  "homepage": "https://github.com/AmanSinghNp/ASD-App#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  }
+}
