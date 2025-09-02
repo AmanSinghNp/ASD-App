@@ -175,14 +175,16 @@ const Checkout: React.FC = () => {
             </label>
             {formData.paymentMethod === "card" && (
               <div className="card-details">
-                <input
-                  type="text"
-                  name="cardNumber"
-                  placeholder="Card Number"
-                  maxLength={16}
-                  onChange={handleChange}
-                  required
-                />
+                <div className="form-row">
+                  <input
+                    type="text"
+                    name="cardNumber"
+                    placeholder="Card Number"
+                    maxLength={16}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
                 <div className="form-row">
                   <input
                     type="text"
@@ -271,8 +273,8 @@ const Checkout: React.FC = () => {
         {/* Display items */}
         {items.length === 0 ? (
           <div className="order-item">
-            <p>Testing product Placeholder</p>
-            <span>$000.00</span>
+            {/* <p>Testing product Placeholder</p>
+            <span>$000.00</span> */}
           </div>
         ) : (
           items.map((item) => (
