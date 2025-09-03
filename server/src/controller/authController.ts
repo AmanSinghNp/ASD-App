@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import type { Customer } from "../model/customer";
+import type { Customer } from "../model/customer.ts";
 
 const customers: Customer[] = [];
 const SECRET = "supersecretkey";
