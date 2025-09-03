@@ -4,12 +4,19 @@
 # https://aka.ms/yaml
 
 trigger:
-- main
+  branches:
+    - main
+    - feature/belinda
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '20.x'
+  displayName: 'Install Node.js'
+
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
@@ -17,3 +24,17 @@ steps:
     echo Add other tasks to build, test, and deploy your project.
     echo See https://aka.ms/yaml
   displayName: 'Run a multi-line script'
+
+- script: |
+    cd backend
+    npm install
+    npm run build
+  displayName: 'Build Backend'
+
+- script: |
+    cd backend
+    npm test
+  displayName: 'Run Backend Tests'
+  continueOnError: true
+
+
