@@ -34,8 +34,8 @@ stages:
 
           - task: PublishBuildArtifacts@1
             inputs:
-              PathtoPublish: 'backend/dist'
-              ArtifactName: 'backend'
+              PathtoPublish: 'client/dist'
+              ArtifactName: 'client'
               publishLocation: 'Container'
 
   #     - job: Frontend
