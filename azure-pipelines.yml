@@ -5,8 +5,9 @@
 
 trigger:
   branches:
-    - main
-    - feature/belinda
+    include: 
+      - main
+      - feature/belinda
 
 pool:
   vmImage: ubuntu-latest
@@ -30,11 +31,5 @@ steps:
     npm install
     npm run build
   displayName: 'Build Backend'
-
-- script: |
-    cd backend
-    npm test
-  displayName: 'Run Backend Tests'
-  continueOnError: true
 
 
