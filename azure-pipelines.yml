@@ -6,7 +6,7 @@
 trigger:
   branches:
     include:
-      - danny
+      # - danny
     # test ttete
 
 pool:
