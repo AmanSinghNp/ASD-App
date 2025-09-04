@@ -8,7 +8,7 @@ trigger:
     include:
       - main
       - danny
-    # test
+    # test ttete
 
 pool:
   vmImage: ubuntu-latest
