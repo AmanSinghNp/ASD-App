@@ -1,21 +1,80 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-  # - main
-  - danny
-# testing jst danny
+  branches:
+    include:
+      - main
+      - danny
+      - belinda
+      - xiao
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: "ubuntu-latest"
 
-steps:
-  - script: echo Hello, world!
-    displayName: "Run a one-line script"
+variables:
+  node_version: "20.x"
 
-  - script: |
-      echo Add other tasks to build, test, and deploy your project.
-      echo See https://aka.ms/yaml
-    displayName: "Run a multi-line script"
+stages:
+  # ========================
+  # Danny's Stage
+  # ========================
+  - stage: Danny
+    displayName: "Danny Branch Build"
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/danny')
+    jobs:
+      - job: DannyBackend
+        displayName: "Danny - Backend Build"
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(node_version)
+            displayName: "Install Node.js"
+
+          - script: |
+              npm install
+              npm run build
+            displayName: "Install & Build Backend"
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: "backend/dist"
+              ArtifactName: "danny-backend"
+              publishLocation: "Container"
+
+  # ========================
+  # Belinda's Stage
+  # ========================
+  - stage: Belinda
+    displayName: "Belinda Branch Build"
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/belinda')
+    jobs:
+      - job: BelindaFrontend
+        displayName: "Belinda - Frontend Build"
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(node_version)
+            displayName: "Install Node.js"
+
+          - script: |
+              cd frontend
+              npm install
+              npm run build
+            displayName: "Install & Build Frontend"
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: "frontend/dist"
+              ArtifactName: "belinda-frontend"
+              publishLocation: "Container"
+
+  # ========================
+  # Xiao's Stage
+  # ========================
+  - stage: Xiao
+    displayName: "Xiao Branch Build"
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/xiao')
+    jobs:
+      - job: XiaoCheck
+        displayName: "Xiao - Placeholder Job"
+        steps:
+          - script: echo "Xiao’s pipeline runs only on xiao branch."
+            displayName: "Echo Xiao Job"
