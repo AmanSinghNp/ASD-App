@@ -8,7 +8,6 @@ trigger:
     include: 
       - main
       - feature/belinda
-      - feature/danny
 
 pool:
   vmImage: ubuntu-latest
