@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Checkout.css";
-// testing
+
 interface Item {
   id: number;
   name: string;
