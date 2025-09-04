@@ -6,7 +6,6 @@
 trigger:
   branches:
     include:
-      - main
       - danny
     # test ttete
 
