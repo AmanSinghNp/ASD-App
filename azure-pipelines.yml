@@ -25,3 +25,10 @@ stages:
               npm install
               npm run build
             displayName: "Install & Build Backend"
+
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: 'client/dist'
+              ArtifactName: 'client'
+              publishLocation: 'Container'
