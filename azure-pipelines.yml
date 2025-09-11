@@ -1,14 +1,14 @@
 trigger:
   branches:
     include:
-      - main   # Runs when you push to main
+      - main # Runs when you push to main
       - danny
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: "ubuntu-latest"
 
 variables:
-  node_version: '20.x'
+  node_version: "20.x"
 
 stages:
   - stage: Build
@@ -20,15 +20,16 @@ stages:
             inputs:
               versionSpec: $(node_version)
             displayName: "Install Node.js"
-          
+
           - script: |
               npm install
               npm run build
             displayName: "Install & Build Backend"
 
-
           - task: PublishBuildArtifacts@1
             inputs:
-              PathtoPublish: 'client/dist'
-              ArtifactName: 'client'
-              publishLocation: 'Container'
+              PathtoPublish: "client/dist"
+              ArtifactName: "client"
+              publishLocation: "Container"
+
+              # testing
