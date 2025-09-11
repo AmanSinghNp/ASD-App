@@ -1,7 +1,7 @@
 {
   "name": "asd-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "```bash\r # Fork this repository on GitHub first, then clone your fork\r git clone https://github.com/YOUR_USERNAME/ASD-App.git\r cd ASD-App\r ```",
   "main": "index.js",
   "scripts": {
     "dev": "concurrently -k \"npm:dev:client\" \"npm:dev:server\"",
@@ -22,6 +22,26 @@
   },
   "homepage": "https://github.com/AmanSinghNp/ASD-App#readme",
   "devDependencies": {
-    "concurrently": "^9.2.0"
-  }
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "concurrently": "^9.2.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react-swc": "^4.0.1",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "vite": "^7.1.4"
+  },
+  "type": "commonjs"
 }
