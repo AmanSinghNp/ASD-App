@@ -7,6 +7,8 @@ interface Item {
   price: number;
 }
 
+// testing 11/09
+
 const Checkout: React.FC = () => {
   const [formData, setFormData] = useState({
     firstName: "",
