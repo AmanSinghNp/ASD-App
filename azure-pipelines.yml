@@ -23,4 +23,6 @@ stages:
           - script: |
               npm install
               npm run build
+              npm install react-router-dom
+              npm install lucide-react
             displayName: "Install & Build Backend"
