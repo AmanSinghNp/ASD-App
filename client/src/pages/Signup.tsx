@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../Auth.css";
 
 function Signup() {
   const [name, setName] = useState("");
@@ -27,7 +28,7 @@ function Signup() {
   };
 
   return (
-    <div>
+    <div className="auth-container">
       <h2>Signup</h2>
       <form onSubmit={handleSubmit}>
         <input

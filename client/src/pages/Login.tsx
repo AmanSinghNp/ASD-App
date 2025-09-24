@@ -1,5 +1,5 @@
 import { useState } from "react";
-import './Auth.css';
+import "../Auth.css";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -31,7 +31,7 @@ function Login() {
   };
 
   return (
-    <div>
+    <div className="auth-container">
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <input
@@ -52,9 +52,9 @@ function Login() {
 
         <button type="submit">Login</button>
       </form>
-
+{/* 
       {error && <p style={{ color: "red" }}>{error}</p>}
-      {token && <p style={{ color: "green" }}>Logged in! Token: {token}</p>}
+      {token && <p style={{ color: "green" }}>Logged in! Token: {token}</p>} */}
     </div>
   );
 }
