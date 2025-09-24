@@ -3,7 +3,7 @@ import { Plus, Search } from 'lucide-react';
 import { ProductTable } from '../../components/admin/ProductTable';
 import { ProductForm } from '../../components/admin/ProductForm';
 import { ConfirmDialog } from '../../components/admin/ConfirmDialog';
-import { Product, ProductFormData } from '../../types/product';
+import type { Product, ProductFormData } from '../../types/product';
 import productsData from '../../lib/mock/products.json';
 
 export const AdminDashboard: React.FC = () => {

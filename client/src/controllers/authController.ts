@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { CustomerModel } from "../models/customer.ts";
+import { CustomerModel } from "../models/Customer.ts";
 
 export class authController{
   private model: CustomerModel;
