@@ -2,7 +2,6 @@ trigger:
   branches:
     include:
       - main   # Runs when you push to main
-      - Xiao
 
 pool:
   vmImage: 'ubuntu-latest'
