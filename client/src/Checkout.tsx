@@ -1,15 +1,11 @@
 import React, { useState } from "react";
 import "./Checkout.css";
-
-interface Item {
-  id: number;
-  name: string;
-  price: number;
-}
-
-// testing 11/09
+import { useCart } from "./components/CartContext";
 
 const Checkout: React.FC = () => {
+  const { increaseQuantity, decreaseQuantity } = useCart();
+
+  const { cart, removeFromCart } = useCart();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -25,10 +21,6 @@ const Checkout: React.FC = () => {
     cvc: "",
   });
 
-  const [items, setItems] = useState<Item[]>([]);
-  const [newItemName, setNewItemName] = useState("");
-  const [newItemPrice, setNewItemPrice] = useState("");
-
   const shippingPrice = 15;
 
   const handleChange = (
@@ -37,26 +29,10 @@ const Checkout: React.FC = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleAddItem = () => {
-    const price = parseFloat(newItemPrice);
-    if (!newItemName || isNaN(price)) return;
-
-    const newItem: Item = {
-      id: Date.now(),
-      name: newItemName,
-      price,
-    };
-
-    setItems([...items, newItem]);
-    setNewItemName("");
-    setNewItemPrice("");
-  };
-
-  const handleDeleteItem = (id: number) => {
-    setItems(items.filter((item) => item.id !== id));
-  };
-
-  const subtotal = items.reduce((acc, item) => acc + item.price, 0);
+  const subtotal = cart.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
   const total = subtotal + shippingPrice;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -74,9 +50,10 @@ const Checkout: React.FC = () => {
 
   return (
     <div className="checkout-page">
-      {/* Left Side: Original Form */}
+      {/* Left Side: Checkout Form */}
       <form className="checkout-form" onSubmit={handleSubmit}>
         <h2>Checkout</h2>
+
         {/* Contact Information */}
         <div className="form-section">
           <h3>Contact Information</h3>
@@ -247,50 +224,25 @@ const Checkout: React.FC = () => {
           Place Order
         </button>
       </form>
-
-      {/* Right Side: Order Summary with item adding */}
+      {/* Right Side: Order Summary */}
       <div className="order-summary">
         <h3>Order Summary</h3>
 
-        {/* Inputs to add items */}
-        <div className="form-row">
-          <input
-            type="text"
-            placeholder="Item Name"
-            value={newItemName}
-            onChange={(e) => setNewItemName(e.target.value)}
-          />
-          <input
-            type="number"
-            placeholder="Item Price"
-            value={newItemPrice}
-            onChange={(e) => setNewItemPrice(e.target.value)}
-            step="0.01"
-          />
-          <button type="button" onClick={handleAddItem}>
-            Add
-          </button>
-        </div>
-
-        {/* Display items */}
-        {items.length === 0 ? (
-          <div className="order-item">
-            {/* <p>Testing product Placeholder</p>
-            <span>$000.00</span> */}
-          </div>
+        {cart.length === 0 ? (
+          <p>Your cart is empty</p>
         ) : (
-          items.map((item) => (
+          cart.map((item) => (
             <div className="order-item" key={item.id}>
               <div>
                 <p>{item.name}</p>
-                <span>${item.price.toFixed(2)}</span>
+                <span>${(item.price * item.quantity).toFixed(2)}</span>
               </div>
-              <button
-                style={{ marginLeft: "10px" }}
-                onClick={() => handleDeleteItem(item.id)}
-              >
-                x
-              </button>
+              <div style={{ display: "flex", gap: "5px" }}>
+                <button onClick={() => decreaseQuantity(item.id)}>-</button>
+                <span>{item.quantity}</span>
+                <button onClick={() => increaseQuantity(item.id)}>+</button>
+                <button onClick={() => removeFromCart(item.id)}>x</button>
+              </div>
             </div>
           ))
         )}
