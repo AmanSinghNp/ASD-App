@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "start":"vite"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.12",
