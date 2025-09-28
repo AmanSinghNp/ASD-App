@@ -87,10 +87,10 @@ function Profile() {
           <p><strong>Name:</strong> {customer.name}</p>
           <p><strong>Email:</strong> {customer.email}</p>
 
-          <button onClick={() => navigate("/edit-profile")}>Edit Account</button>
-          <button onClick={handleDelete} style={{ backgroundColor: "red", marginTop: "10px" }}>
-            Delete Account
-          </button>
+          <div className="button-group">
+            <button onClick={() => navigate("/edit-profile")}>Edit Account</button>
+            <button onClick={handleDelete} style={{ backgroundColor: "red" }}>Delete Account</button>
+          </div>
         </>
       )}
     </div>

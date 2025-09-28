@@ -88,3 +88,10 @@ body {
   margin-top: 10px;
   font-weight: bold;
 }
+
+.button-group {
+  display: flex;           /* enable flexbox */
+  justify-content: center; /* center horizontally */
+  align-items: center;     /* center vertically (optional) */
+  gap: 10px;               /* space between buttons */
+}
