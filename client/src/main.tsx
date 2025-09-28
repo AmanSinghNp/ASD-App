@@ -8,7 +8,7 @@ import Filter from './Filter.tsx'; // Filter function
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <Checkout /> //changed fromm App
+    {/* <Checkout /> //changed fromm App */}
     <ProductCatalogue /> //render product catalouge
   </StrictMode>
 );
