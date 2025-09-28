@@ -30,7 +30,13 @@ function Login() {
         setMessage("No token received. Login failed ❌");
         return;
       }
-      localStorage.setItem("token", data.token); // save token
+
+      // localStorage.setItem("token", data.token); 
+      // // save token
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
+      
       setMessage("Login successful ✅");
 
       // Redirect to Product Catalogue (homepage)
