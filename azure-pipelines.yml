@@ -2,6 +2,7 @@ trigger:
   branches:
     include:
       - main   # Runs when you push to main
+      - belinda-r1
 
 pool:
   vmImage: 'ubuntu-latest'

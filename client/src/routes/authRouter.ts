@@ -6,7 +6,7 @@ const auth = new authController();
 
 // Auth endpoints
 router.post("/signup", auth.signup);
-router.post("/login", auth.login);
+// router.post("/login", auth.login);
 router.post("/logout", auth.logout);
 router.delete("/delete", auth.deleteAccount);
 

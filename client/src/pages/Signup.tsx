@@ -36,7 +36,7 @@ function Signup() {
       setMessage(data.message || "Signup successful ✅");
 
       // Redirect straight to product catalogue
-      navigate("/products");
+      navigate("/");
     } catch (err) {
       console.error("Signup error:", err);
       setMessage("Server error. Please try again later ❌");

@@ -16,15 +16,20 @@ function Login() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
+        credentials: "include", // only if backend sets cookies
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        setMessage(errorText || "Login failed ❌");
+        const { error } = await response.json().catch(() => ({}));
+        setMessage(error || "Login failed ❌");
         return;
       }
 
       const data = await response.json();
+      if (!data.token) {
+        setMessage("No token received. Login failed ❌");
+        return;
+      }
       localStorage.setItem("token", data.token); // save token
       setMessage("Login successful ✅");
 
