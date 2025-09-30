@@ -40,7 +40,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         e.currentTarget.style.boxShadow = 'none';
       }}
     >
-      {/* --- 这是新增的品牌标签 --- */}
+     
       <div style={{ marginBottom: '12px', textAlign: 'left' }}>
         <span style={{
           backgroundColor: '#eef2ff',
