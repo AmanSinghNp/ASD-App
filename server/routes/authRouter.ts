@@ -72,26 +72,60 @@ router.post("/login", async (req, res) => {
 });
 
 // ===== PROFILE ROUTE =====
-router.get("/profile", async (req, res) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ error: "No token provided" });
-  }
+router.route("/profile")
+  // Fetch user profile
+  .get(async (req, res) => {
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res.status(401).json({ error: "No token provided" });
+      }
 
-  const token = authHeader.split(" ")[1];
+      const token = authHeader.split(" ")[1];
 
-  try {
-    const decoded = jwt.verify(token, SECRET) as { email: string; role: string };
-    const user = await prisma.user.findUnique({
-      where: { email: decoded.email },
-      select: { id: true, name: true, email: true },
-    });
+      try {
+        const decoded = jwt.verify(token, SECRET) as { email: string; role: string };
+        const user = await prisma.user.findUnique({
+          where: { email: decoded.email },
+          select: { id: true, name: true, email: true },
+        });
 
-    if (!user) return res.status(404).json({ error: "User not found" });
-    res.json(user);
-  } catch (err) {
-    console.error("JWT error:", err);
-    res.status(401).json({ error: "Invalid token" });
-  }
+        if (!user) return res.status(404).json({ error: "User not found" });
+        res.json(user);
+      } catch (err) {
+        console.error("JWT error:", err);
+        res.status(401).json({ error: "Invalid token" });
+      }
+  })
+
+  // Update user profile
+  .put(async (req, res) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ error: "No token provided" });
+    }
+
+    const token = authHeader.split(" ")[1];
+    const { name, email } = req.body;
+
+    if (!name || !email) {
+      return res.status(400).json({ error: "Name and email are required" });
+    }
+
+    try {
+      const decoded = jwt.verify(token, SECRET) as { email: string; role: string };
+
+      const updatedUser = await prisma.user.update({
+        where: { email: decoded.email },
+        data: { name, email },
+        select: { id: true, name: true, email: true },
+      });
+
+      res.json(updatedUser);
+    } catch (err) {
+      console.error("JWT error:", err);
+      res.status(401).json({ error: "Invalid token" });
+    }
 });
+
+
 export default router;

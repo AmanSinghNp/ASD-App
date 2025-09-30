@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import Login from './pages/Login.tsx';
 import Signup from './pages/Signup.tsx';
 import Profile from "./pages/Profile";
+import EditProfile from './pages/EditProfile.tsx';
 import './ProductCatalogue.css';
 
 function ProductCatalogue() {
@@ -20,6 +21,7 @@ function ProductCatalogue() {
             <Route path="/login" element={<Login />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/edit-profile" element={<EditProfile />} />
           </Routes>
         </main>
       </div>
