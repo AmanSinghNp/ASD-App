@@ -6,6 +6,9 @@ interface ProductCardProps {
   product: Product;
 }
 
+
+
+
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const navigate = useNavigate();
 
@@ -24,6 +27,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         margin: '10px', 
         cursor: 'pointer',
         maxWidth: '300px',
+        display: 'flex', // Use flexbox for layout
+        flexDirection: 'column', // Stack items vertically
         transition: 'transform 0.2s ease, box-shadow 0.2s ease',
       }}
       onMouseEnter={(e) => {
@@ -35,8 +40,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         e.currentTarget.style.boxShadow = 'none';
       }}
     >
-
-      
+      {/* --- 这是新增的品牌标签 --- */}
       <div style={{ marginBottom: '12px', textAlign: 'left' }}>
         <span style={{
           backgroundColor: '#eef2ff',
@@ -50,10 +54,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </span>
       </div>
 
-
       <img 
         src={product.imageUrl} 
-        alt={product.name} 
+        alt={product.name}
+        onError={(e) => {
+        e.currentTarget.src = "/images/placeholder-product.jpg"; 
+        e.currentTarget.alt = ""; 
+  }}
         style={{ 
           width: '100%', 
           height: '200px', 
@@ -61,7 +68,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           borderRadius: '4px' 
         }} 
       />
-      <h3 style={{ margin: '10px 0' }}>{product.name}</h3>
+      <h3 style={{ margin: '10px 0', flexGrow: 1 }}>{product.name}</h3> {/* flexGrow makes sure the button aligns to the bottom */}
       <p style={{ 
         fontWeight: 'bold', 
         color: '#493aecff', 
@@ -95,20 +102,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </p>
       )}
 
-    <button 
+      <button 
         disabled={product.stock === 0}
         style={{
-        padding: '12px 24px',
-        backgroundColor: product.stock > 0 ? '#493aecff' : '#ccc',
-        color: 'white',
-        border: 'none',
-        borderRadius: '4px',
-        cursor: product.stock > 0 ? 'pointer' : 'not-allowed',
-        fontSize: '1.1em'
+          padding: '12px 24px',
+          backgroundColor: product.stock > 0 ? '#493aecff' : '#ccc',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: product.stock > 0 ? 'pointer' : 'not-allowed',
+          fontSize: '1.1em',
+          marginTop: 'auto' // Pushes button to the bottom
         }}
-    >
+      >
         {product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
-    </button>
+      </button>
     </div>
   );
 };
