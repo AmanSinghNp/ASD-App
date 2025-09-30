@@ -35,6 +35,22 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         e.currentTarget.style.boxShadow = 'none';
       }}
     >
+
+      
+      <div style={{ marginBottom: '12px', textAlign: 'left' }}>
+        <span style={{
+          backgroundColor: '#eef2ff',
+          color: '#4338ca',
+          padding: '4px 8px',
+          borderRadius: '9999px',
+          fontSize: '0.75rem',
+          fontWeight: '600',
+        }}>
+          {product.brand}
+        </span>
+      </div>
+
+
       <img 
         src={product.imageUrl} 
         alt={product.name} 

@@ -1,10 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import Filter from './Filter.tsx';
+import ProductCatalogue from './ProductCatalogue.tsx';
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <Filter />
+    <ProductCatalogue />
   </StrictMode>,
 )
