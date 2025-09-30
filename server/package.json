@@ -14,11 +14,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-<<<<<<< HEAD
+
     "@prisma/client": "^6.15.0",
-=======
+
     "asd-app": "file:..",
->>>>>>> Xiao
+
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "prisma": "^6.15.0"
