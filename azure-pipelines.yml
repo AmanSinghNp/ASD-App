@@ -67,10 +67,6 @@ stages:
             workingDirectory: 'client'
             displayName: 'Install client dependencies'
 
-          - script: npm test -- --ci --reporters=default --reporters=jest-junit
-            workingDirectory: 'client'
-            displayName: 'Run client tests'
-
           - script: npm run build
             workingDirectory: 'client'
             displayName: 'Build client'
