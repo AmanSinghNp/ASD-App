@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="5" failures="0" errors="0" time="1.663">
+  <testsuite name="Auth routes" errors="0" failures="0" skipped="0" timestamp="2025-10-01T13:24:46" time="1.302" tests="5">
+    <testcase classname="Auth routes should fail signup with missing fields" name="Auth routes should fail signup with missing fields" time="0.131">
+    </testcase>
+    <testcase classname="Auth routes should signup a new user" name="Auth routes should signup a new user" time="0.217">
+    </testcase>
+    <testcase classname="Auth routes should login the user" name="Auth routes should login the user" time="0.164">
+    </testcase>
+    <testcase classname="Auth routes should get user profile" name="Auth routes should get user profile" time="0.023">
+    </testcase>
+    <testcase classname="Auth routes should delete the user" name="Auth routes should delete the user" time="0.026">
+    </testcase>
+  </testsuite>
+</testsuites>

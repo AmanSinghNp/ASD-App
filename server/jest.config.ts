@@ -5,6 +5,12 @@ const config: Config = {
   testEnvironment: "node",
   testMatch: ["**/__tests__/**/*.test.ts"], // look for .test.ts inside __tests__
   moduleFileExtensions: ["ts", "js", "json", "node"],
+
+  // Add this for Azure Pipelines
+  reporters: [
+    "default",
+    ["jest-junit", { outputDirectory: ".", outputName: "junit.xml" }]
+  ],
 };
 
 export default config;
