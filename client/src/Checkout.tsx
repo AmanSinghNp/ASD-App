@@ -160,6 +160,9 @@ const Checkout: React.FC = () => {
                     name="cardNumber"
                     placeholder="Card Number"
                     maxLength={16}
+                    onKeyPress={(e) => {
+                      if (!/[0-9]/.test(e.key)) e.preventDefault();
+                    }}
                     onChange={handleChange}
                     required
                   />
@@ -170,14 +173,24 @@ const Checkout: React.FC = () => {
                     name="expiry"
                     placeholder="MM/YY"
                     maxLength={5}
-                    onChange={handleChange}
+                    value={formData.expiry}
+                    onChange={(e) => {
+                      let value = e.target.value.replace(/[^0-9]/g, ""); // allow only digits
+                      if (value.length > 2) {
+                        value = value.slice(0, 2) + "/" + value.slice(2, 4); // auto-add '/'
+                      }
+                      setFormData({ ...formData, expiry: value });
+                    }}
                     required
                   />
                   <input
                     type="text"
                     name="cvc"
                     placeholder="CVC"
-                    maxLength={4}
+                    maxLength={3}
+                    onKeyPress={(e) => {
+                      if (!/[0-9]/.test(e.key)) e.preventDefault();
+                    }}
                     onChange={handleChange}
                     required
                   />
@@ -263,5 +276,4 @@ const Checkout: React.FC = () => {
   );
 };
 
-//testing Product cat huweufuew
 export default Checkout;
