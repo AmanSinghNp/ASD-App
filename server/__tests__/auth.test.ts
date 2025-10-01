@@ -1,5 +1,5 @@
 import request from "supertest";
-import app from "../src/app.ts"; // make sure this exports your Express app
+import app from "../src/app"; // exports your Express app
 
 describe("Auth routes", () => {
   let token: string;
@@ -35,7 +35,7 @@ describe("Auth routes", () => {
       .send({ email: testUser.email, password: testUser.password });
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("token");
-    token = res.body.token; // update token for subsequent tests
+    token = res.body.token;
   });
 
   it("should get user profile", async () => {
@@ -44,5 +44,46 @@ describe("Auth routes", () => {
       .set("Authorization", `Bearer ${token}`);
     expect(res.status).toBe(200);
     expect(res.body.email).toBe(testUser.email);
+  });
+
+  it("should update user profile", async () => {
+    const newName = "Updated Name";
+    const newEmail = "updated@example.com";
+
+    const res = await request(app)
+      .put("/auth/profile")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ name: newName, email: newEmail });
+
+    expect(res.status).toBe(200);
+    expect(res.body.updatedUser.name).toBe(newName);
+    expect(res.body.updatedUser.email).toBe(newEmail);
+    expect(res.body).toHaveProperty("token");
+
+    // update token for further tests
+    token = res.body.token;
+    testUser.email = newEmail;
+  });
+
+  it("should return 401 for profile with invalid token", async () => {
+    const res = await request(app)
+      .get("/auth/profile")
+      .set("Authorization", `Bearer invalidtoken`);
+    expect(res.status).toBe(401);
+    expect(res.body.error).toBe("Invalid token");
+  });
+
+  it("should delete the user", async () => {
+    const res = await request(app)
+      .delete("/auth/delete")
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(res.body.message).toBe("User deleted successfully.");
+  });
+
+  it("should return 401 when deleting with missing token", async () => {
+    const res = await request(app).delete("/auth/delete");
+    expect(res.status).toBe(401);
+    expect(res.body.error).toBe("No token provided");
   });
 });

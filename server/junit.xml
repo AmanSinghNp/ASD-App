@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="3" failures="0" errors="0" time="2.024">
-  <testsuite name="Auth routes" errors="0" failures="0" skipped="0" timestamp="2025-10-01T17:06:26" time="1.897" tests="3">
-    <testcase classname="Auth routes should fail signup with missing fields" name="Auth routes should fail signup with missing fields" time="0.007">
+<testsuites name="jest tests" tests="7" failures="0" errors="0" time="2.831">
+  <testsuite name="Auth routes" errors="0" failures="0" skipped="0" timestamp="2025-10-01T17:16:30" time="2.678" tests="7">
+    <testcase classname="Auth routes should fail signup with missing fields" name="Auth routes should fail signup with missing fields" time="0.014">
     </testcase>
-    <testcase classname="Auth routes should login the user" name="Auth routes should login the user" time="0.085">
+    <testcase classname="Auth routes should login the user" name="Auth routes should login the user" time="0.096">
     </testcase>
-    <testcase classname="Auth routes should get user profile" name="Auth routes should get user profile" time="0.009">
+    <testcase classname="Auth routes should get user profile" name="Auth routes should get user profile" time="0.008">
+    </testcase>
+    <testcase classname="Auth routes should update user profile" name="Auth routes should update user profile" time="0.021">
+    </testcase>
+    <testcase classname="Auth routes should return 401 for profile with invalid token" name="Auth routes should return 401 for profile with invalid token" time="0.037">
+    </testcase>
+    <testcase classname="Auth routes should delete the user" name="Auth routes should delete the user" time="0.017">
+    </testcase>
+    <testcase classname="Auth routes should return 401 when deleting with missing token" name="Auth routes should return 401 when deleting with missing token" time="0.007">
     </testcase>
   </testsuite>
 </testsuites>
