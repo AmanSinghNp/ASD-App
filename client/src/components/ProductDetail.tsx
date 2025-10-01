@@ -148,7 +148,6 @@ const ProductDetail: React.FC = () => {
                   price: product.price,
                   quantity: 1,
                 });
-                navigate("/checkout");
               }}
               style={{
                 padding: "12px 24px",
