@@ -7,6 +7,7 @@ dotenv.config();
 
 const app = express();
 const PORT = 3000; // your backend port
+export default app;
 
 // Enable CORS for your React frontend
 app.use(cors({

@@ -76,6 +76,12 @@ function EditProfile() {
         return;
       }
 
+      // Update the token if backend returned new one (optional)
+      // Or request new JWT from a refresh endpoint
+      // For simplicity, backend could return new JWT here
+      // Example: data.token
+      if (data.token) localStorage.setItem("token", data.token);
+
       setMessage("Profile updated successfully ✅");
       navigate("/profile"); // redirect back to profile page
     } catch (err) {

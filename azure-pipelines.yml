@@ -16,14 +16,28 @@ stages:
       - job: Backend
         displayName: "Build Backend"
         steps:
+          # 1. Use Node.js
           - task: NodeTool@0
             inputs:
               versionSpec: $(node_version)
             displayName: "Install Node.js"
           
+          # 2. Install dependencies
           - script: |
               npm install
               npm run build
               npm install react-router-dom
               npm install lucide-react
             displayName: "Install & Build Backend"
+          
+          # # 3. Run tests
+          # - script: |
+          #     npm test -- --ci --reporters=default --reporters=jest-junit
+          #   displayName: 'Run unit tests'
+
+          # # 4. Publish test results (for Azure DevOps test reports tab)
+          # - task: PublishTestResults@2
+          #   inputs:
+          #     testResultsFiles: '**/junit.xml'
+          #     testRunTitle: 'Jest Tests'
+          #     failTaskOnFailedTests: true

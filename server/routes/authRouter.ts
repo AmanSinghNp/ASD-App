@@ -117,10 +117,17 @@ router.route("/profile")
       const updatedUser = await prisma.user.update({
         where: { email: decoded.email },
         data: { name, email },
-        select: { id: true, name: true, email: true },
+        select: { id: true, name: true, email: true, role: true},
       });
 
-      res.json(updatedUser);
+      // generate new JWT
+      const newToken = jwt.sign(
+        { id: updatedUser.id, email: updatedUser.email, role: updatedUser.role },
+        SECRET,
+        { expiresIn: "1h" }
+      );
+
+      res.json({updatedUser, token: newToken});
     } catch (err) {
       console.error("JWT error:", err);
       res.status(401).json({ error: "Invalid token" });

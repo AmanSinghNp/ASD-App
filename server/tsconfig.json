@@ -10,7 +10,7 @@
     "module": "ESNext",
     "target": "ES2020",
     "moduleResolution": "Node",
-    "types": ["node"],
+    "types": ["node", "jest"],
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
@@ -45,5 +45,5 @@
     "esModuleInterop": true,
   },
 
-  "include": ["./prisma/seed.ts", "./prisma/seed.js"]
+  "include": ["./prisma/seed.ts", "./prisma/seed.js", "_tests_"]
 }
