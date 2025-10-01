@@ -1,7 +1,6 @@
-/** @type {import('jest').Config} */
-module.exports = {
+export default {
   transform: {
-    "^.+\\.tsx?$": "babel-jest",
+    "^.+\\.tsx?$": "babel-jest"
   },
   testEnvironment: "node",
   extensionsToTreatAsEsm: [".ts"],
@@ -9,6 +8,6 @@ module.exports = {
   moduleFileExtensions: ["ts", "js", "json", "node"],
   reporters: [
     "default",
-    ["jest-junit", { outputDirectory: ".", outputName: "junit.xml" }],
-  ],
+    ["jest-junit", { outputDirectory: ".", outputName: "junit.xml" }]
+  ]
 };
