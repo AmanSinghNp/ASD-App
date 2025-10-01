@@ -1,22 +1,22 @@
-/// <reference types="jest" />
 import request from "supertest";
-import app from "../src/app";
+import app from "../src/app"; // make sure this exports your Express app
 
 describe("Auth routes", () => {
   let token: string;
+
   const testUser = {
     name: "Test User",
     email: "test@example.com",
     password: "password123",
   };
 
-  // Signup user before all tests
+  // Signup before all tests
   beforeAll(async () => {
     const res = await request(app).post("/auth/signup").send(testUser);
     token = res.body.token;
   });
 
-  // Cleanup user after all tests
+  // Delete user after all tests
   afterAll(async () => {
     await request(app)
       .delete("/auth/delete")
@@ -35,7 +35,7 @@ describe("Auth routes", () => {
       .send({ email: testUser.email, password: testUser.password });
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("token");
-    token = res.body.token; // update token after login
+    token = res.body.token; // update token for subsequent tests
   });
 
   it("should get user profile", async () => {

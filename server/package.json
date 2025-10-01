@@ -12,7 +12,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "prisma:seed": "ts-node prisma/seed.ts",
-    "test": "jest --ci --reporters=default --reporters=jest-junit"
+    "test": "npx jest --ci --reporters=default --reporters=jest-junit"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +27,9 @@
     "process": "^0.11.10"
   },
   "devDependencies": {
+    "@babel/core": "^7.28.4",
+    "@babel/preset-env": "^7.28.3",
+    "@babel/preset-typescript": "^7.27.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.3",
@@ -35,6 +38,7 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "^24.6.1",
     "@types/supertest": "^6.0.3",
+    "babel-jest": "^30.2.0",
     "jest": "^30.2.0",
     "jest-junit": "^16.0.0",
     "prisma": "^6.16.2",
