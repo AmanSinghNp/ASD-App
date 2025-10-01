@@ -15,6 +15,7 @@ const ProductList: React.FC = () => {
     generateSuggestions,
     setAppliedCategory,
     setAppliedSort,
+    appliedQuery,
     setAppliedQuery,
   } = useProductCatalogue();
 
@@ -107,8 +108,12 @@ const ProductList: React.FC = () => {
       </div>
       
       <p style={{ margin: '20px 0 15px 0', color: '#666' }}>
-        Showing {products.length} product{products.length !== 1 ? 's' : ''}
-      </p>
+  {products.length === 0 && appliedQuery ? (
+    `Please Enter valid letter !!!`
+  ) : (
+    `Showing ${products.length} product${products.length !== 1 ? 's' : ''}`
+  )}
+</p>
       
       <div style={{ 
         display: 'grid', 

@@ -135,6 +135,7 @@ export const useProductCatalogue = () => {
     setAppliedSort,
 
     setAppliedQuery,
+    appliedQuery,
 
   };
 
