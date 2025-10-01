@@ -18,22 +18,39 @@ app.use(express.json());
 
 
 app.get("/api/products", async (req, res) => {
-  // New api entry point to fetch products with optional filtering and sorting
   const { search, category, sortBy, order } = req.query;
-  
+
+  // Define a type for the where clause to ensure type safety
+  type WhereClause = {
+    name?: {
+      contains: string;
+    };
+    category?: string;
+  };
+
   try {
+    // 1. Start with an empty 'where' object
+    const where: WhereClause = {};
+
+    // 2. Only add filters if the query parameters are valid strings
+    if (typeof search === 'string' && search.length > 0) {
+      where.name = {
+        contains: search,
+      };
+    }
+
+    if (typeof category === 'string' && category.length > 0) {
+      where.category = category;
+    }
+
+    // 3. Use the dynamically built 'where' object in your query
     const products = await prisma.product.findMany({
-      where: {
-        // Build database query conditions based on query parameters
-        name: {
-          contains: typeof search === 'string' ? search : undefined,
-        },
-        category: typeof category === 'string' ? category : undefined,
-      },
+      where: where, // Use the new object here
       orderBy: {
         [typeof sortBy === 'string' ? sortBy : 'name']: typeof order === 'string' ? order : 'asc',
       }
     });
+
     res.json(products);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch products" });
