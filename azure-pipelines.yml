@@ -27,14 +27,16 @@ stages:
               versionSpec: '22.x'
             displayName: 'Install Node.js'
 
-          - script: npm ci
+          - script: |
+              npm ci
+              npm install
             workingDirectory: 'server'
             displayName: 'Install server dependencies'
 
           # Prisma client generation
           - script: |
               npx prisma generate
-              prisma migrate deploy
+              npx prisma migrate deploy
             workingDirectory: 'server'
             displayName: 'Run Prisma Generate'
 
