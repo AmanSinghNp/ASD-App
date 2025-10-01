@@ -41,6 +41,7 @@
     "jsonwebtoken": "^9.0.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "server": "^1.0.42",
     "vite": "^7.1.4"
   },
   "type": "commonjs"
