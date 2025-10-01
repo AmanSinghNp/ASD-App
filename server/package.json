@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "type":"module",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -14,18 +14,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-
     "@prisma/client": "^6.15.0",
-
     "asd-app": "file:..",
-
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "prisma": "^6.15.0"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.3.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
