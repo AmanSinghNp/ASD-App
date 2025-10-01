@@ -51,18 +51,10 @@ stages:
               DATABASE_URL: "file:./dev.db"
             displayName: 'Run server tests'
 
-          # Build server if needed
-          - script: npx ts-node src/index.ts
-            workingDirectory: 'server'
-            displayName: 'Build server'
-
-          # Optional: Publish server artifact
-          - task: PublishBuildArtifacts@1
-            inputs:
-              PathtoPublish: 'server/dist'
-              ArtifactName: 'server'
-              publishLocation: 'Container'
-            displayName: 'Publish server artifact'
+          # # Build server if needed
+          # - script: npx ts-node src/index.ts
+          #   workingDirectory: 'server'
+          #   displayName: 'Build server'
       
       # -------- CLIENT (FRONTEND) --------
       - job: BuildClient
