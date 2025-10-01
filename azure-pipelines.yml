@@ -20,7 +20,7 @@ stages:
     jobs:
       #  Build the Client (Frontend) Application
       - job: BuildClient
-        displayName: 'Build Client (Frontend)'
+        displayName: 'Build  & Test Client (Frontend)'
         steps:
           # Install the specified version of Node.js
           - task: NodeTool@0
@@ -29,11 +29,18 @@ stages:
             displayName: 'Install Node.js'
 
           # Change to the client directory, install dependencies, and run the build script
-          - script: |
-              cd client
-              npm install
-              npm run build
-            displayName: 'Install client dependencies and build'
+          - script: npm install
+            displayName: 'Install client dependencies'
+            workingDirectory: 'client' 
+
+          # add testing step here 
+          - script: npm test
+            displayName: 'Run client unit tests'
+            workingDirectory: 'client' # run under same client directory
+
+          - script: npm run build
+            displayName: 'Build client'
+            workingDirectory: 'client'
             
           #  Publish the build output (the 'dist' folder) as a pipeline artifact named 'client'
           - task: PublishBuildArtifacts@1
