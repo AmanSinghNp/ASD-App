@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import app from "./app"
+import app from "./app.ts"
 import authRouter from "../routes/authRouter.ts"; // import auth routes
 
 dotenv.config();
