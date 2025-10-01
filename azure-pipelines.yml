@@ -46,6 +46,9 @@ stages:
           # Run backend tests (ESNext + ts-jest)
           - script: npx jest --ci --runInBand --reporters=default --reporters=jest-junit
             workingDirectory: 'server'
+            env:
+              JWT_SECRET: supersecretkey
+              DATABASE_URL: "file:./dev.db"
             displayName: 'Run server tests'
 
           # Build server if needed
