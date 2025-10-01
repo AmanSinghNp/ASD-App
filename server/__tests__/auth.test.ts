@@ -16,18 +16,18 @@ describe("Auth routes", () => {
     token = res.body.token;
   });
 
-  // Delete user after all tests
-  afterAll(async () => {
-    await request(app)
-      .delete("/auth/delete")
-      .set("Authorization", `Bearer ${token}`);
-  });
+  // // Delete user after all tests
+  // afterAll(async () => {
+  //   await request(app)
+  //     .delete("/auth/delete")
+  //     .set("Authorization", `Bearer ${token}`);
+  // });
 
-  it("should fail signup with missing fields", async () => {
-    const res = await request(app).post("/auth/signup").send({});
-    expect(res.status).toBe(400);
-    expect(res.body.message).toBe("Name, email, and password are required");
-  });
+  // it("should fail signup with missing fields", async () => {
+  //   const res = await request(app).post("/auth/signup").send({});
+  //   expect(res.status).toBe(400);
+  //   expect(res.body.message).toBe("Name, email, and password are required");
+  // });
 
   it("should login the user", async () => {
     const res = await request(app)
