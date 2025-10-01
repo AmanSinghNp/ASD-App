@@ -1,7 +1,7 @@
 trigger:
   branches:
     include:
-      - main # Runs when you push to main
+      - main
       - danny
 
 pool:
@@ -21,7 +21,22 @@ stages:
               versionSpec: $(node_version)
             displayName: "Install Node.js"
 
+          # Install dependencies for root
+          - script: npm install
+            displayName: "Install root dependencies"
+
+          # Install dependencies for client
           - script: |
+              cd client
               npm install
-              npm run build
-            displayName: "Install & Build Backend"
+            displayName: "Install client dependencies"
+
+          # Install dependencies for server
+          - script: |
+              cd server
+              npm install
+            displayName: "Install server dependencies"
+
+          # Run build
+          - script: npm run build
+            displayName: "Build app"
