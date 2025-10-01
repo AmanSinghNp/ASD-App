@@ -1,45 +1,84 @@
+# Trigger the pipeline on pushes to the main or Xiao branches
 trigger:
   branches:
     include:
-      - main   # Runs when you push to main
+      - main
       - belinda-r1
 
+# Use the latest Ubuntu virtual machine for the build agent
 pool:
   vmImage: 'ubuntu-latest'
 
+# Define variables for reuse
 variables:
   node_version: '20.x'
 
+# Define the stages of the pipeline
 stages:
   - stage: Build
+    displayName: 'Build Stage'
     jobs:
-      - job: Backend
-        displayName: "Build Backend"
+      #  Build the Client (Frontend) Application
+      - job: BuildClient
+        displayName: 'Build  & Test Client (Frontend)'
         steps:
-          # 1. Use Node.js
+          # Install the specified version of Node.js
           - task: NodeTool@0
             inputs:
               versionSpec: $(node_version)
-            displayName: "Install Node.js"
-          
-          # 2. Install dependencies
-          - script: |
-              npm install
-              npm run build
-              npm install react-router-dom
-              npm install lucide-react
-            displayName: "Install & Build Backend"
-          
-          # 3. Run tests
+            displayName: 'Install Node.js'
+
+          # Change to the client directory, install dependencies, and run the build script
+          - script: npm install
+            displayName: 'Install client dependencies'
+            workingDirectory: 'client' 
+
+          # # add testing step here 
+          # - script: npm test
+          #   displayName: 'Run client unit tests Release 1'
+          #   workingDirectory: 'client' # run under same client directory
+
+          - script: npm run build
+            displayName: 'Build client'
+            workingDirectory: 'client'
+            
+          #  Publish the build output (the 'dist' folder) as a pipeline artifact named 'client'
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: 'client/dist'
+              ArtifactName: 'client'
+              publishLocation: 'Container'
+            displayName: 'Publish client artifact'
+
+      # Build the Server (Backend) Application 
+      - job: BuildServer
+        displayName: 'Build Server (Backend)'
+        steps:
+          # Install the specified version of Node.js
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(node_version)
+            displayName: 'Install Node.js'
+
+          # Change to the server directory and install dependencies
           - script: |
               cd server
               npm install
-              npm test --ci --reporters=default --reporters=jest-junit
-            displayName: 'Run unit tests'
+            displayName: 'Install server dependencies'
+            
+          # Run Prisma Generate to ensure the Prisma Client is up-to-date
+          - script: |
+              cd server
+              npx prisma generate
+            displayName: 'Run Prisma Generate'
+          
+          # add testing step here 
+          - script: npm test
+            displayName: 'Run client unit tests Release 1'
+            workingDirectory: 'client' # run under same client directory
 
-          # 4. Publish test results (for Azure DevOps test reports tab)
-          - task: PublishTestResults@2
-            inputs:
-              testResultsFiles: '**/junit.xml'
-              testRunTitle: 'Jest Tests'
-              failTaskOnFailedTests: true
+          # Run the build command for the server
+          - script: |
+              cd server
+              npm run build
+            displayName: 'Build server'
