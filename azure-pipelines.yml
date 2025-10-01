@@ -55,6 +55,16 @@ stages:
           # - script: npx ts-node src/index.ts
           #   workingDirectory: 'server'
           #   displayName: 'Build server'
+
+          # 👇 This publishes the JUnit file to Azure Pipelines Tests tab
+          - task: PublishTestResults@2
+            displayName: 'Publish Jest Test Results'
+            condition: succeededOrFailed()
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: 'server/junit.xml'
+              mergeTestResults: true
+              failTaskOnFailedTests: false
       
       # -------- CLIENT (FRONTEND) --------
       - job: BuildClient
