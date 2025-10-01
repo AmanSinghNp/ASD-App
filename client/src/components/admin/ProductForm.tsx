@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { ProductFormProps, ProductFormData } from '../../types/product';
+import type { ProductFormProps, ProductFormData } from '../../types/product';
 
 export const ProductForm: React.FC<ProductFormProps> = ({
   initialProduct,
