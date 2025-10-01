@@ -33,7 +33,7 @@ stages:
           # 3. Run tests
           - script: |
               cd server
-              npm test -- --ci --reporters=default --reporters=jest-junit
+              npm test
             displayName: 'Run unit tests'
 
           # 4. Publish test results (for Azure DevOps test reports tab)

@@ -1,13 +1,14 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import app from "./app"
 import authRouter from "../routes/authRouter.ts"; // import auth routes
 
 dotenv.config();
 
-const app = express();
+// const app = express();
 const PORT = 3000; // your backend port
-export default app;
+// export default app;
 
 // Enable CORS for your React frontend
 app.use(cors({

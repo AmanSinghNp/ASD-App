@@ -1,6 +1,6 @@
 /// <reference types="jest" />
 import request from "supertest";
-import app from "../src/index";
+import app from "../src/app";
 
 describe("Auth routes", () => {
   let token: string;
