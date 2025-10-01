@@ -1,84 +1,83 @@
-# Trigger the pipeline on pushes to the main or Xiao branches
+# Trigger pipeline on main or your branch
 trigger:
   branches:
     include:
       - main
       - belinda-r1
 
-# Use the latest Ubuntu virtual machine for the build agent
+# Use latest Ubuntu agent
 pool:
   vmImage: 'ubuntu-latest'
 
-# Define variables for reuse
+# Variables
 variables:
   node_version: '20.x'
 
-# Define the stages of the pipeline
 stages:
   - stage: Build
-    displayName: 'Build Stage'
+    displayName: Build Stage
     jobs:
-      #  Build the Client (Frontend) Application
-      - job: BuildClient
-        displayName: 'Build  & Test Client (Frontend)'
+
+      # -------- SERVER (BACKEND) --------
+      - job: BuildServer
+        displayName: 'Build & Test Server (Backend)'
         steps:
-          # Install the specified version of Node.js
           - task: NodeTool@0
             inputs:
               versionSpec: $(node_version)
             displayName: 'Install Node.js'
 
-          # Change to the client directory, install dependencies, and run the build script
-          - script: npm install
-            displayName: 'Install client dependencies'
-            workingDirectory: 'client' 
+          - script: npm ci
+            workingDirectory: 'server'
+            displayName: 'Install server dependencies'
 
-          # # add testing step here 
-          # - script: npm test
-          #   displayName: 'Run client unit tests Release 1'
-          #   workingDirectory: 'client' # run under same client directory
+          # Prisma client generation
+          - script: npx prisma generate
+            workingDirectory: 'server'
+            displayName: 'Run Prisma Generate'
+
+          # Run backend tests (ESNext + ts-jest)
+          - script: npm test -- --ci --reporters=default --reporters=jest-junit
+            workingDirectory: 'server'
+            displayName: 'Run server tests'
+
+          # Build server if needed
+          - script: npx ts-node src/index.ts
+            workingDirectory: 'server'
+            displayName: 'Build server'
+
+          # Optional: Publish server artifact
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: 'server/dist'
+              ArtifactName: 'server'
+              publishLocation: 'Container'
+            displayName: 'Publish server artifact'
+      
+      # -------- CLIENT (FRONTEND) --------
+      - job: BuildClient
+        displayName: 'Build & Test Client (Frontend)'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(node_version)
+            displayName: 'Install Node.js'
+
+          - script: npm ci
+            workingDirectory: 'client'
+            displayName: 'Install client dependencies'
+
+          - script: npm test -- --ci --reporters=default --reporters=jest-junit
+            workingDirectory: 'client'
+            displayName: 'Run client tests'
 
           - script: npm run build
-            displayName: 'Build client'
             workingDirectory: 'client'
-            
-          #  Publish the build output (the 'dist' folder) as a pipeline artifact named 'client'
+            displayName: 'Build client'
+
           - task: PublishBuildArtifacts@1
             inputs:
               PathtoPublish: 'client/dist'
               ArtifactName: 'client'
               publishLocation: 'Container'
             displayName: 'Publish client artifact'
-
-      # Build the Server (Backend) Application 
-      - job: BuildServer
-        displayName: 'Build Server (Backend)'
-        steps:
-          # Install the specified version of Node.js
-          - task: NodeTool@0
-            inputs:
-              versionSpec: $(node_version)
-            displayName: 'Install Node.js'
-
-          # Change to the server directory and install dependencies
-          - script: |
-              cd server
-              npm install
-            displayName: 'Install server dependencies'
-            
-          # Run Prisma Generate to ensure the Prisma Client is up-to-date
-          - script: |
-              cd server
-              npx prisma generate
-            displayName: 'Run Prisma Generate'
-          
-          # add testing step here 
-          - script: npm test
-            displayName: 'Run client unit tests Release 1'
-            workingDirectory: 'server' # run under same client directory
-
-          # Run the build command for the server
-          - script: |
-              cd server
-              npm run build
-            displayName: 'Build server'

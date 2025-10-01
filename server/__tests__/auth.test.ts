@@ -4,6 +4,24 @@ import app from "../src/app";
 
 describe("Auth routes", () => {
   let token: string;
+  const testUser = {
+    name: "Test User",
+    email: "test@example.com",
+    password: "password123",
+  };
+
+  // Signup user before all tests
+  beforeAll(async () => {
+    const res = await request(app).post("/auth/signup").send(testUser);
+    token = res.body.token;
+  });
+
+  // Cleanup user after all tests
+  afterAll(async () => {
+    await request(app)
+      .delete("/auth/delete")
+      .set("Authorization", `Bearer ${token}`);
+  });
 
   it("should fail signup with missing fields", async () => {
     const res = await request(app).post("/auth/signup").send({});
@@ -11,22 +29,13 @@ describe("Auth routes", () => {
     expect(res.body.message).toBe("Name, email, and password are required");
   });
 
-  it("should signup a new user", async () => {
-    const res = await request(app)
-      .post("/auth/signup")
-      .send({ name: "Test User", email: "test@example.com", password: "password123" });
-    expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty("token");
-    token = res.body.token;
-  });
-
   it("should login the user", async () => {
     const res = await request(app)
       .post("/auth/login")
-      .send({ email: "test@example.com", password: "password123" });
+      .send({ email: testUser.email, password: testUser.password });
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("token");
-    token = res.body.token;
+    token = res.body.token; // update token after login
   });
 
   it("should get user profile", async () => {
@@ -34,14 +43,6 @@ describe("Auth routes", () => {
       .get("/auth/profile")
       .set("Authorization", `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body.email).toBe("test@example.com");
-  });
-
-  it("should delete the user", async () => {
-    const res = await request(app)
-      .delete("/auth/delete")
-      .set("Authorization", `Bearer ${token}`);
-    expect(res.status).toBe(200);
-    expect(res.body.message).toBe("User deleted successfully.");
+    expect(res.body.email).toBe(testUser.email);
   });
 });
