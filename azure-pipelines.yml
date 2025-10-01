@@ -37,7 +37,7 @@ stages:
             displayName: 'Run Prisma Generate'
 
           # Run backend tests (ESNext + ts-jest)
-          - script: npm test 
+          - script: npx jest --ci --reporters=default --reporters=jest-junit
             workingDirectory: 'server'
             displayName: 'Run server tests'
 
