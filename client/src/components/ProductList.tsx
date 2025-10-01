@@ -29,7 +29,7 @@ const ProductList: React.FC = () => {
   const handleSuggestionClick = (suggestionText: string) => {
     generateSuggestions(suggestionText); // Update input and suggestions
     setAppliedQuery(suggestionText);    // Immediately apply the search
-    setSuggestions([]);                 // Hide suggestions
+    setSuggestions([]);                 // Hide suggestions, small change for git push 
   };
 
   const handleApplyFilters = () => {
