@@ -24,7 +24,7 @@ stages:
         steps:
           - task: NodeTool@0
             inputs:
-              versionSpec: $(node_version)
+              versionSpec: '22.x'
             displayName: 'Install Node.js'
 
           - script: npm ci
@@ -32,13 +32,18 @@ stages:
             displayName: 'Install server dependencies'
 
           # Prisma client generation
-          - script: npx prisma generate
+          - script: |
+              npx prisma generate
+              prisma migrate deploy
             workingDirectory: 'server'
             displayName: 'Run Prisma Generate'
 
           # Run backend tests (ESNext + ts-jest)
-          - script: npx jest --ci --reporters=default --reporters=jest-junit
+          - script: npx jest --ci --runInBand --reporters=default --reporters=jest-junit
             workingDirectory: 'server'
+            env:
+              JWT_SECRET: $(JWT_SECRET)
+              DATABASE_URL: $(DATABASE_URL)
             displayName: 'Run server tests'
 
           # Build server if needed

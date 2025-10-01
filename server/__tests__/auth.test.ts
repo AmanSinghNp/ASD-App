@@ -1,5 +1,5 @@
 import request from "supertest";
-import app from "../src/app"; // make sure this exports your Express app
+import app from "../src/app.ts"; // make sure this exports your Express app
 
 describe("Auth routes", () => {
   let token: string;

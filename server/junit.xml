@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="3" failures="0" errors="0" time="2.723">
-  <testsuite name="Auth routes" errors="0" failures="0" skipped="0" timestamp="2025-10-01T16:04:48" time="2.561" tests="3">
+<testsuites name="jest tests" tests="3" failures="0" errors="0" time="1.767">
+  <testsuite name="Auth routes" errors="0" failures="0" skipped="0" timestamp="2025-10-01T16:13:37" time="1.643" tests="3">
     <testcase classname="Auth routes should fail signup with missing fields" name="Auth routes should fail signup with missing fields" time="0.007">
     </testcase>
-    <testcase classname="Auth routes should login the user" name="Auth routes should login the user" time="0.084">
+    <testcase classname="Auth routes should login the user" name="Auth routes should login the user" time="0.086">
     </testcase>
     <testcase classname="Auth routes should get user profile" name="Auth routes should get user profile" time="0.01">
     </testcase>
