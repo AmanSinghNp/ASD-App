@@ -75,7 +75,7 @@ stages:
           # add testing step here 
           - script: npm test
             displayName: 'Run client unit tests Release 1'
-            workingDirectory: 'client' # run under same client directory
+            workingDirectory: 'server' # run under same client directory
 
           # Run the build command for the server
           - script: |
