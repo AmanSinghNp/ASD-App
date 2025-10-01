@@ -1,6 +1,6 @@
 trigger:
   - main
-  - develop
+  - vinix-r1
 
 pool:
   vmImage: 'ubuntu-latest'
