@@ -35,7 +35,7 @@ stages:
 
           # add testing step here 
           - script: npm test
-            displayName: 'Run client unit tests'
+            displayName: 'Run client unit tests Release 1'
             workingDirectory: 'client' # run under same client directory
 
           - script: npm run build
