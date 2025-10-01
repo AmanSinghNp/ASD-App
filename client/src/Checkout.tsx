@@ -262,5 +262,6 @@ const Checkout: React.FC = () => {
     </div>
   );
 };
-// testing dsjdosjo
+
+//testing Product cat math
 export default Checkout;
