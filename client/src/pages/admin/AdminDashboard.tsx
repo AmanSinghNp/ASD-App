@@ -177,17 +177,55 @@ export const AdminDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-6 py-8">
+    <div style={{
+      minHeight: '100vh',
+      backgroundColor: 'var(--bg-secondary)',
+      padding: 'var(--spacing-2xl) 0'
+    }}>
+      <div className="container">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-bold text-gray-900">Product Management</h1>
+        <div style={{ marginBottom: 'var(--spacing-2xl)' }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: 'var(--spacing-lg)'
+          }}>
+            <h1 style={{
+              fontSize: '2.25rem',
+              fontWeight: '700',
+              color: 'var(--text-primary)',
+              margin: 0
+            }}>
+              Product Management
+            </h1>
             <button
               onClick={handleAddProduct}
-              className="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                padding: 'var(--spacing-md) var(--spacing-lg)',
+                backgroundColor: 'var(--primary-blue)',
+                color: 'white',
+                border: 'none',
+                borderRadius: 'var(--radius-lg)',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                gap: 'var(--spacing-sm)',
+                boxShadow: 'var(--shadow-sm)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--primary-blue-hover)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--primary-blue)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+              }}
             >
-              <Plus className="h-5 w-5 mr-2" />
+              <Plus size={20} />
               Add Product
             </button>
           </div>
@@ -195,41 +233,175 @@ export const AdminDashboard: React.FC = () => {
 
         {/* Analytics Panel */}
         {analytics && (
-          <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Analytics (Last 7 Days)</h2>
+          <div style={{
+            backgroundColor: 'var(--bg-primary)',
+            padding: 'var(--spacing-2xl)',
+            borderRadius: 'var(--radius-xl)',
+            boxShadow: 'var(--shadow-sm)',
+            border: '1px solid var(--border-light)',
+            marginBottom: 'var(--spacing-2xl)'
+          }}>
+            <h2 style={{
+              fontSize: '1.5rem',
+              fontWeight: '700',
+              color: 'var(--text-primary)',
+              marginBottom: 'var(--spacing-lg)',
+              margin: 0
+            }}>
+              Analytics (Last 7 Days)
+            </h2>
             
             {/* KPIs */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-blue-50 p-6 rounded-lg">
-                <div className="text-2xl font-bold text-blue-600">{formatPrice(analytics.kpis.revenueTotalCents)}</div>
-                <div className="text-sm text-blue-800">Total Revenue</div>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+              gap: 'var(--spacing-lg)',
+              marginBottom: 'var(--spacing-2xl)'
+            }}>
+              <div style={{
+                backgroundColor: 'var(--primary-blue-light)',
+                padding: 'var(--spacing-lg)',
+                borderRadius: 'var(--radius-lg)',
+                border: '1px solid var(--primary-blue-light)'
+              }}>
+                <div style={{
+                  fontSize: '1.875rem',
+                  fontWeight: '700',
+                  color: 'var(--primary-blue-dark)',
+                  marginBottom: 'var(--spacing-xs)'
+                }}>
+                  {formatPrice(analytics.kpis.revenueTotalCents)}
+                </div>
+                <div style={{
+                  fontSize: '0.875rem',
+                  color: 'var(--primary-blue-dark)',
+                  fontWeight: '500'
+                }}>
+                  Total Revenue
+                </div>
               </div>
-              <div className="bg-green-50 p-6 rounded-lg">
-                <div className="text-2xl font-bold text-green-600">{analytics.kpis.ordersCount}</div>
-                <div className="text-sm text-green-800">Total Orders</div>
+              <div style={{
+                backgroundColor: '#f0fdf4',
+                padding: 'var(--spacing-lg)',
+                borderRadius: 'var(--radius-lg)',
+                border: '1px solid #bbf7d0'
+              }}>
+                <div style={{
+                  fontSize: '1.875rem',
+                  fontWeight: '700',
+                  color: '#166534',
+                  marginBottom: 'var(--spacing-xs)'
+                }}>
+                  {analytics.kpis.ordersCount}
+                </div>
+                <div style={{
+                  fontSize: '0.875rem',
+                  color: '#166534',
+                  fontWeight: '500'
+                }}>
+                  Total Orders
+                </div>
               </div>
-              <div className="bg-purple-50 p-6 rounded-lg">
-                <div className="text-2xl font-bold text-purple-600">{formatPrice(analytics.kpis.avgOrderValueCents)}</div>
-                <div className="text-sm text-purple-800">Avg Order Value</div>
+              <div style={{
+                backgroundColor: '#faf5ff',
+                padding: 'var(--spacing-lg)',
+                borderRadius: 'var(--radius-lg)',
+                border: '1px solid #e9d5ff'
+              }}>
+                <div style={{
+                  fontSize: '1.875rem',
+                  fontWeight: '700',
+                  color: '#7c3aed',
+                  marginBottom: 'var(--spacing-xs)'
+                }}>
+                  {formatPrice(analytics.kpis.avgOrderValueCents)}
+                </div>
+                <div style={{
+                  fontSize: '0.875rem',
+                  color: '#7c3aed',
+                  fontWeight: '500'
+                }}>
+                  Avg Order Value
+                </div>
               </div>
             </div>
 
             {/* Revenue by Day Table */}
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Revenue by Day</h3>
-              <div className="overflow-x-auto">
-                <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-                  <thead className="bg-gray-50">
+              <h3 style={{
+                fontSize: '1.125rem',
+                fontWeight: '600',
+                color: 'var(--text-primary)',
+                marginBottom: 'var(--spacing-md)',
+                margin: 0
+              }}>
+                Revenue by Day
+              </h3>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{
+                  width: '100%',
+                  backgroundColor: 'var(--bg-primary)',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: 'var(--radius-lg)',
+                  borderCollapse: 'separate',
+                  borderSpacing: 0
+                }}>
+                  <thead style={{ backgroundColor: 'var(--bg-tertiary)' }}>
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Revenue</th>
+                      <th style={{
+                        padding: 'var(--spacing-md)',
+                        textAlign: 'left',
+                        fontSize: '0.75rem',
+                        fontWeight: '600',
+                        color: 'var(--text-secondary)',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                        borderBottom: '1px solid var(--border-color)'
+                      }}>
+                        Date
+                      </th>
+                      <th style={{
+                        padding: 'var(--spacing-md)',
+                        textAlign: 'left',
+                        fontSize: '0.75rem',
+                        fontWeight: '600',
+                        color: 'var(--text-secondary)',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                        borderBottom: '1px solid var(--border-color)'
+                      }}>
+                        Revenue
+                      </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody>
                     {analytics.revenueByDay.map((day: any, index: number) => (
-                      <tr key={index} className="hover:bg-gray-50">
-                        <td className="px-4 py-3 text-sm text-gray-900">{day.date}</td>
-                        <td className="px-4 py-3 text-sm font-semibold text-gray-900">{formatPrice(day.revenueCents)}</td>
+                      <tr key={index} style={{
+                        transition: 'background-color 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                      }}>
+                        <td style={{
+                          padding: 'var(--spacing-md)',
+                          fontSize: '0.875rem',
+                          color: 'var(--text-primary)',
+                          borderBottom: index < analytics.revenueByDay.length - 1 ? '1px solid var(--border-light)' : 'none'
+                        }}>
+                          {day.date}
+                        </td>
+                        <td style={{
+                          padding: 'var(--spacing-md)',
+                          fontSize: '0.875rem',
+                          fontWeight: '600',
+                          color: 'var(--text-primary)',
+                          borderBottom: index < analytics.revenueByDay.length - 1 ? '1px solid var(--border-light)' : 'none'
+                        }}>
+                          {formatPrice(day.revenueCents)}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -240,23 +412,78 @@ export const AdminDashboard: React.FC = () => {
         )}
 
         {/* Filters */}
-        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+        <div style={{
+          backgroundColor: 'var(--bg-primary)',
+          padding: 'var(--spacing-2xl)',
+          borderRadius: 'var(--radius-xl)',
+          boxShadow: 'var(--shadow-sm)',
+          border: '1px solid var(--border-light)',
+          marginBottom: 'var(--spacing-2xl)'
+        }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: 'var(--spacing-lg)',
+            alignItems: 'end'
+          }}>
+            <div style={{ position: 'relative' }}>
+              <Search style={{
+                position: 'absolute',
+                left: 'var(--spacing-md)',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                color: 'var(--text-muted)',
+                width: '20px',
+                height: '20px',
+                pointerEvents: 'none'
+              }} />
               <input
                 type="text"
                 placeholder="Search by name or SKU..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                style={{
+                  width: '100%',
+                  padding: 'var(--spacing-md) var(--spacing-md) var(--spacing-md) 3rem',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: 'var(--radius-lg)',
+                  backgroundColor: 'var(--bg-primary)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.875rem',
+                  transition: 'all 0.2s ease'
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = 'var(--primary-blue)';
+                  e.target.style.boxShadow = '0 0 0 3px var(--primary-blue-light)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = 'var(--border-color)';
+                  e.target.style.boxShadow = 'none';
+                }}
               />
             </div>
 
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white"
+              style={{
+                padding: 'var(--spacing-md)',
+                border: '1px solid var(--border-color)',
+                borderRadius: 'var(--radius-lg)',
+                backgroundColor: 'var(--bg-primary)',
+                color: 'var(--text-primary)',
+                fontSize: '0.875rem',
+                transition: 'all 0.2s ease',
+                cursor: 'pointer'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = 'var(--primary-blue)';
+                e.target.style.boxShadow = '0 0 0 3px var(--primary-blue-light)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'var(--border-color)';
+                e.target.style.boxShadow = 'none';
+              }}
             >
               <option value="">All Categories</option>
               {categories.map(category => (
@@ -267,21 +494,54 @@ export const AdminDashboard: React.FC = () => {
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white"
+              style={{
+                padding: 'var(--spacing-md)',
+                border: '1px solid var(--border-color)',
+                borderRadius: 'var(--radius-lg)',
+                backgroundColor: 'var(--bg-primary)',
+                color: 'var(--text-primary)',
+                fontSize: '0.875rem',
+                transition: 'all 0.2s ease',
+                cursor: 'pointer'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = 'var(--primary-blue)';
+                e.target.style.boxShadow = '0 0 0 3px var(--primary-blue-light)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'var(--border-color)';
+                e.target.style.boxShadow = 'none';
+              }}
             >
               <option value="">All Status</option>
               <option value="active">Active</option>
               <option value="hidden">Hidden</option>
             </select>
 
-            <div className="text-sm text-gray-600 flex items-center justify-center bg-gray-50 px-4 py-3 rounded-lg">
+            <div style={{
+              fontSize: '0.875rem',
+              color: 'var(--text-secondary)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'var(--bg-tertiary)',
+              padding: 'var(--spacing-md)',
+              borderRadius: 'var(--radius-lg)',
+              fontWeight: '500'
+            }}>
               Showing {getCurrentPageProducts().length} of {filteredProducts.length} products
             </div>
           </div>
         </div>
 
         {/* Product Table */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div style={{
+          backgroundColor: 'var(--bg-primary)',
+          borderRadius: 'var(--radius-xl)',
+          boxShadow: 'var(--shadow-sm)',
+          border: '1px solid var(--border-light)',
+          overflow: 'hidden'
+        }}>
           <ProductTable
             products={getCurrentPageProducts()}
             onEdit={handleEditProduct}
@@ -292,12 +552,39 @@ export const AdminDashboard: React.FC = () => {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="mt-8 flex justify-center">
-            <nav className="flex space-x-2">
+          <div style={{
+            marginTop: 'var(--spacing-2xl)',
+            display: 'flex',
+            justifyContent: 'center'
+          }}>
+            <nav style={{
+              display: 'flex',
+              gap: 'var(--spacing-sm)'
+            }}>
               <button
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className="px-4 py-2 text-sm border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                style={{
+                  padding: 'var(--spacing-sm) var(--spacing-md)',
+                  fontSize: '0.875rem',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: 'var(--radius-lg)',
+                  backgroundColor: 'var(--bg-primary)',
+                  color: 'var(--text-primary)',
+                  cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                  opacity: currentPage === 1 ? 0.5 : 1,
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  if (currentPage !== 1) {
+                    e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (currentPage !== 1) {
+                    e.currentTarget.style.backgroundColor = 'var(--bg-primary)';
+                  }
+                }}
               >
                 Previous
               </button>
@@ -306,11 +593,26 @@ export const AdminDashboard: React.FC = () => {
                 <button
                   key={page}
                   onClick={() => setCurrentPage(page)}
-                  className={`px-4 py-2 text-sm border rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    currentPage === page
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : 'border-gray-300 hover:bg-gray-50'
-                  }`}
+                  style={{
+                    padding: 'var(--spacing-sm) var(--spacing-md)',
+                    fontSize: '0.875rem',
+                    border: '1px solid var(--border-color)',
+                    borderRadius: 'var(--radius-lg)',
+                    backgroundColor: currentPage === page ? 'var(--primary-blue)' : 'var(--bg-primary)',
+                    color: currentPage === page ? 'white' : 'var(--text-primary)',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (currentPage !== page) {
+                      e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (currentPage !== page) {
+                      e.currentTarget.style.backgroundColor = 'var(--bg-primary)';
+                    }
+                  }}
                 >
                   {page}
                 </button>
@@ -319,7 +621,27 @@ export const AdminDashboard: React.FC = () => {
               <button
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                className="px-4 py-2 text-sm border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                style={{
+                  padding: 'var(--spacing-sm) var(--spacing-md)',
+                  fontSize: '0.875rem',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: 'var(--radius-lg)',
+                  backgroundColor: 'var(--bg-primary)',
+                  color: 'var(--text-primary)',
+                  cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                  opacity: currentPage === totalPages ? 0.5 : 1,
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  if (currentPage !== totalPages) {
+                    e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (currentPage !== totalPages) {
+                    e.currentTarget.style.backgroundColor = 'var(--bg-primary)';
+                  }
+                }}
               >
                 Next
               </button>

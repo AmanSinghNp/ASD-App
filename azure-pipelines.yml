@@ -1,30 +1,115 @@
-trigger: none
-pr: none
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+
+pr:
+  branches:
+    include:
+      - main
+      - develop
 
 pool:
   vmImage: "ubuntu-latest"
 
-steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: "20.x"
+variables:
+  nodeVersion: "20.x"
 
-  - script: npm ci
-    displayName: Install
+stages:
+  - stage: Test
+    displayName: 'Test Stage'
+    jobs:
+      - job: FrontendTests
+        displayName: 'Frontend Tests'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVersion)
+            displayName: 'Install Node.js'
 
-  - script: npx prisma generate
-    workingDirectory: server
-    displayName: Prisma generate
+          - script: |
+              cd client
+              npm ci
+            displayName: 'Install Frontend Dependencies'
 
-  - script: npx prisma migrate deploy || npx prisma migrate dev -n ci
-    workingDirectory: server
-    displayName: Prisma migrate
+          - script: |
+              cd client
+              npm run test
+            displayName: 'Run Frontend Tests'
 
-  - script: npm run seed || echo "no seed"
-    displayName: Seed
+          - task: PublishTestResults@2
+            condition: always()
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: 'client/test-results.xml'
+              searchFolder: 'client'
+              mergeTestResults: true
+            displayName: 'Publish Frontend Test Results'
 
-  - script: npm test
-    displayName: Test
+      - job: BackendTests
+        displayName: 'Backend Tests'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVersion)
+            displayName: 'Install Node.js'
 
-  - script: npm run build || echo "no build"
-    displayName: Build
+          - script: |
+              cd server
+              npm ci
+            displayName: 'Install Backend Dependencies'
+
+          - script: |
+              cd server
+              npx prisma generate
+            displayName: 'Generate Prisma Client'
+
+          - script: |
+              cd server
+              npm run test
+            displayName: 'Run Backend Tests'
+
+          - task: PublishTestResults@2
+            condition: always()
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: 'server/test-results.xml'
+              searchFolder: 'server'
+              mergeTestResults: true
+            displayName: 'Publish Backend Test Results'
+
+  - stage: Build
+    displayName: 'Build Stage'
+    dependsOn: Test
+    condition: succeeded()
+    jobs:
+      - job: BuildApplication
+        displayName: 'Build Application'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVersion)
+            displayName: 'Install Node.js'
+
+          - script: npm ci
+            displayName: 'Install Dependencies'
+
+          - script: |
+              cd server
+              npx prisma generate
+            displayName: 'Generate Prisma Client'
+
+          - script: |
+              cd server
+              npx prisma migrate deploy || npx prisma migrate dev -n ci
+            displayName: 'Run Database Migrations'
+
+          - script: npm run build
+            displayName: 'Build Application'
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: 'dist'
+              artifactName: 'build-artifacts'
+            displayName: 'Publish Build Artifacts'
