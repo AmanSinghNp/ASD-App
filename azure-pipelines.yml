@@ -50,27 +50,3 @@ stages:
               npm run test
             displayName: 'Run Backend Tests'
 
-  - stage: Build
-    displayName: 'Build Stage'
-    dependsOn: Test
-    condition: succeeded()
-    jobs:
-      - job: BuildApplication
-        displayName: 'Build Application'
-        steps:
-          - task: NodeTool@0
-            inputs:
-              versionSpec: $(nodeVersion)
-            displayName: 'Install Node.js'
-
-          - script: |
-              cd client
-              npm install --legacy-peer-deps
-              npm run build
-            displayName: 'Build Frontend'
-
-          - script: |
-              cd server
-              npm install
-              npm run build
-            displayName: 'Build Backend'
