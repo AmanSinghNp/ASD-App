@@ -3,7 +3,7 @@ import { Plus, Search } from 'lucide-react';
 import { ProductTable } from '../../components/admin/ProductTable';
 import { ProductForm } from '../../components/admin/ProductForm';
 import { ConfirmDialog } from '../../components/admin/ConfirmDialog';
-import { Product, ProductFormData } from '../../types/product';
+import type { Product, ProductFormData } from '../../types/product';
 
 export const AdminDashboard: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);

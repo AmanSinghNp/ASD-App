@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { ProductFormProps, ProductFormData } from '../../types/product';
+import type { ProductFormProps, ProductFormData } from '../../types/product';
 
 interface ValidationErrors {
   name?: string;
@@ -27,7 +27,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   });
 
   const [errors, setErrors] = useState<ValidationErrors>({});
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (initialProduct) {
@@ -47,11 +46,11 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     e.preventDefault();
     
     // Mark all fields as touched
-    const allTouched = Object.keys(formData).reduce((acc, field) => {
-      acc[field] = true;
-      return acc;
-    }, {} as Record<string, boolean>);
-    setTouched(allTouched);
+    // const allTouched = Object.keys(formData).reduce((acc, field) => {
+    //   acc[field] = true;
+    //   return acc;
+    // }, {} as Record<string, boolean>);
+    // setTouched(allTouched);
     
     // Validate form
     if (validateForm()) {
@@ -170,10 +169,10 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   };
 
   const handleBlur = (field: keyof ProductFormData) => {
-    setTouched(prev => ({
-      ...prev,
-      [field]: true
-    }));
+    // setTouched(prev => ({
+    //   ...prev,
+    //   [field]: true
+    // }));
 
     // Validate field on blur
     const error = validateField(field, formData[field]);
@@ -283,7 +282,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 id="name"
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
-                onBlur={() => handleBlur('name')}
                 style={{
                   width: '100%',
                   padding: 'var(--spacing-md)',
@@ -335,7 +333,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 id="sku"
                 value={formData.sku}
                 onChange={(e) => handleInputChange('sku', e.target.value)}
-                onBlur={() => handleBlur('sku')}
                 style={{
                   width: '100%',
                   padding: 'var(--spacing-md)',
@@ -387,7 +384,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 id="category"
                 value={formData.category}
                 onChange={(e) => handleInputChange('category', e.target.value)}
-                onBlur={() => handleBlur('category')}
                 style={{
                   width: '100%',
                   padding: 'var(--spacing-md)',
@@ -448,7 +444,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 id="priceCents"
                 value={formData.priceCents}
                 onChange={(e) => handleInputChange('priceCents', parseInt(e.target.value) || 0)}
-                onBlur={() => handleBlur('priceCents')}
                 style={{
                   width: '100%',
                   padding: 'var(--spacing-md)',
@@ -501,7 +496,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 id="stockQty"
                 value={formData.stockQty}
                 onChange={(e) => handleInputChange('stockQty', parseInt(e.target.value) || 0)}
-                onBlur={() => handleBlur('stockQty')}
                 style={{
                   width: '100%',
                   padding: 'var(--spacing-md)',
@@ -554,7 +548,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 id="imageUrl"
                 value={formData.imageUrl}
                 onChange={(e) => handleInputChange('imageUrl', e.target.value)}
-                onBlur={() => handleBlur('imageUrl')}
                 style={{
                   width: '100%',
                   padding: 'var(--spacing-md)',
