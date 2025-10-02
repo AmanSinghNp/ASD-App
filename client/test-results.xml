@@ -1,49 +1,67 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites name="vitest tests" tests="23" failures="0" errors="0" time="3.324">
-    <testsuite name="src/test/AdminDashboard.test.tsx" timestamp="2025-10-02T02:30:26.574Z" hostname="Laliguras" tests="2" failures="0" errors="0" skipped="0" time="0.068">
-        <testcase classname="src/test/AdminDashboard.test.tsx" name="AdminDashboard Component &gt; renders admin dashboard without crashing" time="0.057">
+<testsuites name="vitest tests" tests="29" failures="0" errors="0" time="6.831">
+    <testsuite name="src/test/AdminDashboard.test.tsx" timestamp="2025-10-02T03:07:42.449Z" hostname="Laliguras" tests="2" failures="0" errors="0" skipped="0" time="0.08">
+        <testcase classname="src/test/AdminDashboard.test.tsx" name="AdminDashboard Component &gt; renders admin dashboard without crashing" time="0.069">
         </testcase>
-        <testcase classname="src/test/AdminDashboard.test.tsx" name="AdminDashboard Component &gt; renders admin dashboard component successfully" time="0.009">
-        </testcase>
-    </testsuite>
-    <testsuite name="src/test/App.test.tsx" timestamp="2025-10-02T02:30:26.579Z" hostname="Laliguras" tests="2" failures="0" errors="0" skipped="0" time="0.414">
-        <testcase classname="src/test/App.test.tsx" name="App Component &gt; renders navigation with all links" time="0.399">
-        </testcase>
-        <testcase classname="src/test/App.test.tsx" name="App Component &gt; renders product catalogue by default" time="0.012">
+        <testcase classname="src/test/AdminDashboard.test.tsx" name="AdminDashboard Component &gt; renders admin dashboard component successfully" time="0.01">
         </testcase>
     </testsuite>
-    <testsuite name="src/test/utils.test.ts" timestamp="2025-10-02T02:30:26.580Z" hostname="Laliguras" tests="19" failures="0" errors="0" skipped="0" time="0.009">
-        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; formatPrice &gt; formats price in cents to dollars" time="0.001">
+    <testsuite name="src/test/App.test.tsx" timestamp="2025-10-02T03:07:42.457Z" hostname="Laliguras" tests="2" failures="0" errors="0" skipped="0" time="0.58">
+        <testcase classname="src/test/App.test.tsx" name="App Component &gt; renders navigation with all links" time="0.557">
+        </testcase>
+        <testcase classname="src/test/App.test.tsx" name="App Component &gt; renders product catalogue by default" time="0.02">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/test/Checkout.test.tsx" timestamp="2025-10-02T03:07:42.460Z" hostname="Laliguras" tests="2" failures="0" errors="0" skipped="0" time="0.166">
+        <testcase classname="src/test/Checkout.test.tsx" name="Checkout Component &gt; renders checkout form with required fields" time="0.114">
+        </testcase>
+        <testcase classname="src/test/Checkout.test.tsx" name="Checkout Component &gt; allows user to input customer information" time="0.049">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/test/ProductCard.test.tsx" timestamp="2025-10-02T03:07:42.462Z" hostname="Laliguras" tests="2" failures="0" errors="0" skipped="0" time="0.125">
+        <testcase classname="src/test/ProductCard.test.tsx" name="ProductCard Component &gt; renders product information correctly" time="0.102">
+        </testcase>
+        <testcase classname="src/test/ProductCard.test.tsx" name="ProductCard Component &gt; handles click events correctly" time="0.02">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/test/ProductList.test.tsx" timestamp="2025-10-02T03:07:42.463Z" hostname="Laliguras" tests="2" failures="0" errors="0" skipped="0" time="0.214">
+        <testcase classname="src/test/ProductList.test.tsx" name="ProductList Component &gt; renders product list with products" time="0.162">
+        </testcase>
+        <testcase classname="src/test/ProductList.test.tsx" name="ProductList Component &gt; renders filter controls" time="0.049">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/test/utils.test.ts" timestamp="2025-10-02T03:07:42.464Z" hostname="Laliguras" tests="19" failures="0" errors="0" skipped="0" time="0.066">
+        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; formatPrice &gt; formats price in cents to dollars" time="0.054">
         </testcase>
         <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; formatPrice &gt; handles large prices correctly" time="0">
         </testcase>
-        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; calculateSubtotal &gt; calculates subtotal for single item" time="0">
+        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; calculateSubtotal &gt; calculates subtotal for single item" time="0.003">
         </testcase>
-        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; calculateSubtotal &gt; calculates subtotal for multiple items" time="0.001">
+        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; calculateSubtotal &gt; calculates subtotal for multiple items" time="0">
         </testcase>
         <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; calculateSubtotal &gt; returns 0 for empty array" time="0">
         </testcase>
-        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; calculateTotal &gt; calculates total with shipping" time="0.001">
+        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; calculateTotal &gt; calculates total with shipping" time="0">
         </testcase>
         <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; calculateTotal &gt; calculates total without shipping" time="0">
         </testcase>
-        <testcase classname="src/test/utils.test.ts" name="Validation Utilities &gt; validateEmail &gt; validates correct email addresses" time="0.001">
+        <testcase classname="src/test/utils.test.ts" name="Validation Utilities &gt; validateEmail &gt; validates correct email addresses" time="0">
         </testcase>
         <testcase classname="src/test/utils.test.ts" name="Validation Utilities &gt; validateEmail &gt; rejects invalid email addresses" time="0">
         </testcase>
         <testcase classname="src/test/utils.test.ts" name="Validation Utilities &gt; validatePhoneNumber &gt; validates correct phone numbers" time="0">
         </testcase>
-        <testcase classname="src/test/utils.test.ts" name="Validation Utilities &gt; validatePhoneNumber &gt; rejects invalid phone numbers" time="0.001">
+        <testcase classname="src/test/utils.test.ts" name="Validation Utilities &gt; validatePhoneNumber &gt; rejects invalid phone numbers" time="0">
         </testcase>
         <testcase classname="src/test/utils.test.ts" name="Validation Utilities &gt; validatePostcode &gt; validates correct postcodes" time="0">
         </testcase>
         <testcase classname="src/test/utils.test.ts" name="Validation Utilities &gt; validatePostcode &gt; rejects invalid postcodes" time="0">
         </testcase>
-        <testcase classname="src/test/utils.test.ts" name="String Utilities &gt; truncateText &gt; truncates long text" time="0.001">
+        <testcase classname="src/test/utils.test.ts" name="String Utilities &gt; truncateText &gt; truncates long text" time="0">
         </testcase>
         <testcase classname="src/test/utils.test.ts" name="String Utilities &gt; truncateText &gt; returns original text if shorter than max length" time="0">
         </testcase>
-        <testcase classname="src/test/utils.test.ts" name="String Utilities &gt; truncateText &gt; handles empty string" time="0">
+        <testcase classname="src/test/utils.test.ts" name="String Utilities &gt; truncateText &gt; handles empty string" time="0.001">
         </testcase>
         <testcase classname="src/test/utils.test.ts" name="String Utilities &gt; capitalizeFirstLetter &gt; capitalizes first letter and lowercases rest" time="0">
         </testcase>

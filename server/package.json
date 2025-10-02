@@ -15,6 +15,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "prisma": {
+    "seed": "ts-node --transpile-only prisma/seed.ts"
+  },
   "dependencies": {
     "@prisma/client": "^5.20.0",
     "asd-app": "file:..",
