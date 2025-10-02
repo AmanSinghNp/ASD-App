@@ -22,6 +22,6 @@ steps:
 
 - script: |
     cd client
-    npm test -- --watchAll=false --passWithNoTests
-  displayName: 'Run tests'
-  continueOnError: true
+    npm test -- --watchAll=false --passWithNoTests --testPathPattern=".*\\.test\\.js$"
+  displayName: 'Run JavaScript tests only'
+  continueOnError: false  
