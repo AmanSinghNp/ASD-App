@@ -40,3 +40,7 @@ stages:
           # Run build
           - script: npm run build
             displayName: "Build app"
+
+          # Run tests
+          - script: npm run test
+            displayName: "Run Unit Tests"
