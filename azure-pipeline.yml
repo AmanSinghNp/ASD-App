@@ -1,11 +1,15 @@
 trigger:
-  - main
-  - develop
+  branches:
+    include:
+      - main
+      - vinix-r1   
 
 pool:
   vmImage: 'ubuntu-latest'
 
 steps:
+- checkout: self
+
 - task: NodeTool@0
   inputs:
     versionSpec: '18.x'
@@ -17,9 +21,9 @@ steps:
 
 - script: |
     npm run build
-  displayName: 'Build application'
+  displayName: 'Build project'
 
 - script: |
     npm test -- --watchAll=false --passWithNoTests
   displayName: 'Run tests'
-  continueOnError: true  # Pipeline continues even if tests fail
+  continueOnError: true
