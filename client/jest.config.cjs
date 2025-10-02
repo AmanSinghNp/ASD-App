@@ -1,8 +1,6 @@
 module.exports = {
   testEnvironment: 'jsdom',
-  moduleDirectories: ['node_modules', '<rootDir>/node_modules'],
   transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
-  },
-  preset: 'ts-jest',
+    '^.+\\.[jt]sx?$': 'babel-jest'  // This handles JS, JSX, TS, TSX
+  }
 };
