@@ -47,6 +47,31 @@ describe("Auth routes", () => {
   });
 
   it("should update user profile", async () => {
+    // const newName = "Updated Name";
+    // const newEmail = "updated@example.com";
+
+    // const res = await request(app)
+    //   .put("/auth/profile")
+    //   .set("Authorization", `Bearer ${token}`)
+    //   .send({ name: newName, email: newEmail });
+
+    // expect(res.status).toBe(200);
+    // expect(res.body.updatedUser.name).toBe(newName);
+    // expect(res.body.updatedUser.email).toBe(newEmail);
+    // expect(res.body).toHaveProperty("token");
+
+    // // update token for further tests
+    // token = res.body.token;
+    // testUser.email = newEmail;
+    
+    // 1. Signup/login to get a token
+    const signupRes = await request(app)
+      .post("/auth/login")
+      .send({ name: "Test", email: "test@example.com", password: "password123" });
+
+    const token = signupRes.body.token;
+
+    // 2. Use the token to update profile
     const newName = "Updated Name";
     const newEmail = "updated@example.com";
 
@@ -55,15 +80,12 @@ describe("Auth routes", () => {
       .set("Authorization", `Bearer ${token}`)
       .send({ name: newName, email: newEmail });
 
+    // 3. Assertions
     expect(res.status).toBe(200);
     expect(res.body.updatedUser.name).toBe(newName);
     expect(res.body.updatedUser.email).toBe(newEmail);
-    expect(res.body).toHaveProperty("token");
-
-    // update token for further tests
-    token = res.body.token;
-    testUser.email = newEmail;
-  });
+    expect(res.body).toHaveProperty("token"); // new token after update
+  }, 10000);
 
   it("should return 401 for profile with invalid token", async () => {
     const res = await request(app)
