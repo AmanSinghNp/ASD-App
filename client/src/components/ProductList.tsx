@@ -2,7 +2,12 @@ import React from 'react';
 import { useProductCatalogue } from '../hooks/useProductCatalogue';
 import ProductCard from './ProductCard';
 
+/**
+ * ProductList component for displaying and filtering products
+ * Provides search, category filtering, and sorting functionality
+ */
 const ProductList: React.FC = () => {
+  // Get product data and filter controls from custom hook
   const { 
     products, 
     categories, 
@@ -18,7 +23,7 @@ const ProductList: React.FC = () => {
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
       <h2 style={{ color: '#333', marginBottom: '20px' }}>Product Catalogue</h2>
       
-      {/* Filters Section */}
+      {/* Filter Controls Section */}
       <div style={{ 
         display: 'flex', 
         flexWrap: 'wrap', 
@@ -26,7 +31,7 @@ const ProductList: React.FC = () => {
         marginBottom: '20px',
         alignItems: 'center'
       }}>
-        {/* Category Filter */}
+        {/* Category Filter Dropdown */}
         <div>
           <label htmlFor="category" style={{ marginRight: '8px' }}>Category: </label>
           <select 
@@ -44,7 +49,7 @@ const ProductList: React.FC = () => {
           </select>
         </div>
         
-        {/* Sort Filter */}
+        {/* Sort Options Dropdown */}
         <div>
           <label htmlFor="sort" style={{ marginRight: '8px' }}>Sort by: </label>
           <select 
@@ -64,7 +69,7 @@ const ProductList: React.FC = () => {
           </select>
         </div>
         
-        {/* Search Filter */}
+        {/* Search Input Field */}
         <div>
           <label htmlFor="search" style={{ marginRight: '8px' }}>Search: </label>
           <input
@@ -78,24 +83,26 @@ const ProductList: React.FC = () => {
         </div>
       </div>
       
-      {/* Results Count */}
+      {/* Results Summary */}
       <p style={{ marginBottom: '15px', color: '#666' }}>
         Showing {products.length} product{products.length !== 1 ? 's' : ''}
         {selectedCategory !== 'all' && ` in ${categories.find(c => c.id === selectedCategory)?.name}`}
         {searchQuery && ` matching "${searchQuery}"`}
       </p>
       
-      {/* Products Grid */}
+      {/* Products Grid Display */}
       <div style={{ 
         display: 'grid', 
         gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
         gap: '20px'
       }}>
         {products.length > 0 ? (
+          // Render product cards for each filtered product
           products.map(product => (
             <ProductCard key={product.id} product={product} />
           ))
         ) : (
+          // Empty state when no products match filters
           <div style={{ 
             gridColumn: '1 / -1', 
             textAlign: 'center', 

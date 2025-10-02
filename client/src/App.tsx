@@ -7,6 +7,10 @@ import Checkout from './Checkout';
 import { Settings, Truck, ShoppingCart, Package } from 'lucide-react';
 import './App.css';
 
+/**
+ * Navigation component for the main application header
+ * Provides navigation links to different sections of the app
+ */
 const Navigation: React.FC = () => {
   const location = useLocation();
   
@@ -32,6 +36,7 @@ const Navigation: React.FC = () => {
             alignItems: 'center',
             gap: 'var(--spacing-xl)'
           }}>
+            {/* Application title */}
             <h1 style={{
               fontSize: '1.5rem',
               fontWeight: '700',
@@ -40,6 +45,7 @@ const Navigation: React.FC = () => {
             }}>
               ASD App
             </h1>
+            {/* Navigation links */}
             <div style={{
               display: 'flex',
               gap: 'var(--spacing-sm)'
@@ -91,11 +97,17 @@ const Navigation: React.FC = () => {
   );
 };
 
+/**
+ * Main App component
+ * Sets up routing and navigation for the entire application
+ */
 function App() {
   return (
     <Router>
       <div className="App">
+        {/* Global navigation header */}
         <Navigation />
+        {/* Application routes */}
         <Routes>
           <Route path="/" element={<ProductCatalogue />} />
           <Route path="/checkout" element={<Checkout />} />
@@ -106,7 +118,6 @@ function App() {
     </Router>
   );
 }
-
 
 export default App;
 

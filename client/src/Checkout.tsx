@@ -1,19 +1,30 @@
 import React, { useState, useEffect } from "react";
 import "./Checkout.css";
 
+/**
+ * Interface for order items
+ */
 interface Item {
   id: number;
   name: string;
   price: number;
 }
 
+/**
+ * Interface for delivery time slots
+ */
 interface DeliverySlot {
   slotStart: string;
   slotEnd: string;
   remaining: number;
 }
 
+/**
+ * Checkout component for handling order placement
+ * Manages customer information, delivery options, and payment processing
+ */
 const Checkout: React.FC = () => {
+  // Form data state for customer information
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -30,19 +41,28 @@ const Checkout: React.FC = () => {
     cvc: "",
   });
 
+  // Order items and management
   const [items, setItems] = useState<Item[]>([]);
   const [newItemName, setNewItemName] = useState("");
   const [newItemPrice, setNewItemPrice] = useState("");
+  
+  // Delivery method and slot selection
   const [deliveryMethod, setDeliveryMethod] = useState<"Delivery" | "Pickup">("Delivery");
   const [deliverySlots, setDeliverySlots] = useState<DeliverySlot[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<DeliverySlot | null>(null);
+  
+  // Error handling and order status
   const [addressError, setAddressError] = useState("");
   const [orderResult, setOrderResult] = useState<{orderId: string, status: string} | null>(null);
   const [loading, setLoading] = useState(false);
 
+  // Fixed shipping cost for delivery orders
   const shippingPrice = 15;
 
-  // Fetch delivery slots on component mount
+  /**
+   * Fetch available delivery slots on component mount
+   * Retrieves slots for the current date from the delivery API
+   */
   useEffect(() => {
     const fetchDeliverySlots = async () => {
       try {
@@ -60,6 +80,10 @@ const Checkout: React.FC = () => {
     fetchDeliverySlots();
   }, []);
 
+  /**
+   * Handle form input changes
+   * Updates form data and clears address validation errors
+   */
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -67,6 +91,10 @@ const Checkout: React.FC = () => {
     setAddressError(""); // Clear address error when user types
   };
 
+  /**
+   * Add a new item to the order
+   * Validates input and creates a new item with unique ID
+   */
   const handleAddItem = () => {
     const price = parseFloat(newItemPrice);
     if (!newItemName || isNaN(price)) return;
@@ -82,14 +110,22 @@ const Checkout: React.FC = () => {
     setNewItemPrice("");
   };
 
+  /**
+   * Remove an item from the order by ID
+   */
   const handleDeleteItem = (id: number) => {
     setItems(items.filter((item) => item.id !== id));
   };
 
+  // Calculate order totals
   const subtotal = items.reduce((acc, item) => acc + item.price, 0);
   const total = subtotal + (deliveryMethod === "Delivery" ? shippingPrice : 0);
 
-  // Validate address for delivery
+  /**
+   * Validate delivery address using the delivery API
+   * Only validates if delivery method is selected
+   * @returns Promise<boolean> - true if address is valid
+   */
   const validateAddress = async () => {
     if (deliveryMethod !== "Delivery") return true;
     
@@ -117,19 +153,24 @@ const Checkout: React.FC = () => {
     }
   };
 
+  /**
+   * Handle order form submission
+   * Validates order data and submits to the orders API
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Check if items are added to order
     if (items.length === 0) {
       alert("Please add items to your order");
       return;
     }
 
-    // Validate address for delivery
+    // Validate address for delivery orders
     const isAddressValid = await validateAddress();
     if (!isAddressValid) return;
 
-    // Check delivery slot for delivery
+    // Check delivery slot selection for delivery orders
     if (deliveryMethod === "Delivery" && !selectedSlot) {
       alert("Please select a delivery slot");
       return;
@@ -138,12 +179,14 @@ const Checkout: React.FC = () => {
     setLoading(true);
     
     try {
+      // Prepare order data for API submission
       const orderData = {
         items: items.map(item => ({
           productId: `mock-${item.id}`, // Mock product ID for demo
           quantity: 1
         })),
         deliveryMethod,
+        // Include address and delivery slot for delivery orders
         ...(deliveryMethod === "Delivery" && {
           address: {
             addressLine1: formData.addressLine1,
@@ -156,6 +199,7 @@ const Checkout: React.FC = () => {
         })
       };
 
+      // Submit order to API
       const response = await fetch("http://localhost:4000/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -179,7 +223,10 @@ const Checkout: React.FC = () => {
     }
   };
 
-  // Show order success
+  /**
+   * Render order success screen after successful submission
+   * Shows order details and option to place another order
+   */
   if (orderResult) {
     return (
       <div className="checkout-page">
@@ -210,11 +257,11 @@ const Checkout: React.FC = () => {
 
   return (
     <div className="checkout-page">
-      {/* Left Side: Original Form */}
+      {/* Left Side: Checkout Form */}
       <form className="checkout-form" onSubmit={handleSubmit}>
         <h2>Checkout</h2>
         
-        {/* Delivery Method */}
+        {/* Delivery Method Selection */}
         <div className="form-section">
           <h3>Delivery Method</h3>
           <div className="form-row">
@@ -241,7 +288,7 @@ const Checkout: React.FC = () => {
           </div>
         </div>
 
-        {/* Contact Information */}
+        {/* Customer Contact Information */}
         <div className="form-section">
           <h3>Contact Information</h3>
           <div className="form-row">
@@ -280,7 +327,7 @@ const Checkout: React.FC = () => {
           </div>
         </div>
 
-        {/* Delivery Address - only show for delivery */}
+        {/* Delivery Address - Only shown for delivery method */}
         {deliveryMethod === "Delivery" && (
           <div className="form-section">
             <h3>Delivery Address</h3>
@@ -329,6 +376,7 @@ const Checkout: React.FC = () => {
                 required
               />
             </div>
+            {/* Display address validation errors */}
             {addressError && (
               <div className="error-message" style={{color: 'red', fontSize: '14px', marginTop: '8px'}}>
                 {addressError}
@@ -337,7 +385,7 @@ const Checkout: React.FC = () => {
           </div>
         )}
 
-        {/* Delivery Slot Picker - only show for delivery */}
+        {/* Delivery Slot Selection - Only shown for delivery method */}
         {deliveryMethod === "Delivery" && deliverySlots.length > 0 && (
           <div className="form-section">
             <h3>Select Delivery Slot</h3>
@@ -362,7 +410,7 @@ const Checkout: React.FC = () => {
           </div>
         )}
 
-        {/* Payment Method */}
+        {/* Payment Method Selection */}
         <div className="form-section">
           <h3>Payment Method</h3>
           <div className="payment-options">
@@ -376,6 +424,7 @@ const Checkout: React.FC = () => {
               />
               <span>Credit / Debit Card</span>
             </label>
+            {/* Card details form - shown when card payment is selected */}
             {formData.paymentMethod === "card" && (
               <div className="card-details">
                 <div className="form-row">
@@ -444,16 +493,17 @@ const Checkout: React.FC = () => {
           </div>
         </div>
 
+        {/* Submit button with loading state */}
         <button type="submit" className="place-order-btn" disabled={loading}>
           {loading ? "Processing..." : "Place Order"}
         </button>
       </form>
 
-      {/* Right Side: Order Summary with item adding */}
+      {/* Right Side: Order Summary and Item Management */}
       <div className="order-summary">
         <h3>Order Summary</h3>
 
-        {/* Inputs to add items */}
+        {/* Item Input Form */}
         <div className="form-row">
           <input
             type="text"
@@ -473,11 +523,10 @@ const Checkout: React.FC = () => {
           </button>
         </div>
 
-        {/* Display items */}
+        {/* Order Items List */}
         {items.length === 0 ? (
           <div className="order-item">
-            {/* <p>Testing product Placeholder</p>
-            <span>$000.00</span> */}
+            {/* Empty state - no items added yet */}
           </div>
         ) : (
           items.map((item) => (
@@ -496,6 +545,7 @@ const Checkout: React.FC = () => {
           ))
         )}
 
+        {/* Order Totals */}
         <div className="summary-details">
           <p>
             Subtotal: <span>${subtotal.toFixed(2)}</span>
