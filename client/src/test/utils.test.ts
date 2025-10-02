@@ -20,6 +20,8 @@ export const calculateTotal = (subtotal: number, shipping: number = 0): number =
 // Validation utilities
 export const validateEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  // Reject emails with consecutive dots
+  if (email.includes('..')) return false
   return emailRegex.test(email)
 }
 

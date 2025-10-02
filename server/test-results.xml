@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="7" failures="0" errors="0" time="4.462">
+  <testsuite name="Utility Functions" errors="0" failures="0" skipped="0" timestamp="2025-10-02T02:20:34" time="3.494" tests="5">
+    <testcase classname="Utility Functions › calculateTotal" name="calculates total for single item" time="0.011">
+    </testcase>
+    <testcase classname="Utility Functions › calculateTotal" name="calculates total for multiple items" time="0">
+    </testcase>
+    <testcase classname="Utility Functions › calculateTotal" name="returns 0 for empty array" time="0">
+    </testcase>
+    <testcase classname="Utility Functions › validateEmail" name="validates correct email addresses" time="0.001">
+    </testcase>
+    <testcase classname="Utility Functions › validateEmail" name="rejects invalid email addresses" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Product Controller" errors="0" failures="0" skipped="0" timestamp="2025-10-02T02:20:34" time="3.577" tests="2">
+    <testcase classname="Product Controller" name="should return products list" time="0.013">
+    </testcase>
+    <testcase classname="Product Controller" name="should create a new product" time="0">
+    </testcase>
+  </testsuite>
+</testsuites>

@@ -278,4 +278,46 @@ The automated testing setup provides basic but effective coverage of core applic
 - Updated phone validation regex to require 8-16 digits (7-15 after first digit)
 - Fixed test expectations for invalid phone numbers
 
+### Issue 5: Email Validation Regex (Fixed)
+**Problem:** Email validation was accepting consecutive dots (e.g., 'test..test@example.com')
+**Solution:** Added explicit check for consecutive dots in `validateEmail` function
+**Code Change:** 
+```typescript
+export const validateEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  // Reject emails with consecutive dots
+  if (email.includes('..')) return false
+  return emailRegex.test(email)
+}
+```
+
+### Issue 6: App Test Multiple Elements (Fixed)
+**Problem:** Test was finding multiple elements with "Product Catalogue" text (navigation link and mock component)
+**Solution:** Used `getByRole('link', { name: 'Product Catalogue' })` to specifically target navigation links
+**Code Change:**
+```typescript
+// Before
+expect(screen.getByText('Product Catalogue')).toBeInTheDocument()
+
+// After  
+expect(screen.getByRole('link', { name: 'Product Catalogue' })).toBeInTheDocument()
+expect(screen.getByRole('link', { name: 'Checkout' })).toBeInTheDocument()
+expect(screen.getByRole('link', { name: 'Admin Dashboard (F007)' })).toBeInTheDocument()
+expect(screen.getByRole('link', { name: 'Delivery Interface (F008)' })).toBeInTheDocument()
+```
+
+## Final Test Results
+
+### Frontend Tests
+- **Status**: ✅ All tests passing
+- **Total Tests**: 21 tests
+- **Test Files**: 2 files
+- **Duration**: ~2.7s
+
+### Backend Tests
+- **Status**: ✅ All tests passing  
+- **Total Tests**: 7 tests
+- **Test Files**: 2 files
+- **Duration**: ~4.5s
+
 **Test Execution Status: FIXED AND READY ✅**

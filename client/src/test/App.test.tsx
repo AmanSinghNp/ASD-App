@@ -25,10 +25,10 @@ describe('App Component', () => {
 
     // Check if navigation links are present
     expect(screen.getByText('ASD App')).toBeInTheDocument()
-    expect(screen.getByText('Product Catalogue')).toBeInTheDocument()
-    expect(screen.getByText('Checkout')).toBeInTheDocument()
-    expect(screen.getByText('Admin Dashboard (F007)')).toBeInTheDocument()
-    expect(screen.getByText('Delivery Interface (F008)')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Product Catalogue' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Checkout' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Admin Dashboard (F007)' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Delivery Interface (F008)' })).toBeInTheDocument()
   })
 
   it('renders product catalogue by default', () => {
