@@ -4,7 +4,6 @@ import { ProductTable } from '../../components/admin/ProductTable';
 import { ProductForm } from '../../components/admin/ProductForm';
 import { ConfirmDialog } from '../../components/admin/ConfirmDialog';
 import { Product, ProductFormData } from '../../types/product';
-import productsData from '../../lib/mock/products.json';
 
 export const AdminDashboard: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -18,10 +17,36 @@ export const AdminDashboard: React.FC = () => {
   const [editingProduct, setEditingProduct] = useState<Product | undefined>();
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [productToRemove, setProductToRemove] = useState<string>('');
+  const [analytics, setAnalytics] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Load mock data on component mount
+  // Load products and analytics on component mount
   useEffect(() => {
-    setProducts(productsData as Product[]);
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch products
+        const productsResponse = await fetch('http://localhost:4000/api/products?includeHidden=true');
+        const productsData = await productsResponse.json();
+        if (productsData.data) {
+          setProducts(productsData.data);
+        }
+        
+        // Fetch analytics
+        const analyticsResponse = await fetch('http://localhost:4000/api/analytics');
+        const analyticsData = await analyticsResponse.json();
+        if (analyticsData.data) {
+          setAnalytics(analyticsData.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
   }, []);
 
   // Filter products based on search, category, and status
@@ -67,38 +92,54 @@ export const AdminDashboard: React.FC = () => {
     setShowProductForm(true);
   };
 
-  const handleSubmitProduct = (formData: ProductFormData) => {
-    if (editingProduct) {
-      // Update existing product
-      setProducts(prev => prev.map(product =>
-        product.id === editingProduct.id
-          ? {
-              ...product,
-              ...formData,
-              updatedAt: new Date().toISOString()
-            }
-          : product
-      ));
-    } else {
-      // Add new product
-      const newProduct: Product = {
-        id: Date.now().toString(), // Simple ID generation for demo
-        ...formData,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      setProducts(prev => [...prev, newProduct]);
+  const handleSubmitProduct = async (formData: ProductFormData) => {
+    try {
+      if (editingProduct) {
+        // Update existing product
+        const response = await fetch(`http://localhost:4000/api/products/${editingProduct.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        const result = await response.json();
+        if (result.data) {
+          setProducts(prev => prev.map(product =>
+            product.id === editingProduct.id ? result.data : product
+          ));
+        }
+      } else {
+        // Add new product
+        const response = await fetch('http://localhost:4000/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        const result = await response.json();
+        if (result.data) {
+          setProducts(prev => [...prev, result.data]);
+        }
+      }
+      setShowProductForm(false);
+      setEditingProduct(undefined);
+    } catch (error) {
+      console.error('Failed to save product:', error);
     }
-    setShowProductForm(false);
-    setEditingProduct(undefined);
   };
 
-  const handleToggleActive = (productId: string) => {
-    setProducts(prev => prev.map(product =>
-      product.id === productId
-        ? { ...product, isActive: !product.isActive, updatedAt: new Date().toISOString() }
-        : product
-    ));
+  const handleToggleActive = async (productId: string) => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/products/${productId}/hide`, {
+        method: 'PATCH'
+      });
+      const result = await response.json();
+      if (result.data) {
+        setProducts(prev => prev.map(product =>
+          product.id === productId ? result.data : product
+        ));
+      }
+    } catch (error) {
+      console.error('Failed to toggle product:', error);
+    }
   };
 
   const handleRemoveProduct = (productId: string) => {
@@ -106,13 +147,34 @@ export const AdminDashboard: React.FC = () => {
     setShowConfirmDialog(true);
   };
 
-  const confirmRemove = () => {
-    setProducts(prev => prev.filter(product => product.id !== productToRemove));
+  const confirmRemove = async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/products/${productToRemove}`, {
+        method: 'DELETE'
+      });
+      if (response.ok) {
+        setProducts(prev => prev.filter(product => product.id !== productToRemove));
+      }
+    } catch (error) {
+      console.error('Failed to remove product:', error);
+    }
     setShowConfirmDialog(false);
     setProductToRemove('');
   };
 
   const categories = Array.from(new Set(products.map(p => p.category)));
+
+  const formatPrice = (priceCents: number) => {
+    return `$${(priceCents / 100).toFixed(2)}`;
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-lg text-gray-600">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -130,6 +192,52 @@ export const AdminDashboard: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {/* Analytics Panel */}
+        {analytics && (
+          <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 mb-8">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Analytics (Last 7 Days)</h2>
+            
+            {/* KPIs */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-blue-50 p-6 rounded-lg">
+                <div className="text-2xl font-bold text-blue-600">{formatPrice(analytics.kpis.revenueTotalCents)}</div>
+                <div className="text-sm text-blue-800">Total Revenue</div>
+              </div>
+              <div className="bg-green-50 p-6 rounded-lg">
+                <div className="text-2xl font-bold text-green-600">{analytics.kpis.ordersCount}</div>
+                <div className="text-sm text-green-800">Total Orders</div>
+              </div>
+              <div className="bg-purple-50 p-6 rounded-lg">
+                <div className="text-2xl font-bold text-purple-600">{formatPrice(analytics.kpis.avgOrderValueCents)}</div>
+                <div className="text-sm text-purple-800">Avg Order Value</div>
+              </div>
+            </div>
+
+            {/* Revenue by Day Table */}
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Revenue by Day</h3>
+              <div className="overflow-x-auto">
+                <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Revenue</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {analytics.revenueByDay.map((day: any, index: number) => (
+                      <tr key={index} className="hover:bg-gray-50">
+                        <td className="px-4 py-3 text-sm text-gray-900">{day.date}</td>
+                        <td className="px-4 py-3 text-sm font-semibold text-gray-900">{formatPrice(day.revenueCents)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Filters */}
         <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 mb-8">
