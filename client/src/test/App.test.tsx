@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
-import { BrowserRouter } from 'react-router-dom'
 import App from '../App'
 
 // Mock the components to avoid complex dependencies
@@ -22,11 +21,7 @@ vi.mock('../Checkout', () => ({
 
 describe('App Component', () => {
   it('renders navigation with all links', () => {
-    render(
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    )
+    render(<App />)
 
     // Check if navigation links are present
     expect(screen.getByText('ASD App')).toBeInTheDocument()
@@ -37,11 +32,7 @@ describe('App Component', () => {
   })
 
   it('renders product catalogue by default', () => {
-    render(
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    )
+    render(<App />)
 
     expect(screen.getByTestId('product-catalogue')).toBeInTheDocument()
   })

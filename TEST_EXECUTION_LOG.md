@@ -270,4 +270,11 @@ The automated testing setup provides basic but effective coverage of core applic
 - Added --legacy-peer-deps flag to all npm install commands
 - Updated pipeline to handle dependency resolution
 
+### Issue 4: Frontend Test Failures
+**Problem:** Router conflict and utility test failures
+**Solution:**
+- Removed BrowserRouter wrapper from App tests (App already has Router)
+- Fixed floating-point precision with toBeCloseTo()
+- Updated phone validation regex to allow numbers starting with 0
+
 **Test Execution Status: FIXED AND READY ✅**

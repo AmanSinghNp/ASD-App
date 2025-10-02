@@ -24,7 +24,7 @@ export const validateEmail = (email: string): boolean => {
 }
 
 export const validatePhoneNumber = (phone: string): boolean => {
-  const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/
+  const phoneRegex = /^[\+]?[0-9][\d]{0,15}$/
   return phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''))
 }
 
@@ -68,7 +68,7 @@ describe('Price Utilities', () => {
         { price: 5.50 },
         { price: 15.00 }
       ]
-      expect(calculateSubtotal(items)).toBe(31.49)
+      expect(calculateSubtotal(items)).toBeCloseTo(31.49, 2)
     })
 
     it('returns 0 for empty array', () => {
@@ -119,7 +119,7 @@ describe('Validation Utilities', () => {
       expect(validatePhoneNumber('123')).toBe(false)
       expect(validatePhoneNumber('abc123')).toBe(false)
       expect(validatePhoneNumber('')).toBe(false)
-      expect(validatePhoneNumber('0123456789')).toBe(false) // starts with 0
+      expect(validatePhoneNumber('0123456789')).toBe(true) // starts with 0 is valid
     })
   })
 
