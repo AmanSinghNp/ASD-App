@@ -3,11 +3,17 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// GET /api/products?includeHidden=false
+/**
+ * GET /api/products?includeHidden=false
+ * Retrieve all products with optional hidden products inclusion
+ * @param req - Express request object with optional includeHidden query parameter
+ * @param res - Express response object
+ */
 export const getProducts = async (req: Request, res: Response) => {
   try {
     const includeHidden = req.query.includeHidden === "true";
     
+    // Fetch products from database with conditional filtering
     const products = await prisma.product.findMany({
       where: includeHidden ? {} : { isActive: true },
       orderBy: { createdAt: "desc" }
@@ -19,12 +25,17 @@ export const getProducts = async (req: Request, res: Response) => {
   }
 };
 
-// POST /api/products
+/**
+ * POST /api/products
+ * Create a new product in the database
+ * @param req - Express request object with product data in body
+ * @param res - Express response object
+ */
 export const createProduct = async (req: Request, res: Response) => {
   try {
     const { sku, name, category, priceCents, stockQty, imageUrl } = req.body;
 
-    // Validation
+    // Input validation
     if (!name || name.length < 1 || name.length > 120) {
       return res.status(400).json({ error: "Name must be 1-120 characters" });
     }
@@ -35,6 +46,7 @@ export const createProduct = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "stockQty must be a non-negative integer" });
     }
 
+    // Create product in database
     const product = await prisma.product.create({
       data: {
         sku,
@@ -48,6 +60,7 @@ export const createProduct = async (req: Request, res: Response) => {
 
     res.status(201).json({ data: product });
   } catch (error: any) {
+    // Handle unique constraint violations (duplicate SKU)
     if (error.code === "P2002") {
       res.status(400).json({ error: "SKU already exists" });
     } else {
@@ -56,13 +69,18 @@ export const createProduct = async (req: Request, res: Response) => {
   }
 };
 
-// PUT /api/products/:id
+/**
+ * PUT /api/products/:id
+ * Update an existing product by ID
+ * @param req - Express request object with product ID in params and update data in body
+ * @param res - Express response object
+ */
 export const updateProduct = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { sku, name, category, priceCents, stockQty, imageUrl } = req.body;
 
-    // Validation for provided fields
+    // Validate provided fields (only validate fields that are being updated)
     if (name !== undefined && (name.length < 1 || name.length > 120)) {
       return res.status(400).json({ error: "Name must be 1-120 characters" });
     }
@@ -73,6 +91,7 @@ export const updateProduct = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "stockQty must be a non-negative integer" });
     }
 
+    // Update product in database with only provided fields
     const product = await prisma.product.update({
       where: { id },
       data: {
@@ -87,6 +106,7 @@ export const updateProduct = async (req: Request, res: Response) => {
 
     res.json({ data: product });
   } catch (error: any) {
+    // Handle different error types
     if (error.code === "P2025") {
       res.status(404).json({ error: "Product not found" });
     } else if (error.code === "P2002") {
@@ -97,11 +117,17 @@ export const updateProduct = async (req: Request, res: Response) => {
   }
 };
 
-// PATCH /api/products/:id/hide
+/**
+ * PATCH /api/products/:id/hide
+ * Hide/deactivate a product by setting isActive to false
+ * @param req - Express request object with product ID in params
+ * @param res - Express response object
+ */
 export const hideProduct = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
+    // Update product to set isActive to false
     const product = await prisma.product.update({
       where: { id },
       data: { isActive: false }
@@ -109,6 +135,7 @@ export const hideProduct = async (req: Request, res: Response) => {
 
     res.json({ data: product });
   } catch (error: any) {
+    // Handle product not found error
     if (error.code === "P2025") {
       res.status(404).json({ error: "Product not found" });
     } else {

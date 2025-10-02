@@ -4,17 +4,11 @@ trigger:
       - main
       - develop
 
-pr:
-  branches:
-    include:
-      - main
-      - develop
-
 pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  nodeVersion: "20.x"
+  nodeVersion: "18.x"
 
 stages:
   - stage: Test
@@ -30,22 +24,13 @@ stages:
 
           - script: |
               cd client
-              npm ci
+              npm install
             displayName: 'Install Frontend Dependencies'
 
           - script: |
               cd client
               npm run test
             displayName: 'Run Frontend Tests'
-
-          - task: PublishTestResults@2
-            condition: always()
-            inputs:
-              testResultsFormat: 'JUnit'
-              testResultsFiles: 'client/test-results.xml'
-              searchFolder: 'client'
-              mergeTestResults: true
-            displayName: 'Publish Frontend Test Results'
 
       - job: BackendTests
         displayName: 'Backend Tests'
@@ -57,27 +42,13 @@ stages:
 
           - script: |
               cd server
-              npm ci
+              npm install
             displayName: 'Install Backend Dependencies'
-
-          - script: |
-              cd server
-              npx prisma generate
-            displayName: 'Generate Prisma Client'
 
           - script: |
               cd server
               npm run test
             displayName: 'Run Backend Tests'
-
-          - task: PublishTestResults@2
-            condition: always()
-            inputs:
-              testResultsFormat: 'JUnit'
-              testResultsFiles: 'server/test-results.xml'
-              searchFolder: 'server'
-              mergeTestResults: true
-            displayName: 'Publish Backend Test Results'
 
   - stage: Build
     displayName: 'Build Stage'
@@ -92,24 +63,14 @@ stages:
               versionSpec: $(nodeVersion)
             displayName: 'Install Node.js'
 
-          - script: npm ci
-            displayName: 'Install Dependencies'
+          - script: |
+              cd client
+              npm install
+              npm run build
+            displayName: 'Build Frontend'
 
           - script: |
               cd server
-              npx prisma generate
-            displayName: 'Generate Prisma Client'
-
-          - script: |
-              cd server
-              npx prisma migrate deploy || npx prisma migrate dev -n ci
-            displayName: 'Run Database Migrations'
-
-          - script: npm run build
-            displayName: 'Build Application'
-
-          - task: PublishBuildArtifacts@1
-            inputs:
-              pathToPublish: 'dist'
-              artifactName: 'build-artifacts'
-            displayName: 'Publish Build Artifacts'
+              npm install
+              npm run build
+            displayName: 'Build Backend'

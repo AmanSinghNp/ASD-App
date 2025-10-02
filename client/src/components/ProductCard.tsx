@@ -2,13 +2,23 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Product } from '../models/ProductCatalogueModel';
 
+/**
+ * Props interface for ProductCard component
+ */
 interface ProductCardProps {
   product: Product;
 }
 
+/**
+ * ProductCard component for displaying individual product information
+ * Shows product details and handles navigation to product detail page
+ */
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const navigate = useNavigate();
 
+  /**
+   * Handle card click to navigate to product detail page
+   */
   const handleClick = () => {
     navigate(`/product/${product.id}`);
   };
@@ -35,6 +45,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         e.currentTarget.style.boxShadow = 'none';
       }}
     >
+      {/* Product Image */}
       <img 
         src={product.imageUrl} 
         alt={product.name} 
@@ -45,7 +56,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           borderRadius: '4px' 
         }} 
       />
+      
+      {/* Product Name */}
       <h3 style={{ margin: '10px 0' }}>{product.name}</h3>
+      
+      {/* Product Price */}
       <p style={{ 
         fontWeight: 'bold', 
         color: '#493aecff', 
@@ -54,6 +69,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       }}>
         ${product.price.toFixed(2)}
       </p>
+      
+      {/* Product Description */}
       <p style={{ 
         color: '#666', 
         margin: '8px 0',
@@ -64,12 +81,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       }}>
         {product.description}
       </p>
+      
+      {/* Stock Status */}
       <p style={{ 
         color: product.stock > 0 ? 'black' : 'red',
         margin: '8px 0'
       }}>
         {product.stock > 0 ? `In stock: ${product.stock}` : 'Out of stock'}
       </p>
+      
+      {/* Product Rating (if available) */}
       {product.rating && (
         <p style={{ margin: '8px 0' }}>
           Rating: {product.rating}/5 
@@ -79,20 +100,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </p>
       )}
 
-    <button 
+      {/* Add to Cart Button */}
+      <button 
         disabled={product.stock === 0}
         style={{
-        padding: '12px 24px',
-        backgroundColor: product.stock > 0 ? '#493aecff' : '#ccc',
-        color: 'white',
-        border: 'none',
-        borderRadius: '4px',
-        cursor: product.stock > 0 ? 'pointer' : 'not-allowed',
-        fontSize: '1.1em'
+          padding: '12px 24px',
+          backgroundColor: product.stock > 0 ? '#493aecff' : '#ccc',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: product.stock > 0 ? 'pointer' : 'not-allowed',
+          fontSize: '1.1em'
         }}
-    >
+      >
         {product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
-    </button>
+      </button>
     </div>
   );
 };
