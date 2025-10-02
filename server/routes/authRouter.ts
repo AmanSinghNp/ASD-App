@@ -39,7 +39,7 @@ router.post("/signup", async (req, res) => {
     });
 
     // Create JWT
-    const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ id: user.id, role: user.role }, SECRET, { expiresIn: "1h" });
 
     res.json({ message: "Signup successful ✅", token });
   } catch (err) {
@@ -62,7 +62,7 @@ router.post("/login", async (req, res) => {
     if (!match) return res.status(401).json({ message: "Incorrect password ❌" });
 
     // Create JWT
-    const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ id: user.id, role: user.role }, SECRET, { expiresIn: "1h" });
 
     res.json({ message: "Login successful ✅", token });
   } catch (err) {
@@ -83,9 +83,9 @@ router.route("/profile")
       const token = authHeader.split(" ")[1];
 
       try {
-        const decoded = jwt.verify(token, SECRET) as { email: string; role: string };
+        const decoded = jwt.verify(token, SECRET) as { id: string; role: string };
         const user = await prisma.user.findUnique({
-          where: { email: decoded.email },
+          where: { id: decoded.id },
           select: { id: true, name: true, email: true },
         });
 
@@ -112,17 +112,17 @@ router.route("/profile")
     }
 
     try {
-      const decoded = jwt.verify(token, SECRET) as { email: string; role: string };
+      const decoded = jwt.verify(token, SECRET) as { id: string; role: string };
 
       const updatedUser = await prisma.user.update({
-        where: { email: decoded.email },
+        where: { id: decoded.id },
         data: { name, email },
         select: { id: true, name: true, email: true, role: true},
       });
 
       // generate new JWT
       const newToken = jwt.sign(
-        { id: updatedUser.id, email: updatedUser.email, role: updatedUser.role },
+        { id: updatedUser.id, role: updatedUser.role },
         SECRET,
         { expiresIn: "1h" }
       );
@@ -144,11 +144,11 @@ router.delete("/delete", async (req, res) => {
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, SECRET) as { email: string };
+    const decoded = jwt.verify(token, SECRET) as { id: string };
 
     // Delete user from database
     await prisma.user.delete({
-      where: { email: decoded.email },
+      where: { id: decoded.id },
     });
 
     res.json({ message: "User deleted successfully." });
