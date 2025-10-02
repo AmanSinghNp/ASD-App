@@ -275,6 +275,7 @@ The automated testing setup provides basic but effective coverage of core applic
 **Solution:**
 - Removed BrowserRouter wrapper from App tests (App already has Router)
 - Fixed floating-point precision with toBeCloseTo()
-- Updated phone validation regex to allow numbers starting with 0
+- Updated phone validation regex to require 8-16 digits (7-15 after first digit)
+- Fixed test expectations for invalid phone numbers
 
 **Test Execution Status: FIXED AND READY ✅**

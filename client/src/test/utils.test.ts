@@ -24,8 +24,9 @@ export const validateEmail = (email: string): boolean => {
 }
 
 export const validatePhoneNumber = (phone: string): boolean => {
-  const phoneRegex = /^[\+]?[0-9][\d]{0,15}$/
-  return phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''))
+  const cleaned = phone.replace(/[\s\-\(\)]/g, '')
+  const phoneRegex = /^[\+]?[0-9][\d]{7,15}$/
+  return phoneRegex.test(cleaned)
 }
 
 export const validatePostcode = (postcode: string): boolean => {
@@ -116,10 +117,10 @@ describe('Validation Utilities', () => {
     })
 
     it('rejects invalid phone numbers', () => {
-      expect(validatePhoneNumber('123')).toBe(false)
-      expect(validatePhoneNumber('abc123')).toBe(false)
-      expect(validatePhoneNumber('')).toBe(false)
-      expect(validatePhoneNumber('0123456789')).toBe(true) // starts with 0 is valid
+      expect(validatePhoneNumber('123')).toBe(false) // too short
+      expect(validatePhoneNumber('abc123')).toBe(false) // contains letters
+      expect(validatePhoneNumber('')).toBe(false) // empty
+      expect(validatePhoneNumber('123456')).toBe(false) // too short
     })
   })
 
