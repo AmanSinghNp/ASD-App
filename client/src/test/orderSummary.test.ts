@@ -9,12 +9,12 @@ describe("Order Summary Calculations", () => {
 
   it("calculates subtotal correctly", () => {
     const subtotal = calculateSubtotal(cart);
-    expect(subtotal).toBe(90); // 40 + 50
+    expect(subtotal).toBe(90);
   });
 
   it("calculates total correctly with shipping", () => {
     const shipping = 15;
     const total = calculateTotal(cart, shipping);
-    expect(total).toBe(105); // 90 + 15
+    expect(total).toBe(105);
   });
 });
