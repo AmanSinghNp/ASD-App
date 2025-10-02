@@ -42,5 +42,7 @@ stages:
             displayName: "Build app"
 
           # Run tests
-          - script: npm run test
+          - script: |
+              cd client
+              npm run test
             displayName: "Run Unit Tests"
