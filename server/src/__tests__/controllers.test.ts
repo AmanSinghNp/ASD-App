@@ -3,8 +3,8 @@ import { describe, it, expect, jest } from '@jest/globals'
 // Mock Prisma client
 const mockPrisma = {
   product: {
-    findMany: jest.fn(),
-    create: jest.fn(),
+    findMany: jest.fn() as jest.MockedFunction<any>,
+    create: jest.fn() as jest.MockedFunction<any>,
   },
 }
 
@@ -26,8 +26,8 @@ describe('Product Controller', () => {
     const products = await mockPrisma.product.findMany()
     
     expect(products).toHaveLength(2)
-    expect(products[0].name).toBe('Test Product')
-    expect(products[1].priceCents).toBe(2000)
+    expect((products as any)[0].name).toBe('Test Product')
+    expect((products as any)[1].priceCents).toBe(2000)
   })
 
   it('should create a new product', async () => {
@@ -45,8 +45,8 @@ describe('Product Controller', () => {
 
     const result = await mockPrisma.product.create({ data: newProduct })
     
-    expect(result.id).toBe('3')
-    expect(result.name).toBe('New Product')
-    expect(result.sku).toBe('NP001')
+    expect((result as any).id).toBe('3')
+    expect((result as any).name).toBe('New Product')
+    expect((result as any).sku).toBe('NP001')
   })
 })

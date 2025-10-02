@@ -24,7 +24,7 @@ stages:
 
           - script: |
               cd client
-              npm install
+              npm install --legacy-peer-deps
             displayName: 'Install Frontend Dependencies'
 
           - script: |
@@ -65,7 +65,7 @@ stages:
 
           - script: |
               cd client
-              npm install
+              npm install --legacy-peer-deps
               npm run build
             displayName: 'Build Frontend'
 
