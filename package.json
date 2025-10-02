@@ -45,6 +45,7 @@
     "jsonwebtoken": "^9.0.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-router-dom": "^7.9.3",
     "vite": "^7.1.4"
   },
   "type": "commonjs"
