@@ -175,9 +175,9 @@ const Checkout: React.FC = () => {
                     maxLength={5}
                     value={formData.expiry}
                     onChange={(e) => {
-                      let value = e.target.value.replace(/[^0-9]/g, ""); // allow only digits
+                      let value = e.target.value.replace(/[^0-9]/g, "");
                       if (value.length > 2) {
-                        value = value.slice(0, 2) + "/" + value.slice(2, 4); // auto-add '/'
+                        value = value.slice(0, 2) + "/" + value.slice(2, 4);
                       }
                       setFormData({ ...formData, expiry: value });
                     }}
