@@ -2,29 +2,15 @@ trigger:
   branches:
     include:
       - main
-      - vinix-r1   
+      - vinix-r1
 
 pool:
   vmImage: 'ubuntu-latest'
 
 steps:
 - checkout: self
-
 - task: NodeTool@0
   inputs:
     versionSpec: '18.x'
-  displayName: 'Install Node.js'
-
-- script: |
-    cd client
-    npm install
-  displayName: 'Install dependencies'
-
-- script: |
-    npm run build
-  displayName: 'Build project'
-
-- script: |
-    npm test -- --watchAll=false --passWithNoTests
-  displayName: 'Run tests'
-  continueOnError: true
+- script: cd client && npm install
+- script: cd client && npm test -- --watchAll=false --passWithNoTests
