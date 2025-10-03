@@ -1,6 +1,6 @@
 import React from 'react';
 import { Edit, Eye, EyeOff, Trash2 } from 'lucide-react';
-import { ProductTableProps, Product } from '../../types/product';
+import type { ProductTableProps, Product } from '../../types/product';
 
 export const ProductTable: React.FC<ProductTableProps> = ({
   products,
@@ -54,12 +54,12 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                   {product.category}
                 </span>
               </td>
-              <td className="px-8 py-6 whitespace-nowrap">
-                <div className="text-sm font-semibold text-gray-900">{formatPrice(product.priceCents)}</div>
-              </td>
-              <td className="px-8 py-6 whitespace-nowrap">
-                <div className="text-sm text-gray-900">{product.stockQty}</div>
-              </td>
+                <td className="px-8 py-6 whitespace-nowrap">
+                  <div className="text-sm font-semibold text-gray-900">{formatPrice(product.priceCents)}</div>
+                </td>
+                <td className="px-8 py-6 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">{product.stockQty}</div>
+                </td>
               <td className="px-8 py-6 whitespace-nowrap">
                 <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${
                   product.isActive 
