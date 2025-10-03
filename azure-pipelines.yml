@@ -5,6 +5,58 @@
 
 trigger:
   branches:
+<<<<<<< HEAD
+    include:
+      - main
+      - develop
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  nodeVersion: "18.x"
+
+stages:
+  - stage: Test
+    displayName: 'Test Stage'
+    jobs:
+      - job: FrontendTests
+        displayName: 'Frontend Tests'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVersion)
+            displayName: 'Install Node.js'
+
+          - script: |
+              cd client
+              npm install --legacy-peer-deps
+            displayName: 'Install Frontend Dependencies'
+
+          - script: |
+              cd client
+              npm run test
+            displayName: 'Run Frontend Tests'
+
+      - job: BackendTests
+        displayName: 'Backend Tests'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVersion)
+            displayName: 'Install Node.js'
+
+          - script: |
+              cd server
+              npm install
+            displayName: 'Install Backend Dependencies'
+
+          - script: |
+              cd server
+              npm run test
+            displayName: 'Run Backend Tests'
+
+=======
     include: 
       - main
       # - feature/belinda
@@ -27,3 +79,4 @@ steps:
     echo See https://aka.ms/yaml
   displayName: 'Run a multi-line script'
 
+>>>>>>> origin/dev

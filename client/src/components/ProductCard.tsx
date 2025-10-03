@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Product } from "../models/ProductCatalogueModel";
 
@@ -10,9 +10,11 @@ type ProductCardProps = {
 const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
   const [quantity, setQuantity] = useState(1);
   const [addedMsg, setAddedMsg] = useState(false);
-  const [_, forceUpdate] = useState(0);
   const navigate = useNavigate();
 
+  /**
+   * Handle card click to navigate to product detail page
+   */
   const handleClick = () => {
     navigate(`/product/${product.id}`);
   };
@@ -30,7 +32,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         maxWidth: "300px",
         transition: "transform 0.2s ease, box-shadow 0.2s ease",
       }}
-      onClick={handleClick}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-5px)";
         e.currentTarget.style.boxShadow = "0 6px 12px rgba(0,0,0,0.1)";
@@ -81,6 +82,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
       >
         {product.stock > 0 ? `In stock: ${product.stock}` : "Out of stock"}
       </p>
+      
+      {/* Product Rating (if available) */}
       {product.rating && (
         <p style={{ margin: "8px 0" }}>
           Rating: {product.rating}/5
@@ -101,9 +104,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           cursor: product.stock > 0 ? "pointer" : "not-allowed",
           fontSize: "1.1em",
         }}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (product.stock > 0) {
+            onAddToCart(product, quantity);
+            setAddedMsg(true);
+            setTimeout(() => setAddedMsg(false), 1200);
+          }
+        }}
       >
         {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
       </button>
+      {addedMsg && (
+        <div style={{ marginTop: 8, color: "#166534", fontSize: 12 }}>Added!</div>
+      )}
     </div>
   );
 };

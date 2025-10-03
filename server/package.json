@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "type": "module",
+  "type": "commonjs",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,15 +8,18 @@
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "db:seed": "node prisma/seed.js",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "ts-node prisma/seed.ts",
-    "test": "npx jest --ci --reporters=default --reporters=jest-junit"
+    "prisma:seed": "ts-node --transpile-only prisma/seed.ts",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "prisma": {
+    "seed": "ts-node --transpile-only prisma/seed.ts"
+  },
   "dependencies": {
     "@prisma/client": "^6.16.3",
     "asd-app": "file:..",

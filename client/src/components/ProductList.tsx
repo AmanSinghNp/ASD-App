@@ -1,7 +1,13 @@
 import React from 'react';
 import { useProductCatalogue } from '../hooks/useProductCatalogue';
 import ProductCard from './ProductCard';
+import { useCartContext } from '../context/CartContext';
+import { useNavigate } from 'react-router-dom';
 
+/**
+ * ProductList component for displaying and filtering products
+ * Provides search, category filtering, and sorting functionality
+ */
 const ProductList: React.FC = () => {
   const {
     products,
@@ -54,7 +60,7 @@ const ProductList: React.FC = () => {
           </select>
         </div>
         
-        {/* Sort Filter */}
+        {/* Sort Options Dropdown */}
         <div>
           <label htmlFor="sort" style={{ marginRight: "8px" }}>
             Sort by:{" "}
@@ -79,7 +85,7 @@ const ProductList: React.FC = () => {
           </select>
         </div>
         
-        {/* Search Filter */}
+        {/* Search Input Field */}
         <div>
           <label htmlFor="search" style={{ marginRight: "8px" }}>
             Search:{" "}
@@ -98,7 +104,6 @@ const ProductList: React.FC = () => {
           />
         </div>
       </div>
-
       {/* Results Count */}
       <p style={{ marginBottom: "15px", color: "#666" }}>
         Showing {products.length} product{products.length !== 1 ? "s" : ""}
@@ -106,7 +111,6 @@ const ProductList: React.FC = () => {
           ` in ${categories.find((c) => c.id === selectedCategory)?.name}`}
         {searchQuery && ` matching "${searchQuery}"`}
       </p>
-
       {/* Products Grid */}
       <div style={{ 
         display: 'grid', 
@@ -115,7 +119,7 @@ const ProductList: React.FC = () => {
       }}>
         {products.length > 0 ? (
           products.map(product => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} onAddToCart={addToCart} />
           ))
         ) : (
           <div

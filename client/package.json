@@ -8,6 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "outDir": "./dist"
   },
   "dependencies": {
@@ -22,7 +24,7 @@
     "lucide-react": "^0.542.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-router-dom": "^7.9.1",
+    "react-router-dom": "^7.9.3",
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
@@ -38,7 +40,7 @@
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "@types/react-router-dom": "^5.3.3",
-    "@vitejs/plugin-react-swc": "^4.0.0",
+    "@vitejs/plugin-react-swc": "^4.0.2",
     "autoprefixer": "^10.4.21",
     "babel-jest": "^30.2.0",
     "eslint": "^9.33.0",
@@ -51,6 +53,7 @@
     "tailwindcss": "^4.1.12",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",
-    "vite": "^7.1.2"
+    "vite": "6.0.0",
+    "vitest": "^1.0.4"
   }
 }

@@ -8,7 +8,10 @@
     "dev:client": "npm --prefix client run dev",
     "dev:server": "npm --prefix server run dev",
     "build": "npm --prefix client run build && npm --prefix server run build",
-    "start": "npm --prefix server run start"
+    "start": "npm --prefix server run start",
+    "test": "npm --prefix client run test && npm --prefix server run test",
+    "test:client": "npm --prefix client run test",
+    "test:server": "npm --prefix server run test"
   },
   "repository": {
     "type": "git",
@@ -33,13 +36,13 @@
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
     "autoprefixer": "^10.4.21",
-    "concurrently": "^9.2.0",
+    "concurrently": "^9.2.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
   },
   "dependencies": {
-    "@vitejs/plugin-react-swc": "^4.0.1",
+    "@vitejs/plugin-react-swc": "^3.7.0",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "express": "^5.1.0",
