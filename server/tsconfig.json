@@ -45,5 +45,5 @@
     "esModuleInterop": true,
   },
 
-  "include": ["./prisma/seed.ts", "./prisma/seed.js", "_tests_"]
+  "include": ["./prisma/seed.ts", "./prisma/seed.js", "__tests__"]
 }
