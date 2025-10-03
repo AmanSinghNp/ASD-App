@@ -5,11 +5,13 @@ import ProductCatalogue from './ProductCatalogue.tsx'; // product catalogue func
 import Checkout from "./Checkout.tsx"; //Checkout function
 import Filter from './Filter.tsx'; // Filter function
 
+import Cart from "./Cart.tsx"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     {/* <Checkout /> //changed fromm App */}
     <ProductCatalogue /> //render product catalouge
+    {/* <Cart /> */}
   </StrictMode>
 );
 

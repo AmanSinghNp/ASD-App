@@ -23,8 +23,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         name: initialProduct.name,
         sku: initialProduct.sku,
         category: initialProduct.category,
-        priceCents: initialProduct.priceCents,
-        stockQty: initialProduct.stockQty,
+    priceCents: initialProduct.priceCents,
+    stockQty: initialProduct.stockQty,
         imageUrl: initialProduct.imageUrl || '',
         isActive: initialProduct.isActive
       });
