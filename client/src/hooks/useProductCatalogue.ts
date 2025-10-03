@@ -2,24 +2,30 @@
 
 import { useState, useMemo } from 'react';
 import { ProductController } from '../controllers/ProductCatalogueController';
-<<<<<<< HEAD
 import type { Product } from '../models/ProductCatalogueModel';
+import { useCartContext } from '../context/CartContext'; // Added from origin/dev
 
 export const useProductCatalogue = () => {
-  // These states represent the filters that are currently APPLIED
+  // --- State Management ---
+  
+  // These states represent the filters that are currently APPLIED to the product list.
   const [appliedCategory, setAppliedCategory] = useState<string>('all');
   const [appliedSort, setAppliedSort] = useState<{ by: string, ascending: boolean }>({ by: 'name', ascending: true });
   const [appliedQuery, setAppliedQuery] = useState<string>('');
-
-  // This state is ONLY for the live text in the input box
+  
+  // These states are ONLY for the live search input and its autocomplete suggestions.
   const [inputValue, setInputValue] = useState('');
   const [suggestions, setSuggestions] = useState<Product[]>([]);
+
+  // This context dependency is from origin/dev. It ensures the product list refreshes when the cart changes.
+  const { cartItems } = useCartContext(); 
 
   const controller = useMemo(() => new ProductController(), []);
   const categories = controller.getAllCategories();
 
-  // This is now the SINGLE source of truth for the displayed products.
-  // It recalculates ONLY when one of the APPLIED filters changes. This fixes the re-render loop.
+  // This is the SINGLE source of truth for the displayed products.
+  // It recalculates ONLY when one of the APPLIED filters or the cart changes.
+  // This combines the performance benefit from HEAD and the context feature from origin/dev.
   const products = useMemo(() => {
     let result = appliedCategory === 'all'
       ? controller.getAllProducts()
@@ -33,11 +39,11 @@ export const useProductCatalogue = () => {
     }
 
     return controller.sortProducts(result, appliedSort.by, appliedSort.ascending);
-  }, [appliedCategory, appliedSort, appliedQuery, controller]);
+  }, [appliedCategory, appliedSort, appliedQuery, controller, cartItems]); // Added cartUpdated dependency
 
-  // This function is now ONLY for generating suggestions.
+  // This function is for generating autocomplete suggestions as the user types.
   const generateSuggestions = (query: string) => {
-    setInputValue(query); // Update the live input value
+    setInputValue(query); // Update the live input value for the UI
     const lowerCaseQuery = query.toLowerCase();
 
     if (lowerCaseQuery.length > 0) {
@@ -45,46 +51,20 @@ export const useProductCatalogue = () => {
 
       const filteredSuggestions = allProducts.filter((product: Product) => {
         const lowerCaseName = product.name.toLowerCase();
+        // A simple suggestion logic: starts with for the first letter, includes for more letters
         if (lowerCaseQuery.length === 1) {
           return lowerCaseName.startsWith(lowerCaseQuery);
         }
         return lowerCaseName.includes(lowerCaseQuery);
-      }).slice(0, 5);
+      }).slice(0, 5); // Limit to 5 suggestions
 
       setSuggestions(filteredSuggestions);
     } else {
       setSuggestions([]);
     }
   };
-=======
-import { useCartContext } from '../context/CartContext';
 
-export const useProductCatalogue = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [sortOption, setSortOption] = useState<{ by: string, ascending: boolean }>({ 
-    by: 'name', 
-    ascending: true 
-  });
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const { cartUpdated } = useCartContext();
-
-  const controller = useMemo(() => new ProductController(), []);
-
-  const categories = controller.getAllCategories();
-
-  const products = useMemo(() => {
-    let filteredProducts = selectedCategory === 'all' 
-      ? controller.getProductsByCategory('all')
-      : controller.getProductsByCategory(selectedCategory);
-
-    if (searchQuery) {
-      filteredProducts = controller.searchProducts(searchQuery);
-    }
-
-    return controller.sortProducts(filteredProducts, sortOption.by, sortOption.ascending);
-  }, [selectedCategory, sortOption, searchQuery, controller, cartUpdated]);
->>>>>>> origin/dev
-
+  // The hook returns all necessary values and functions for the UI components.
   return {
     products,
     categories,
@@ -92,10 +72,10 @@ export const useProductCatalogue = () => {
     setSuggestions,
     inputValue,
     generateSuggestions,
-    // Functions to apply the filters
+    // Functions to APPLY the filters
     setAppliedCategory,
     setAppliedSort,
     setAppliedQuery,
-    appliedQuery,
+    appliedQuery, // Expose appliedQuery for UI state if needed
   };
 };
