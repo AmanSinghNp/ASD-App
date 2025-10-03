@@ -1,6 +1,6 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import type { Product } from "../models/ProductCatalogueModel";
+import React, { useState } from "react";
 
 type ProductCardProps = {
   product: Product;
@@ -30,7 +30,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         maxWidth: "300px",
         transition: "transform 0.2s ease, box-shadow 0.2s ease",
       }}
-      onClick={handleClick}
+      // onClick={handleClick}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-5px)";
         e.currentTarget.style.boxShadow = "0 6px 12px rgba(0,0,0,0.1)";

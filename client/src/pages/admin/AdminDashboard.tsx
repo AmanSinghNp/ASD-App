@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, Search } from 'lucide-react';
-import { ProductTable } from '../../components/admin/ProductTable';
-import { ProductForm } from '../../components/admin/ProductForm';
-import { ConfirmDialog } from '../../components/admin/ConfirmDialog';
-import type { Product, ProductFormData } from '../../types/product';
-import productsData from '../../lib/mock/products.json';
+import React, { useState, useEffect } from "react";
+import { Plus, Search } from "lucide-react";
+import { ProductTable } from "../../components/admin/ProductTable";
+import { ProductForm } from "../../components/admin/ProductForm";
+import { ConfirmDialog } from "../../components/admin/ConfirmDialog";
+import type { Product, ProductFormData } from "../../types/product";
+import productsData from "../../lib/mock/products.json";
 
 export const AdminDashboard: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(25);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
   const [showProductForm, setShowProductForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | undefined>();
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [productToRemove, setProductToRemove] = useState<string>('');
+  const [productToRemove, setProductToRemove] = useState<string>("");
 
   // Load mock data on component mount
   useEffect(() => {
@@ -29,19 +29,22 @@ export const AdminDashboard: React.FC = () => {
     let filtered = products;
 
     if (searchTerm) {
-      filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.sku.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        (product) =>
+          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          product.sku.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     if (selectedCategory) {
-      filtered = filtered.filter(product => product.category === selectedCategory);
+      filtered = filtered.filter(
+        (product) => product.category === selectedCategory
+      );
     }
 
-    if (selectedStatus !== '') {
-      const isActive = selectedStatus === 'active';
-      filtered = filtered.filter(product => product.isActive === isActive);
+    if (selectedStatus !== "") {
+      const isActive = selectedStatus === "active";
+      filtered = filtered.filter((product) => product.isActive === isActive);
     }
 
     setFilteredProducts(filtered);
@@ -70,35 +73,43 @@ export const AdminDashboard: React.FC = () => {
   const handleSubmitProduct = (formData: ProductFormData) => {
     if (editingProduct) {
       // Update existing product
-      setProducts(prev => prev.map(product =>
-        product.id === editingProduct.id
-          ? {
-              ...product,
-              ...formData,
-              updatedAt: new Date().toISOString()
-            }
-          : product
-      ));
+      setProducts((prev) =>
+        prev.map((product) =>
+          product.id === editingProduct.id
+            ? {
+                ...product,
+                ...formData,
+                updatedAt: new Date().toISOString(),
+              }
+            : product
+        )
+      );
     } else {
       // Add new product
       const newProduct: Product = {
         id: Date.now().toString(), // Simple ID generation for demo
         ...formData,
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       };
-      setProducts(prev => [...prev, newProduct]);
+      setProducts((prev) => [...prev, newProduct]);
     }
     setShowProductForm(false);
     setEditingProduct(undefined);
   };
 
   const handleToggleActive = (productId: string) => {
-    setProducts(prev => prev.map(product =>
-      product.id === productId
-        ? { ...product, isActive: !product.isActive, updatedAt: new Date().toISOString() }
-        : product
-    ));
+    setProducts((prev) =>
+      prev.map((product) =>
+        product.id === productId
+          ? {
+              ...product,
+              isActive: !product.isActive,
+              updatedAt: new Date().toISOString(),
+            }
+          : product
+      )
+    );
   };
 
   const handleRemoveProduct = (productId: string) => {
@@ -107,12 +118,14 @@ export const AdminDashboard: React.FC = () => {
   };
 
   const confirmRemove = () => {
-    setProducts(prev => prev.filter(product => product.id !== productToRemove));
+    setProducts((prev) =>
+      prev.filter((product) => product.id !== productToRemove)
+    );
     setShowConfirmDialog(false);
-    setProductToRemove('');
+    setProductToRemove("");
   };
 
-  const categories = Array.from(new Set(products.map(p => p.category)));
+  const categories = Array.from(new Set(products.map((p) => p.category)));
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -120,7 +133,9 @@ export const AdminDashboard: React.FC = () => {
         {/* Header */}
         <div className="mb-8">
           <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-bold text-gray-900">Product Management</h1>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Product Management
+            </h1>
             <button
               onClick={handleAddProduct}
               className="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
@@ -151,8 +166,10 @@ export const AdminDashboard: React.FC = () => {
               className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white"
             >
               <option value="">All Categories</option>
-              {categories.map(category => (
-                <option key={category} value={category}>{category}</option>
+              {categories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
               ))}
             </select>
 
@@ -167,7 +184,8 @@ export const AdminDashboard: React.FC = () => {
             </select>
 
             <div className="text-sm text-gray-600 flex items-center justify-center bg-gray-50 px-4 py-3 rounded-lg">
-              Showing {getCurrentPageProducts().length} of {filteredProducts.length} products
+              Showing {getCurrentPageProducts().length} of{" "}
+              {filteredProducts.length} products
             </div>
           </div>
         </div>
@@ -187,29 +205,33 @@ export const AdminDashboard: React.FC = () => {
           <div className="mt-8 flex justify-center">
             <nav className="flex space-x-2">
               <button
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
                 className="px-4 py-2 text-sm border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
               >
                 Previous
               </button>
-              
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`px-4 py-2 text-sm border rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    currentPage === page
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : 'border-gray-300 hover:bg-gray-50'
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
-              
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`px-4 py-2 text-sm border rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      currentPage === page
+                        ? "bg-blue-600 text-white border-blue-600"
+                        : "border-gray-300 hover:bg-gray-50"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                )
+              )}
+
               <button
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
                 disabled={currentPage === totalPages}
                 className="px-4 py-2 text-sm border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
               >
@@ -238,7 +260,7 @@ export const AdminDashboard: React.FC = () => {
             onConfirm={confirmRemove}
             onCancel={() => {
               setShowConfirmDialog(false);
-              setProductToRemove('');
+              setProductToRemove("");
             }}
           />
         )}

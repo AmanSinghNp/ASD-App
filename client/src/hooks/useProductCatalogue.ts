@@ -1,31 +1,39 @@
-import { useState, useMemo } from 'react';
-import { ProductController } from '../controllers/ProductCatalogueController';
-import { useCartContext } from '../context/CartContext';
+import { useState, useMemo } from "react";
+import { ProductController } from "../controllers/ProductCatalogueController";
+import { useCartContext } from "../context/CartContext";
 
 export const useProductCatalogue = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [sortOption, setSortOption] = useState<{ by: string, ascending: boolean }>({ 
-    by: 'name', 
-    ascending: true 
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [sortOption, setSortOption] = useState<{
+    by: string;
+    ascending: boolean;
+  }>({
+    by: "name",
+    ascending: true,
   });
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const { cartUpdated } = useCartContext();
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const { cartItems } = useCartContext();
 
   const controller = useMemo(() => new ProductController(), []);
 
   const categories = controller.getAllCategories();
 
   const products = useMemo(() => {
-    let filteredProducts = selectedCategory === 'all' 
-      ? controller.getProductsByCategory('all')
-      : controller.getProductsByCategory(selectedCategory);
+    let filteredProducts =
+      selectedCategory === "all"
+        ? controller.getProductsByCategory("all")
+        : controller.getProductsByCategory(selectedCategory);
 
     if (searchQuery) {
       filteredProducts = controller.searchProducts(searchQuery);
     }
 
-    return controller.sortProducts(filteredProducts, sortOption.by, sortOption.ascending);
-  }, [selectedCategory, sortOption, searchQuery, controller, cartUpdated]);
+    return controller.sortProducts(
+      filteredProducts,
+      sortOption.by,
+      sortOption.ascending
+    );
+  }, [selectedCategory, sortOption, searchQuery, controller, cartItems]);
 
   return {
     products,
@@ -35,6 +43,6 @@ export const useProductCatalogue = () => {
     sortOption,
     setSortOption,
     searchQuery,
-    setSearchQuery
+    setSearchQuery,
   };
 };
