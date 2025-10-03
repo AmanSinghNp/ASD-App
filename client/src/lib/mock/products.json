@@ -1,0 +1,62 @@
+[
+  {
+    "id": "1",
+    "sku": "APL-001",
+    "name": "Apple Gala 1kg",
+    "category": "Fruits",
+    "priceCents": 450,
+    "stockQty": 120,
+    "imageUrl": "",
+    "isActive": true,
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "2",
+    "sku": "MLK-002",
+    "name": "Milk 2L",
+    "category": "Dairy",
+    "priceCents": 390,
+    "stockQty": 80,
+    "imageUrl": "",
+    "isActive": true,
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "3",
+    "sku": "BRC-003",
+    "name": "Brown Rice 5kg",
+    "category": "Pantry",
+    "priceCents": 1690,
+    "stockQty": 40,
+    "imageUrl": "",
+    "isActive": true,
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "4",
+    "sku": "BAN-004",
+    "name": "Banana Bunch",
+    "category": "Fruits",
+    "priceCents": 250,
+    "stockQty": 200,
+    "imageUrl": "",
+    "isActive": true,
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "5",
+    "sku": "BREAD-005",
+    "name": "Whole Wheat Bread",
+    "category": "Bakery",
+    "priceCents": 320,
+    "stockQty": 60,
+    "imageUrl": "",
+    "isActive": true,
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  }
+]
