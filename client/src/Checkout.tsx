@@ -159,12 +159,12 @@ const Checkout: React.FC = () => {
                     type="text"
                     name="cardNumber"
                     placeholder="Card Number"
-                    maxLength={19} // 16 digits + 3 spaces
+                    maxLength={19}
                     value={formData.cardNumber}
                     onChange={(e) => {
-                      let value = e.target.value.replace(/\D/g, ""); // remove all non-digits
-                      value = value.substring(0, 16); // limit to 16 digits
-                      value = value.replace(/(.{4})/g, "$1 ").trim(); // add space every 4 digits
+                      let value = e.target.value.replace(/\D/g, "");
+                      value = value.substring(0, 16);
+                      value = value.replace(/(.{4})/g, "$1 ").trim();
                       handleChange({
                         target: { name: "cardNumber", value },
                       } as React.ChangeEvent<HTMLInputElement>);
