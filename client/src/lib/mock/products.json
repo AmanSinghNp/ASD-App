@@ -26,8 +26,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "1",
-  "description": "Crisp, sweet Gala apples. Perfect for snacking or baking. 1kg pack.",
+    "id": "1",
+    "description": "Crisp, sweet Gala apples. Perfect for snacking or baking. 1kg pack.",
     "sku": "APL-001",
     "name": "Apple Gala 1kg",
     "category": "Fruits",
@@ -39,8 +39,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "2",
-  "description": "Fresh 2L bottle of creamy milk, ideal for drinking or cooking.",
+    "id": "2",
+    "description": "Fresh 2L bottle of creamy milk, ideal for drinking or cooking.",
     "sku": "MLK-002",
     "name": "Milk 2L",
     "category": "Dairy",
@@ -52,8 +52,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "3",
-  "description": "Nutritious 5kg bag of whole grain brown rice. Great for healthy meals.",
+    "id": "3",
+    "description": "Nutritious 5kg bag of whole grain brown rice. Great for healthy meals.",
     "sku": "BRC-003",
     "name": "Brown Rice 5kg",
     "category": "Pantry",
@@ -65,8 +65,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "4",
-  "description": "A bunch of ripe bananas, perfect for breakfast or smoothies.",
+    "id": "4",
+    "description": "A bunch of ripe bananas, perfect for breakfast or smoothies.",
     "sku": "BAN-004",
     "name": "Banana Bunch",
     "category": "Fruits",
@@ -78,8 +78,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "5",
-  "description": "Soft whole wheat bread, freshly baked. Great for sandwiches and toast.",
+    "id": "5",
+    "description": "Soft whole wheat bread, freshly baked. Great for sandwiches and toast.",
     "sku": "BREAD-005",
     "name": "Whole Wheat Bread",
     "category": "Bakery",
@@ -91,8 +91,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "6",
-  "description": "12-pack of free range eggs, rich in flavor and nutrients.",
+    "id": "6",
+    "description": "12-pack of free range eggs, rich in flavor and nutrients.",
     "sku": "EGG-006",
     "name": "Free Range Eggs (12 pack)",
     "category": "Dairy",
@@ -104,8 +104,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "7",
-  "description": "Juicy, ripe tomatoes. 1kg pack for salads, sauces, and more.",
+    "id": "7",
+    "description": "Juicy, ripe tomatoes. 1kg pack for salads, sauces, and more.",
     "sku": "TOM-007",
     "name": "Tomatoes 1kg",
     "category": "Vegetables",
@@ -117,8 +117,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "8",
-  "description": "500g block of classic cheddar cheese. Perfect for snacking or cooking.",
+    "id": "8",
+    "description": "500g block of classic cheddar cheese. Perfect for snacking or cooking.",
     "sku": "CHS-008",
     "name": "Cheddar Cheese 500g",
     "category": "Dairy",
@@ -130,8 +130,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "9",
-  "description": "Crunchy, fresh carrots. 1kg pack for healthy snacks or cooking.",
+    "id": "9",
+    "description": "Crunchy, fresh carrots. 1kg pack for healthy snacks or cooking.",
     "sku": "CAR-009",
     "name": "Carrots 1kg",
     "category": "Vegetables",
@@ -143,8 +143,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "11",
-  "description": "Crispy potato chips, lightly salted. 200g bag for sharing.",
+    "id": "11",
+    "description": "Crispy potato chips, lightly salted. 200g bag for sharing.",
     "sku": "SNK-011",
     "name": "Potato Chips 200g",
     "category": "Snacks",
@@ -156,8 +156,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "12",
-  "description": "Refreshing 1L bottle of orange juice, made from real oranges.",
+    "id": "12",
+    "description": "Refreshing 1L bottle of orange juice, made from real oranges.",
     "sku": "DRK-012",
     "name": "Orange Juice 1L",
     "category": "Drinks",
@@ -169,8 +169,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "13",
-  "description": "2L bottle of powerful laundry detergent for clean, fresh clothes.",
+    "id": "13",
+    "description": "2L bottle of powerful laundry detergent for clean, fresh clothes.",
     "sku": "CLN-013",
     "name": "Laundry Detergent 2L",
     "category": "Cleaning",
@@ -182,8 +182,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "14",
-  "description": "500g bag of frozen peas, perfect for quick and easy meals.",
+    "id": "14",
+    "description": "500g bag of frozen peas, perfect for quick and easy meals.",
     "sku": "FRZ-014",
     "name": "Frozen Peas 500g",
     "category": "Frozen",
@@ -195,8 +195,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "15",
-  "description": "1kg bag of premium coffee beans for a rich, aromatic brew.",
+    "id": "15",
+    "description": "1kg bag of premium coffee beans for a rich, aromatic brew.",
     "sku": "BVG-015",
     "name": "Coffee Beans 1kg",
     "category": "Beverages",
@@ -208,8 +208,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "16",
-  "description": "Thick, creamy Greek yogurt. 1kg tub, high in protein.",
+    "id": "16",
+    "description": "Thick, creamy Greek yogurt. 1kg tub, high in protein.",
     "sku": "YOG-016",
     "name": "Greek Yogurt 1kg",
     "category": "Dairy",
@@ -221,8 +221,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "17",
-  "description": "2-pack of ripe avocados, perfect for salads or toast.",
+    "id": "17",
+    "description": "2-pack of ripe avocados, perfect for salads or toast.",
     "sku": "AVO-017",
     "name": "Avocado 2 pack",
     "category": "Fruits",
@@ -234,8 +234,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "18",
-  "description": "500g pack of penne pasta. Cooks to a perfect al dente texture.",
+    "id": "18",
+    "description": "500g pack of penne pasta. Cooks to a perfect al dente texture.",
     "sku": "PAST-018",
     "name": "Pasta Penne 500g",
     "category": "Pantry",
@@ -247,8 +247,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "19",
-  "description": "185g can of tuna in springwater. Great for salads and sandwiches.",
+    "id": "19",
+    "description": "185g can of tuna in springwater. Great for salads and sandwiches.",
     "sku": "TUNA-019",
     "name": "Canned Tuna 185g",
     "category": "Pantry",
@@ -260,8 +260,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "20",
-  "description": "1L tub of creamy vanilla ice cream. A classic dessert favorite.",
+    "id": "20",
+    "description": "1L tub of creamy vanilla ice cream. A classic dessert favorite.",
     "sku": "ICE-020",
     "name": "Ice Cream Vanilla 1L",
     "category": "Frozen",
@@ -273,8 +273,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "21",
-  "description": "250g pack of chocolate biscuits. Perfect for tea time or snacks.",
+    "id": "21",
+    "description": "250g pack of chocolate biscuits. Perfect for tea time or snacks.",
     "sku": "BIS-021",
     "name": "Chocolate Biscuits 250g",
     "category": "Snacks",
@@ -286,8 +286,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "22",
-  "description": "120g bag of fresh baby spinach leaves. Great for salads and smoothies.",
+    "id": "22",
+    "description": "120g bag of fresh baby spinach leaves. Great for salads and smoothies.",
     "sku": "SPIN-022",
     "name": "Baby Spinach 120g",
     "category": "Vegetables",
@@ -299,8 +299,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "23",
-  "description": "250g salmon fillet, fresh and ready to cook. Rich in omega-3.",
+    "id": "23",
+    "description": "250g salmon fillet, fresh and ready to cook. Rich in omega-3.",
     "sku": "SALM-023",
     "name": "Salmon Fillet 250g",
     "category": "Meat",
@@ -312,8 +312,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "24",
-  "description": "1.5L bottle of pure spring water. Stay hydrated all day.",
+    "id": "24",
+    "description": "1.5L bottle of pure spring water. Stay hydrated all day.",
     "sku": "WATR-024",
     "name": "Spring Water 1.5L",
     "category": "Drinks",
@@ -325,8 +325,8 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-  "id": "25",
-  "description": "250ml bottle of gentle hand soap. Leaves hands clean and soft.",
+    "id": "25",
+    "description": "250ml bottle of gentle hand soap. Leaves hands clean and soft.",
     "sku": "SOAP-025",
     "name": "Hand Soap 250ml",
     "category": "Cleaning",
