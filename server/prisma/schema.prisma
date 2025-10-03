@@ -25,6 +25,7 @@ enum CartStatus {
 
 model User {
   id           String   @id @default(cuid())
+  name         String   @default("Unknown")
   email        String   @unique
   passwordHash String
   role         UserRole
