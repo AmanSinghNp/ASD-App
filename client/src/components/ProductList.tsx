@@ -1,6 +1,6 @@
-// import React from 'react';
-import { useProductCatalogue } from "../hooks/useProductCatalogue";
-import ProductCard from "./ProductCard";
+import React from 'react';
+import { useProductCatalogue } from '../hooks/useProductCatalogue';
+import ProductCard from './ProductCard';
 
 const ProductList: React.FC = () => {
   const {
@@ -13,11 +13,13 @@ const ProductList: React.FC = () => {
     searchQuery,
     setSearchQuery,
   } = useProductCatalogue();
+  const { addToCart } = useCartContext();
+  const navigate = useNavigate();
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      <h2 style={{ color: "#333", marginBottom: "20px" }}>Product Catalogue</h2>
-
+    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+      <h2 style={{ color: '#333', marginBottom: '20px' }}>Product Catalogue</h2>
+      
       {/* Filters Section */}
       <div
         style={{
@@ -51,7 +53,7 @@ const ProductList: React.FC = () => {
             ))}
           </select>
         </div>
-
+        
         {/* Sort Filter */}
         <div>
           <label htmlFor="sort" style={{ marginRight: "8px" }}>
@@ -74,10 +76,9 @@ const ProductList: React.FC = () => {
             <option value="name-desc">Name (Z-A)</option>
             <option value="price-asc">Price (Low to High)</option>
             <option value="price-desc">Price (High to Low)</option>
-            <option value="rating-desc">Rating (High to Low)</option>
           </select>
         </div>
-
+        
         {/* Search Filter */}
         <div>
           <label htmlFor="search" style={{ marginRight: "8px" }}>
@@ -107,15 +108,13 @@ const ProductList: React.FC = () => {
       </p>
 
       {/* Products Grid */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-          gap: "20px",
-        }}
-      >
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
+        gap: '20px'
+      }}>
         {products.length > 0 ? (
-          products.map((product) => (
+          products.map(product => (
             <ProductCard key={product.id} product={product} />
           ))
         ) : (

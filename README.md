@@ -1,6 +1,6 @@
 # ASD Project - Iteration 0
 
-This iteration implements a static Admin Dashboard UI and prototype database setup for the ASD (Autism Spectrum Disorder) project.
+This iteration implements a static Admin Dashboard, User management, Product catalogue, Checkout[Payment], search & filters UI and prototype database setup for the ASD (Advanced Software Development) project.
 
 ## Features Implemented
 

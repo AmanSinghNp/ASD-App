@@ -1,42 +1,29 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
 trigger:
   branches:
-    include:
+    include: 
       - main
-      - danny
+      # - feature/belinda
+      # - feature/danny
 
 pool:
-  vmImage: "ubuntu-latest"
+  vmImage: ubuntu-latest
 
-variables:
-  node_version: "20.x"
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '20.x'
+  displayName: 'Install Node.js'
 
-stages:
-  - stage: Build
-    jobs:
-      - job: Backend
-        displayName: "Build Backend"
-        steps:
-          - task: NodeTool@0
-            inputs:
-              versionSpec: $(node_version)
-            displayName: "Install Node.js"
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
 
-          # Install dependencies for root
-          - script: npm install
-            displayName: "Install root dependencies"
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
 
-          # Install dependencies for client
-          - script: |
-              cd client
-              npm install
-            displayName: "Install client dependencies"
-
-          # Install dependencies for server
-          - script: |
-              cd server
-              npm install
-            displayName: "Install server dependencies"
-
-          # Run build
-          - script: npm run build
-            displayName: "Build app"

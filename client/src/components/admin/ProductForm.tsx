@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { ProductFormProps, ProductFormData } from '../../types/product';
+import type { ProductFormProps, ProductFormData } from '../../types/product';
 
 export const ProductForm: React.FC<ProductFormProps> = ({
   initialProduct,
@@ -23,8 +23,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         name: initialProduct.name,
         sku: initialProduct.sku,
         category: initialProduct.category,
-        priceCents: initialProduct.priceCents,
-        stockQty: initialProduct.stockQty,
+    priceCents: initialProduct.priceCents,
+    stockQty: initialProduct.stockQty,
         imageUrl: initialProduct.imageUrl || '',
         isActive: initialProduct.isActive
       });
