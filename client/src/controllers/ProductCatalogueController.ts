@@ -1,10 +1,11 @@
+
 import { ProductCatalogueModel } from '../models/ProductCatalogueModel';
 
 export class ProductController {
   private model: ProductCatalogueModel;
 
   constructor() {
-    this.model = new ProductCatalogueModel();
+    this.model = ProductCatalogueModel.getInstance();
   }
 
   getProductsByCategory(categoryId: string) {
