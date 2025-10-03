@@ -296,7 +296,7 @@ const Checkout: React.FC = () => {
             );
           })
         )}
-
+        {/* testing */}
         <div className="summary-details">
           <p>
             Subtotal: <span>${(subtotalCents / 100).toFixed(2)}</span>
