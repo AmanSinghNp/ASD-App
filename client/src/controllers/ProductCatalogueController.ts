@@ -1,3 +1,4 @@
+
 import { ProductCatalogueModel } from '../models/ProductCatalogueModel';
 import type { Product } from '../models/ProductCatalogueModel'; // Ensure Product type is imported
 
@@ -5,7 +6,7 @@ export class ProductController {
   private model: ProductCatalogueModel;
 
   constructor() {
-    this.model = new ProductCatalogueModel();
+    this.model = ProductCatalogueModel.getInstance();
   }
 
   getProductsByCategory(categoryId: string) {

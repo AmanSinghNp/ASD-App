@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 // client/src/models/ProductCatalogueModel.ts
+=======
+
+import type { ReactNode } from 'react';
+import productsData from '../lib/mock/products.json';
+>>>>>>> origin/dev
 
 export interface Product {
     id: string;
@@ -275,4 +281,9 @@ export class ProductCatalogueModel {
     getAllProducts(): Product[] {
         return productLists;
     }
+<<<<<<< HEAD
 }
+=======
+
+}
+>>>>>>> origin/dev

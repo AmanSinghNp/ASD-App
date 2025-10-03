@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 #root {
     width: 100%;
@@ -18,13 +19,30 @@ body {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   background-color: white;
   border: 1px solid #e5e7eb; 
+=======
+.ProductCatalogue {
+  min-height: 100vh;
+  background-color: var(--bg-secondary);
+  padding: var(--spacing-2xl) 0;
+}
+
+.product-card {
+  transition: all 0.2s ease;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+>>>>>>> origin/dev
 }
 
 .product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-blue-light);
 }
 
+<<<<<<< HEAD
 
 .filter-bar {
   display: flex;
@@ -102,4 +120,16 @@ body {
 
 .apply-filters-btn:hover {
   background-color: #0b5ed7;
+=======
+/* Responsive design */
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filters > div {
+    margin-bottom: var(--spacing-sm);
+  }
+>>>>>>> origin/dev
 }

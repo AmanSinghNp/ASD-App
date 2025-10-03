@@ -4,7 +4,6 @@ import { ProductCatalogueModel } from '../models/ProductCatalogueModel';
 // Test Suite: Describes the tests for "ProductCatalogueModel"
 describe('ProductCatalogueModel', () => {
   const model = new ProductCatalogueModel();
-
   // Test Case 1: Test filtering products by category
   it('should return only products from the "dairy" category', () => {
     // Act: Call the getProductsByCategory method
