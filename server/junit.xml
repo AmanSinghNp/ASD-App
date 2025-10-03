@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="6" failures="1" errors="0" time="1.928">
-  <testsuite name="Auth routes" errors="0" failures="1" skipped="0" timestamp="2025-10-03T03:34:57" time="1.813" tests="6">
-    <testcase classname="Auth routes should login the user" name="Auth routes should login the user" time="0.109">
+<testsuites name="jest tests" tests="6" failures="1" errors="0" time="1.977">
+  <testsuite name="Auth routes" errors="0" failures="1" skipped="0" timestamp="2025-10-03T04:16:57" time="1.86" tests="6">
+    <testcase classname="Auth routes should login the user" name="Auth routes should login the user" time="0.103">
     </testcase>
-    <testcase classname="Auth routes should get user profile" name="Auth routes should get user profile" time="0.011">
+    <testcase classname="Auth routes should get user profile" name="Auth routes should get user profile" time="0.01">
     </testcase>
-    <testcase classname="Auth routes should update user profile" name="Auth routes should update user profile" time="0.28">
+    <testcase classname="Auth routes should update user profile" name="Auth routes should update user profile" time="0.248">
       <failure>Error: expect(received).toBe(expected) // Object.is equality
 
 Expected: 200
@@ -13,11 +13,11 @@ Received: 401
     at Object.toBe (C:\Users\btjhi\OneDrive\Documents\school\uni\adv soft\ASD-App\server\__tests__\auth.test.ts:84:24)
     at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
     </testcase>
-    <testcase classname="Auth routes should return 401 for profile with invalid token" name="Auth routes should return 401 for profile with invalid token" time="0.025">
+    <testcase classname="Auth routes should return 401 for profile with invalid token" name="Auth routes should return 401 for profile with invalid token" time="0.03">
     </testcase>
-    <testcase classname="Auth routes should delete the user" name="Auth routes should delete the user" time="0.021">
+    <testcase classname="Auth routes should delete the user" name="Auth routes should delete the user" time="0.019">
     </testcase>
-    <testcase classname="Auth routes should return 401 when deleting with missing token" name="Auth routes should return 401 when deleting with missing token" time="0.008">
+    <testcase classname="Auth routes should return 401 when deleting with missing token" name="Auth routes should return 401 when deleting with missing token" time="0.009">
     </testcase>
   </testsuite>
 </testsuites>
