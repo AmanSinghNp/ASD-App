@@ -1,78 +1,91 @@
+# Trigger pipeline on main or your branch
 trigger:
   branches:
     include:
-      - main   # Runs when you push to main
-      - Xiao
+      - main
+      - belinda-r1
 
+# Use latest Ubuntu agent
 pool:
   vmImage: 'ubuntu-latest'
 
+# Variables
 variables:
   node_version: '20.x'
 
 stages:
   - stage: Build
+    displayName: Build Stage
     jobs:
-      - job: Backend
-        displayName: "Build Backend"
+
+      # -------- SERVER (BACKEND) --------
+      - job: BuildServer
+        displayName: 'Build & Test Server (Backend)'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '22.x'
+            displayName: 'Install Node.js'
+
+          - script: |
+              npm ci
+              npm install
+            workingDirectory: 'server'
+            displayName: 'Install server dependencies'
+
+          # Prisma client generation
+          - script: |
+              npx prisma generate
+              npx prisma migrate deploy
+            workingDirectory: 'server'
+            env:
+              JWT_SECRET: supersecretkey
+              DATABASE_URL: "file:./dev.db"
+            displayName: 'Run Prisma Generate'
+
+          # Run backend tests (ESNext + ts-jest)
+          - script: npx jest --ci --runInBand --reporters=default --reporters=jest-junit
+            workingDirectory: 'server'
+            env:
+              JWT_SECRET: supersecretkey
+              DATABASE_URL: "file:./dev.db"
+            displayName: 'Run server tests'
+
+          # # Build server if needed
+          # - script: npx ts-node src/index.ts
+          #   workingDirectory: 'server'
+          #   displayName: 'Build server'
+
+          # 👇 This publishes the JUnit file to Azure Pipelines Tests tab
+          - task: PublishTestResults@2
+            displayName: 'Publish Jest Test Results'
+            condition: succeededOrFailed()
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: 'server/junit.xml'
+              mergeTestResults: true
+              failTaskOnFailedTests: false
+      
+      # -------- CLIENT (FRONTEND) --------
+      - job: BuildClient
+        displayName: 'Build & Test Client (Frontend)'
         steps:
           - task: NodeTool@0
             inputs:
               versionSpec: $(node_version)
-            displayName: "Install Node.js"
-          
-          - script: |
-              npm install
-              npm run build
-            displayName: "Install & Build Backend"
+            displayName: 'Install Node.js'
 
-          # - script: |
-          #     cd backend
-          #     npm test
-          #   displayName: "Run Backend Tests"
-          #   continueOnError: true # Skip if no tests yet
+          - script: npm ci
+            workingDirectory: 'client'
+            displayName: 'Install client dependencies'
+
+          - script: npm run build
+            workingDirectory: 'client'
+            displayName: 'Build client'
 
           - task: PublishBuildArtifacts@1
             inputs:
               PathtoPublish: 'client/dist'
               ArtifactName: 'client'
               publishLocation: 'Container'
-
-  #     - job: Frontend
-  #       displayName: "Build Frontend"
-  #       steps:
-  #         - task: NodeTool@0
-  #           inputs:
-  #             versionSpec: $(node_version)
-  #           displayName: "Install Node.js"
-
-  #         - script: |
-  #             cd frontend
-  #             npm install
-  #             npm run build
-  #           displayName: "Install & Build Frontend"
-
-  #         - script: |
-  #             cd frontend
-  #             npm test
-  #           displayName: "Run Frontend Tests"
-  #           continueOnError: true
-
-  #         - task: PublishBuildArtifacts@1
-  #           inputs:
-  #             PathtoPublish: 'frontend/dist'
-  #             ArtifactName: 'frontend'
-  #             publishLocation: 'Container'
-  # - stage: Deploy
-  #   jobs:
-  #     - deployment: DeployWeb
-  #       environment: 'production'
-  #       strategy:
-  #         runOnce:
-  #           deploy:
-  #             steps:
-  #               - task: AzureWebApp@1
-  #                 inputs:
-  #                   azureSubscription: '<your-azure-subscription>'
-  #                   appName: '<your-app-service-name>'
-  #                   package: '$(Pipeline.Workspace)/backend'
+            displayName: 'Publish client artifact'

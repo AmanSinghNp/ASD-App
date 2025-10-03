@@ -2,15 +2,15 @@
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // File Layout
-    "rootDir": "./src",
+    "rootDir": "./",
     "outDir": "./dist",
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "ESNext",
     "target": "ES2020",
-    "moduleResolution": "Node",
-    "types": [],
+    "moduleResolution": "node",
+    "types": ["node", "jest"],
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
@@ -44,5 +44,6 @@
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
   },
-  "include": ["src"]
+
+  "include": ["./prisma/seed.ts", "./prisma/seed.js", "_tests_"]
 }

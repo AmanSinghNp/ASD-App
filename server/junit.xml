@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="3" failures="1" errors="0" time="1.784">
+  <testsuite name="Profile routes" errors="0" failures="1" skipped="0" timestamp="2025-10-02T03:02:28" time="1.677" tests="3">
+    <testcase classname="Profile routes should fetch the user profile" name="Profile routes should fetch the user profile" time="0.023">
+    </testcase>
+    <testcase classname="Profile routes should update the user profile" name="Profile routes should update the user profile" time="0.179">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 401
+    at Object.toBe (C:\Users\btjhi\OneDrive\Documents\school\uni\adv soft\ASD-App-Belinda-R1\server\__tests__\auth.test.ts:54:24)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Profile routes should delete the user account" name="Profile routes should delete the user account" time="0.017">
+    </testcase>
+  </testsuite>
+</testsuites>
