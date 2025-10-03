@@ -1,10 +1,15 @@
+<<<<<<< HEAD
+// client/src/models/ProductCatalogueModel.ts
+=======
 
 import type { ReactNode } from 'react';
 import productsData from '../lib/mock/products.json';
+>>>>>>> origin/dev
 
 export interface Product {
     id: string;
     name: string;
+    brand: string;
     price: number;
     description: string;
     category: string;
@@ -18,13 +23,14 @@ export interface Category {
   name: string;
 }
 
-// Product Lists
+// Using the expanded product list from our previous session.
 const productLists: Product[] = [
   {
     id: '1',
-    name: 'Organic Apples',
+    name: 'Organic Gala Apples',
+    brand: 'FarmFresh',
     price: 4.99,
-    description: 'Fresh organic apples from local farms',
+    description: 'A 1kg bag of crisp, sweet organic gala apples, perfect for snacking.',
     category: 'fruits',
     imageUrl: '/images/apples.jpg',
     stock: 50,
@@ -32,9 +38,10 @@ const productLists: Product[] = [
   },
   {
     id: '2',
-    name: 'Bananas',
+    name: 'Organic Bananas',
+    brand: 'FarmFresh',
     price: 2.99,
-    description: 'Sweet yellow bananas',
+    description: 'A bunch of ripe, organic bananas, rich in potassium.',
     category: 'fruits',
     imageUrl: '/images/bananas.jpg',
     stock: 75,
@@ -42,9 +49,10 @@ const productLists: Product[] = [
   },
   {
     id: '3',
-    name: 'Milk',
+    name: 'Full Cream Milk',
+    brand: 'DairyLand',
     price: 3.49,
-    description: 'Fresh whole milk',
+    description: '2 litres of fresh, full cream dairy milk.',
     category: 'dairy',
     imageUrl: '/images/milk.jpg',
     stock: 30,
@@ -52,9 +60,10 @@ const productLists: Product[] = [
   },
   {
     id: '4',
-    name: 'Cheese',
+    name: 'Aged Cheddar Cheese',
+    brand: 'DairyLand',
     price: 5.99,
-    description: 'Aged cheddar cheese',
+    description: 'A 250g block of sharp, aged cheddar cheese.',
     category: 'dairy',
     imageUrl: '/images/cheese.jpg',
     stock: 25,
@@ -62,9 +71,10 @@ const productLists: Product[] = [
   },
   {
     id: '5',
-    name: 'Bread',
-    price: 2.49,
-    description: 'Whole grain bread',
+    name: 'Sourdough Bread Loaf',
+    brand: 'Artisan Bakes',
+    price: 4.49,
+    description: 'A freshly baked loaf of classic sourdough bread.',
     category: 'bakery',
     imageUrl: '/images/bread.jpg',
     stock: 40,
@@ -72,35 +82,130 @@ const productLists: Product[] = [
   },
   {
     id: '6',
-    name: 'Carrots',
+    name: 'Smart TV 55-inch 4K',
+    brand: 'ElectroVision',
+    price: 799.99,
+    description: 'A 55-inch 4K UHD Smart TV with HDR and streaming apps built-in.',
+    category: 'electronics',
+    imageUrl: '/images/tv.jpg',
+    stock: 15,
+    rating: 4.8
+  },
+  {
+    id: '7',
+    name: 'Noise-Cancelling Headphones',
+    brand: 'AudioPhile',
+    price: 249.99,
+    description: 'Wireless over-ear headphones with active noise-cancellation.',
+    category: 'electronics',
+    imageUrl: '/images/headphones.jpg',
+    stock: 22,
+    rating: 4.9
+  },
+  {
+    id: '8',
+    name: '2-Person Camping Tent',
+    brand: 'Outdoor Gear',
+    price: 129.99,
+    description: 'A lightweight and waterproof tent, perfect for weekend camping trips.',
+    category: 'outdoors',
+    imageUrl: '/images/tent.jpg',
+    stock: 18,
+    rating: 4.6
+  },
+  {
+    id: '9',
+    name: 'Hiking Backpack 50L',
+    brand: 'Outdoor Gear',
+    price: 89.99,
+    description: 'A durable 50-litre backpack with multiple compartments for hiking.',
+    category: 'outdoors',
+    imageUrl: '/images/backpack.jpg',
+    stock: 30,
+    rating: 4.4
+  },
+  {
+    id: '10',
+    name: 'Non-Stick Frying Pan',
+    brand: 'KitchenPro',
+    price: 39.99,
+    description: 'A 10-inch non-stick frying pan, suitable for all cooktops.',
+    category: 'home',
+    imageUrl: '/images/pan.jpg',
+    stock: 45,
+    rating: 4.7
+  },
+  {
+    id: '11',
+    name: 'Robot Vacuum Cleaner',
+    brand: 'CleanBot',
+    price: 399.00,
+    description: 'An autonomous robot vacuum with smart mapping and app control.',
+    category: 'appliances',
+    imageUrl: '/images/robot-vacuum.jpg',
+    stock: 12,
+    rating: 4.5
+  },
+  {
+    id: '12',
+    name: 'Organic Carrots',
+    brand: 'FarmFresh',
     price: 1.99,
-    description: 'Fresh organic carrots',
+    description: 'A 1kg bag of fresh, sweet organic carrots.',
     category: 'vegetables',
     imageUrl: '/images/carrots.jpg',
     stock: 60,
     rating: 4.1
   },
   {
-    id: '7',
-    name: 'Yogurt',
+    id: '13',
+    name: 'Greek Yogurt',
+    brand: 'DairyLand',
     price: 3.99,
-    description: 'Greek yogurt',
+    description: 'A 500g tub of thick and creamy Greek yogurt.',
     category: 'dairy',
     imageUrl: '/images/yogurt.jpg',
     stock: 35,
     rating: 4.4
+  },
+  {
+    id: '14',
+    name: 'Espresso Coffee Machine',
+    brand: 'KitchenPro',
+    price: 199.99,
+    description: 'A compact espresso machine with a milk frother.',
+    category: 'appliances',
+    imageUrl: '/images/coffee-machine.jpg',
+    stock: 20,
+    rating: 4.6
+  },
+  {
+    id: '15',
+    name: 'Yoga Mat',
+    brand: 'FitLife',
+    price: 29.99,
+    description: 'A non-slip, eco-friendly yoga mat for your daily practice.',
+    category: 'sports',
+    imageUrl: '/images/yoga-mat.jpg',
+    stock: 50,
+    rating: 4.8
   }
 ];
 
 const categories: Category[] = [
   { id: 'fruits', name: 'Fruits' },
+  { id: 'vegetables', name: 'Vegetables' },
   { id: 'dairy', name: 'Dairy' },
   { id: 'bakery', name: 'Bakery' },
-  { id: 'vegetables', name: 'Vegetables' }
+  { id: 'electronics', name: 'Electronics' },
+  { id: 'outdoors', name: 'Outdoors' },
+  { id: 'home', name: 'Home Goods' },
+  { id: 'appliances', name: 'Appliances' },
+  { id: 'sports', name: 'Sports' }
 ];
 
 export class ProductCatalogueModel {
-    // U023 Browse products in categories
+    // --- FIX: Restoring the missing methods ---
     getProductsByCategory(categoryId: string): Product[] {
         if (categoryId === 'all') {
             return productLists;
@@ -108,54 +213,63 @@ export class ProductCatalogueModel {
         return productLists.filter(product => product.category === categoryId);
     }
 
-    // U024: View details of a product
     getProductDetails(productId: string): Product | undefined {
         return productLists.find(product => product.id === productId);
     }
 
-    // U025: Sort products
     sortProducts(products: Product[], sortBy: string, ascending: boolean = true): Product[] {
         const sortedProducts = [...products];
 
         switch(sortBy) {
             case 'price':
-            sortedProducts.sort((a, b) => ascending ? a.price - b.price : b.price - a.price);
-            break;
+                sortedProducts.sort((a, b) => ascending ? a.price - b.price : b.price - a.price);
+                break;
 
             case 'name':
-            sortedProducts.sort((a, b) => {
-                const nameA = a.name.toUpperCase();
-                const nameB = b.name.toUpperCase();
-                if (ascending) {
-                return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
-                } else {
-                return nameA > nameB ? -1 : nameA < nameB ? 1 : 0;
-                }
-            });
-            break;
+                sortedProducts.sort((a, b) => {
+                    const nameA = a.name.toUpperCase();
+                    const nameB = b.name.toUpperCase();
+                    if (ascending) {
+                        return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
+                    } else {
+                        return nameA > nameB ? -1 : nameA < nameB ? 1 : 0;
+                    }
+                });
+                break;
+            
+            case 'brand':
+                sortedProducts.sort((a, b) => {
+                    const brandA = a.brand.toUpperCase();
+                    const brandB = b.brand.toUpperCase();
+                    if (ascending) {
+                        return brandA < brandB ? -1 : brandA > brandB ? 1 : 0;
+                    } else {
+                        return brandA > brandB ? -1 : brandA < brandB ? 1 : 0;
+                    }
+                });
+                break;
 
             case 'rating':
-            sortedProducts.sort((a, b) => {
-                const ratingA = a.rating || 0;
-                const ratingB = b.rating || 0;
-                return ascending ? ratingA - ratingB : ratingB - ratingA;
-            });
-            break;
+                sortedProducts.sort((a, b) => {
+                    const ratingA = a.rating || 0;
+                    const ratingB = b.rating || 0;
+                    return ascending ? ratingB - ratingA : ratingA - ratingB;
+                });
+                break;
 
             default:
-            // Default sort by name ascending
-            sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+                sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
         }
 
         return sortedProducts;
     }
+    // --- End of restored methods ---
 
-    // Get all categories
     getAllCategories(): Category[] {
         return categories;
     }
 
-    // Search products by name
+    // Search logic is now correctly only searching name and description
     searchProducts(query: string): Product[] {
         const lowerCaseQuery = query.toLowerCase();
         return productLists.filter(product => 
@@ -164,9 +278,12 @@ export class ProductCatalogueModel {
         );
     }
 
-    // Get all products (optional helper method)
     getAllProducts(): Product[] {
         return productLists;
     }
+<<<<<<< HEAD
+}
+=======
 
 }
+>>>>>>> origin/dev

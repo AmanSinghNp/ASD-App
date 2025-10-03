@@ -1,5 +1,10 @@
+<<<<<<< HEAD
+
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+=======
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+>>>>>>> origin/dev
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { DeliveryInterface } from './pages/delivery/DeliveryInterface';
 import ProductCatalogue from './ProductCatalogue';

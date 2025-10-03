@@ -1,8 +1,14 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 :root {
+<<<<<<< HEAD
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+ color: #213547; 
+  background-color: #ffffff; 
+
+=======
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
   font-weight: 400;
@@ -44,11 +50,11 @@
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   
+>>>>>>> origin/dev
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
 }
 
 * {
@@ -57,7 +63,13 @@
 
 body {
   margin: 0;
+<<<<<<< HEAD
+  
+  
+  min-width: 320px;
+=======
   padding: 0;
+>>>>>>> origin/dev
   min-height: 100vh;
   background-color: var(--bg-secondary);
   color: var(--text-primary);
@@ -215,3 +227,5 @@ input:focus, select:focus, textarea:focus {
     font-size: 1.5rem;
   }
 }
+
+
