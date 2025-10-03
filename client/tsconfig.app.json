@@ -4,15 +4,9 @@
 
     /* Bundler mode */
     "allowImportingTsExtensions": true,
-
     "moduleDetection": "force",
-
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -25,7 +19,6 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-
     /* Linting */
     "strict": false,
     "noUnusedLocals": true,
@@ -34,10 +27,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": [
-    "src/**/*", 
-    "src/server.ts", 
-    "**/*.test.ts",
-    "**/*.test.tsx"
-  ]
+  "include": ["src/**/*", "src/server.ts", "**/*.test.ts", "**/*.test.tsx"]
 }
