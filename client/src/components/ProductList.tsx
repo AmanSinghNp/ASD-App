@@ -1,8 +1,6 @@
-import React from "react";
-import { useCartContext } from "../context/CartContext";
-import { useProductCatalogue } from "../hooks/useProductCatalogue";
-import ProductCard from "./ProductCard";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { useProductCatalogue } from '../hooks/useProductCatalogue';
+import ProductCard from './ProductCard';
 
 const ProductList: React.FC = () => {
   const {
@@ -19,32 +17,9 @@ const ProductList: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 20,
-        }}
-      >
-        <h2 style={{ color: "#333", marginBottom: 0 }}>Product Catalogue</h2>
-        <button
-          onClick={() => navigate("/cart")}
-          style={{
-            padding: "10px 18px",
-            backgroundColor: "#493aecff",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontWeight: 600,
-          }}
-        >
-          Go to Cart
-        </button>
-      </div>
-
+    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+      <h2 style={{ color: '#333', marginBottom: '20px' }}>Product Catalogue</h2>
+      
       {/* Filters Section */}
       <div
         style={{
@@ -78,6 +53,7 @@ const ProductList: React.FC = () => {
             ))}
           </select>
         </div>
+        
         {/* Sort Filter */}
         <div>
           <label htmlFor="sort" style={{ marginRight: "8px" }}>
@@ -102,6 +78,7 @@ const ProductList: React.FC = () => {
             <option value="price-desc">Price (High to Low)</option>
           </select>
         </div>
+        
         {/* Search Filter */}
         <div>
           <label htmlFor="search" style={{ marginRight: "8px" }}>
@@ -131,21 +108,14 @@ const ProductList: React.FC = () => {
       </p>
 
       {/* Products Grid */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-          gap: "20px",
-          justifyItems: "start",
-        }}
-      >
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
+        gap: '20px'
+      }}>
         {products.length > 0 ? (
-          products.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onAddToCart={addToCart}
-            />
+          products.map(product => (
+            <ProductCard key={product.id} product={product} />
           ))
         ) : (
           <div

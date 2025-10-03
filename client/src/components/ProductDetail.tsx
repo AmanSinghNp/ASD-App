@@ -1,97 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { ProductController } from "../controllers/ProductCatalogueController";
-import { useCartContext } from "../context/CartContext";
-import type { Product } from "../models/ProductCatalogueModel";
-
-const QuantityInput: React.FC<{
-  quantity: number;
-  setQuantity: (qty: number) => void;
-  max: number;
-  disabled?: boolean;
-  id: string;
-}> = ({ quantity, setQuantity, max, disabled, id }) => (
-  <input
-    id={id}
-    type="number"
-    min={1}
-    max={max}
-    value={quantity}
-    disabled={disabled}
-    onChange={(e) =>
-      setQuantity(Math.max(1, Math.min(max, Number(e.target.value))))
-    }
-    style={{ width: 50, padding: 6, borderRadius: 4, border: "1px solid #ccc" }}
-  />
-);
-
-const FeedbackMessage: React.FC<{ visible: boolean }> = ({ visible }) => {
-  if (!visible) return null;
-  return (
-    <span
-      style={{
-        position: "absolute",
-        left: "50%",
-        top: "-38px",
-        transform: "translateX(-50%)",
-        background: "#28a745",
-        color: "white",
-        padding: "7px 18px",
-        borderRadius: "20px",
-        fontWeight: 600,
-        fontSize: "1em",
-        boxShadow: "0 2px 8px rgba(40,167,69,0.15)",
-        display: "flex",
-        alignItems: "center",
-        pointerEvents: "none",
-        zIndex: 2,
-      }}
-    >
-      Added!
-    </span>
-  );
-};
-
-const AddToCartButton: React.FC<{
-  product: Product;
-  quantity: number;
-  onAdd: () => void;
-}> = ({ product, quantity, onAdd }) => {
-  const [addedMsg, setAddedMsg] = useState(false);
-
-  const handleClick = () => {
-    onAdd();
-    setAddedMsg(true);
-    setTimeout(() => setAddedMsg(false), 1200);
-  };
-
-  return (
-    <div style={{ position: "relative", display: "inline-block" }}>
-      <button
-        disabled={product.stockQty === 0}
-        onClick={handleClick}
-        style={{
-          padding: "12px 32px",
-          backgroundColor: product.stockQty > 0 ? "#493aecff" : "#ccc",
-          color: "white",
-          border: "none",
-          borderRadius: "8px",
-          cursor: product.stockQty > 0 ? "pointer" : "not-allowed",
-          fontSize: "1.1em",
-          fontWeight: 700,
-        }}
-      >
-        {product.stockQty > 0 ? "Add to Cart" : "Out of Stock"}
-      </button>
-      <FeedbackMessage visible={addedMsg} />
-    </div>
-  );
-};
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { ProductController } from '../controllers/ProductCatalogueController';
+import type { Product } from '../models/ProductCatalogueModel';
 
 const ProductDetail: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
-  const { addToCart } = useCartContext();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
@@ -109,11 +23,11 @@ const ProductDetail: React.FC = () => {
     setQuantity(1);
   }, [productId]);
 
-  if (loading)
-    return (
-      <div style={{ padding: "20px", textAlign: "center" }}>Loading...</div>
-    );
-  if (!product)
+  if (loading) {
+    return <div style={{ padding: '20px', textAlign: 'center' }}>Loading...</div>;
+  }
+
+  if (!product) {
     return (
       <div style={{ padding: "20px", textAlign: "center" }}>
         <h2>Product not found</h2>
@@ -134,98 +48,87 @@ const ProductDetail: React.FC = () => {
     );
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#f8f8f8",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <div
+    <div style={{ padding: '20px', margin: '0 auto', maxWidth: '1000px', fontFamily: 'Arial, sans-serif' }}>
+      <button 
+        onClick={() => navigate(-1)}
         style={{
-          background: "white",
-          border: "1.5px solid #e0e0e0",
-          borderRadius: "12px",
-          padding: "40px 32px",
-          maxWidth: "700px",
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
+          padding: '8px 12px',
+          backgroundColor: '#493aecff',
+          border: '1px solid #ddd',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          marginBottom: '20px'
         }}
       >
-        <button
-          onClick={() => navigate(-1)}
-          style={{
-            alignSelf: "flex-start",
-            padding: "8px 12px",
-            backgroundColor: "#493aecff",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-            marginBottom: "20px",
-            color: "white",
-          }}
-        >
-          ← Back
-        </button>
-
-        <div
-          style={{
-            display: "flex",
-            width: "100%",
-            gap: "32px",
-            alignItems: "flex-start",
-            marginBottom: 24,
-          }}
-        >
-          <img
-            src={product.imageUrl}
-            alt={product.name || "Product Image"}
-            style={{
-              width: "220px",
-              height: "220px",
-              objectFit: "cover",
-              borderRadius: "8px",
-              border: "1px solid #eee",
-              background: "#fafaff",
-              flexShrink: 0,
-            }}
-          />
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
-            <h1 style={{ color: "#000000", marginBottom: "10px" }}>
-              {product.name}
-            </h1>
-            <p
+        ← Back
+      </button>
+      
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '30px' }}>
+          {/* Product Image */}
+          <div style={{ flex: '1', minWidth: '300px' }}>
+            <img 
+              src={product.imageUrl} 
+              alt={product.name} 
+              style={{ 
+                width: '100%', 
+                maxWidth: '400px', 
+                borderRadius: '8px',
+                boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+              }} 
+            />
+          </div>
+          
+          {/* Product Info */}
+          <div style={{ flex: '2', minWidth: '300px' }}>
+            <h1 style={{ color: '#000000', marginBottom: '10px' }}>{product.name}</h1>
+            
+            <p style={{ 
+              fontSize: '1.5em', 
+              fontWeight: 'bold', 
+              color: '#493aecff', 
+              margin: '15px 0' 
+            }}>
+              ${product.price.toFixed(2)}
+            </p>
+            
+            <p style={{ 
+              color: product.stock > 0 ? 'black' : 'red',
+              fontSize: '1.1em',
+              margin: '10px 0'
+            }}>
+              {product.stock > 0 ? `In stock: ${product.stock} units available` : 'Out of stock'}
+            </p>
+            
+            {product.rating && (
+              <div style={{ margin: '15px 0' }}>
+                <span style={{ fontWeight: 'bold', color: '#000000' }}>Customer Rating: </span>
+                <span style={{ color: '#ffc107', fontSize: '1.2em' }}>
+                  {'★'.repeat(Math.round(product.rating))}
+                </span>
+                <span style={{ marginLeft: '8px', color: '#000000' }}>({product.rating}/5)</span>
+              </div>
+            )}
+            
+            <div style={{ margin: '20px 0' }}>
+              <h3 style={{ marginBottom: '10px', color: '#000000' }}>Description</h3>
+              <p style={{ lineHeight: '1.6', color: '#555' }}>{product.description}</p>
+            </div>
+            
+            <button 
+              disabled={product.stock === 0}
               style={{
-                fontSize: "1.5em",
-                fontWeight: "bold",
-                color: "#493aecff",
-                margin: "10px 0 8px 0",
+                padding: '12px 24px',
+                backgroundColor: product.stock > 0 ? '#493aecff' : '#ccc',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: product.stock > 0 ? 'pointer' : 'not-allowed',
+                fontSize: '1.1em'
               }}
             >
-              ${(product.priceCents / 100).toFixed(2)}
-            </p>
-            <p
-              style={{
-                color: product.stockQty > 0 ? "black" : "red",
-                fontSize: "1.1em",
-                margin: "0 0 12px 0",
-              }}
-            >
-              {product.stockQty > 0
-                ? `In stock: ${product.stockQty} units available`
-                : "Out of stock"}
-            </p>
+              {product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
+            </button>
           </div>
         </div>
 
