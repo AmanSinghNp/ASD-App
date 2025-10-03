@@ -16,7 +16,7 @@ function ProductCatalogue() {
     <CartProvider>
       <Router>
         <div className="ProductCatalogue" style={{ minHeight: '100vh', width: '100%', margin: 0, padding: 0 }}>
-          {/* <Header /> part of header for login/signup i don't know how to merge the headers*/}
+          <Header /> 
           <main style={{ marginTop: 0, paddingTop: 0 }}>
             <Routes>
               <Route path="/" element={<ProductList />} />
