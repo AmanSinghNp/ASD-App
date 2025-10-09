@@ -80,7 +80,7 @@ This release implements core e-commerce functionality including User Management,
 ## Project Structure
 
 ```
-├── client/                 # React frontend
+├── client/                   # React frontend
 │   ├── src/
 │   │   ├── components/       # Reusable components
 │   │   │   ├── admin/        # Admin-specific components
