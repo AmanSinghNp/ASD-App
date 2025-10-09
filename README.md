@@ -4,7 +4,7 @@ This iteration implements a fully functional Supermarket website and prototype d
 
 ## Features Implemented
 
-### User Account - Belinda
+### User Management - Belinda
 - **Signup**: Make an account as a user
 - **Login**: Login into session with credentials
 - **View/Edit Profile**: View and update profile details, including name and email
