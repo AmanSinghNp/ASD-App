@@ -1,0 +1,75 @@
+body {
+  background-color: #ffffff;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  
+  /* --- ADD THESE LINES TO CENTER EVERYTHING --- */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.iotbay-filter-container {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  padding: 40px 20px;
+  text-align: center;
+  
+  /* --- CHANGE THIS LINE TO MAKE THE BACKGROUND WHITE --- */
+  background-color: #ffffff;
+  
+  /* Adding a subtle shadow to distinguish it from the white page background */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+}
+
+.iotbay-filter-container h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #212529;
+  margin-bottom: 8px;
+}
+
+.iotbay-filter-container p {
+  font-size: 1.1rem;
+  color: #6c757d;
+  margin-bottom: 32px;
+}
+
+.filter-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-input, .filter-select {
+  padding: 12px 16px;
+  font-size: 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  background-color: #ffffff;
+  min-width: 200px;
+  color: #495057;
+}
+
+.filter-input::placeholder {
+  color: #adb5bd;
+}
+
+.apply-filters-btn {
+  padding: 12px 32px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #0d6efd;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.apply-filters-btn:hover {
+  background-color: #0b5ed7;
+}

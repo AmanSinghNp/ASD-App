@@ -1,6 +1,10 @@
-import React from "react";
-import { Edit, Eye, EyeOff, Trash2 } from "lucide-react";
-import { ProductTableProps } from "../../types/product";
+import React from 'react';
+import { Edit, Eye, EyeOff, Trash2 } from 'lucide-react';
+<<<<<<< HEAD
+import type { ProductTableProps,} from '../../types/product';
+=======
+import type { ProductTableProps } from '../../types/product';
+>>>>>>> origin/dev
 
 export const ProductTable: React.FC<ProductTableProps> = ({
   products,
@@ -80,9 +84,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                 </span>
               </td>
               <td className="px-8 py-6 whitespace-nowrap">
-                <div className="text-sm font-semibold text-gray-900">
-                  {formatPrice(product.priceCents)}
-                </div>
+                <div className="text-sm font-semibold text-gray-900">{formatPrice(product.priceCents)}</div>
               </td>
               <td className="px-8 py-6 whitespace-nowrap">
                 <div className="text-sm text-gray-900">{product.stockQty}</div>

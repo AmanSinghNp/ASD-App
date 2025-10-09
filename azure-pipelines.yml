@@ -1,29 +1,123 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
 
 trigger:
   branches:
-    include: 
+    include:
       - main
-      # - feature/belinda
-      # - feature/danny
+      - dev
+
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: "ubuntu-latest"
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '20.x'
-  displayName: 'Install Node.js'
 
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+variables:
+  nodeVersion: "18.x"
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
 
+stages:
+  
+  - stage: Test
+    displayName: 'Test Stage'
+    jobs:
+      
+      - job: FrontendTests
+        displayName: 'Run Client (Frontend) Tests'
+        steps:
+          
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVersion)
+            displayName: 'Install Node.js'
+
+       
+          - script: npm install
+            displayName: 'Install client dependencies'
+            workingDirectory: 'client' 
+
+        
+          - script: npm test
+            displayName: 'Run client unit tests'
+            workingDirectory: 'client'
+
+      
+      - job: BackendTests
+        displayName: 'Run Server (Backend) Tests'
+        steps:
+          
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVersion)
+            displayName: 'Install Node.js'
+
+         
+          - script: npm install
+            displayName: 'Install server dependencies'
+            workingDirectory: 'server'
+            
+         
+          - script: npm test
+            displayName: 'Run server unit tests'
+            workingDirectory: 'server'
+
+ 
+  - stage: Build
+    displayName: 'Build Stage'
+    dependsOn: Test 
+    jobs:
+      
+      - job: BuildClient
+        displayName: 'Build Client (Frontend)'
+        steps:
+          
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVersion)
+            displayName: 'Install Node.js'
+
+          
+          - script: |
+              npm install
+              npm run build
+            displayName: 'Install dependencies and build client'
+            workingDirectory: 'client'
+            
+          
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: 'client/dist'
+              ArtifactName: 'client'
+              publishLocation: 'Container'
+            displayName: 'Publish client artifact'
+
+     
+      - job: BuildServer
+        displayName: 'Build Server (Backend)'
+        steps:
+          
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVersion)
+            displayName: 'Install Node.js'
+
+          
+          - script: npm install
+            displayName: 'Install server dependencies'
+            workingDirectory: 'server'
+            
+          
+          - script: npx prisma generate
+            displayName: 'Run Prisma Generate'
+            workingDirectory: 'server'
+
+          
+          - script: npm run build
+            displayName: 'Build server'
+            workingDirectory: 'server'
+
+          
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: 'server' 
+              ArtifactName: 'server'
+              publishLocation: 'Container'
+            displayName: 'Publish server artifact'
