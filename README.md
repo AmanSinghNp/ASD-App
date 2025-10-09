@@ -1,6 +1,6 @@
 # ASD Project - Iteration 2
 
-This iteration implements a static Admin Dashboard UI and prototype database setup for the ASD project.
+This iteration implements a fully functional Supermarket website and prototype database setup for the ASD project.
 
 ## Features Implemented
 
