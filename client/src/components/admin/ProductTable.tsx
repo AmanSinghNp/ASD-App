@@ -1,10 +1,7 @@
 import React from 'react';
 import { Edit, Eye, EyeOff, Trash2 } from 'lucide-react';
-<<<<<<< HEAD
 import type { ProductTableProps,} from '../../types/product';
-=======
-import type { ProductTableProps } from '../../types/product';
->>>>>>> origin/dev
+
 
 export const ProductTable: React.FC<ProductTableProps> = ({
   products,

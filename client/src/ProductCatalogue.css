@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 
 #root {
     width: 100%;
@@ -19,7 +18,7 @@ body {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   background-color: white;
   border: 1px solid #e5e7eb; 
-=======
+
 .ProductCatalogue {
   min-height: 100vh;
   background-color: var(--bg-secondary);
@@ -33,7 +32,7 @@ body {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
->>>>>>> origin/dev
+
 }
 
 .product-card:hover {
@@ -42,7 +41,7 @@ body {
   border-color: var(--primary-blue-light);
 }
 
-<<<<<<< HEAD
+
 
 .filter-bar {
   display: flex;
@@ -120,7 +119,8 @@ body {
 
 .apply-filters-btn:hover {
   background-color: #0b5ed7;
-=======
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .filters {
@@ -131,5 +131,5 @@ body {
   .filters > div {
     margin-bottom: var(--spacing-sm);
   }
->>>>>>> origin/dev
+  }
 }

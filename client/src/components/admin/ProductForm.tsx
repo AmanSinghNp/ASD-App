@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import type { ProductFormProps, ProductFormData } from '../../types/product';
-<<<<<<< HEAD
-=======
+
 interface ValidationErrors {
   name?: string;
   sku?: string;
@@ -11,7 +10,7 @@ interface ValidationErrors {
   stockQty?: string;
   imageUrl?: string;
 }
->>>>>>> origin/dev
+
 
 export const ProductForm: React.FC<ProductFormProps> = ({
   initialProduct,

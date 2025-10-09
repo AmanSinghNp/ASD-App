@@ -1,21 +1,21 @@
-<<<<<<< HEAD
-// client/src/models/ProductCatalogueModel.ts
-=======
 
 import type { ReactNode } from 'react';
 import productsData from '../lib/mock/products.json';
->>>>>>> origin/dev
 
 export interface Product {
-    id: string;
-    name: string;
-    brand: string;
-    price: number;
-    description: string;
-    category: string;
-    imageUrl: string;
-    stock: number;
-    rating?: number;
+  description: ReactNode;
+  stock: number;
+  price: number;
+  id: string;
+  sku: string;
+  name: string;
+  category: string;
+  priceCents: number;
+  stockQty: number;
+  imageUrl: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Category {
@@ -23,267 +23,78 @@ export interface Category {
   name: string;
 }
 
-// Using the expanded product list from our previous session.
-const productLists: Product[] = [
-  {
-    id: '1',
-    name: 'Organic Gala Apples',
-    brand: 'FarmFresh',
-    price: 4.99,
-    description: 'A 1kg bag of crisp, sweet organic gala apples, perfect for snacking.',
-    category: 'fruits',
-    imageUrl: '/images/apples.jpg',
-    stock: 50,
-    rating: 4.5
-  },
-  {
-    id: '2',
-    name: 'Organic Bananas',
-    brand: 'FarmFresh',
-    price: 2.99,
-    description: 'A bunch of ripe, organic bananas, rich in potassium.',
-    category: 'fruits',
-    imageUrl: '/images/bananas.jpg',
-    stock: 75,
-    rating: 4.2
-  },
-  {
-    id: '3',
-    name: 'Full Cream Milk',
-    brand: 'DairyLand',
-    price: 3.49,
-    description: '2 litres of fresh, full cream dairy milk.',
-    category: 'dairy',
-    imageUrl: '/images/milk.jpg',
-    stock: 30,
-    rating: 4.0
-  },
-  {
-    id: '4',
-    name: 'Aged Cheddar Cheese',
-    brand: 'DairyLand',
-    price: 5.99,
-    description: 'A 250g block of sharp, aged cheddar cheese.',
-    category: 'dairy',
-    imageUrl: '/images/cheese.jpg',
-    stock: 25,
-    rating: 4.7
-  },
-  {
-    id: '5',
-    name: 'Sourdough Bread Loaf',
-    brand: 'Artisan Bakes',
-    price: 4.49,
-    description: 'A freshly baked loaf of classic sourdough bread.',
-    category: 'bakery',
-    imageUrl: '/images/bread.jpg',
-    stock: 40,
-    rating: 4.3
-  },
-  {
-    id: '6',
-    name: 'Smart TV 55-inch 4K',
-    brand: 'ElectroVision',
-    price: 799.99,
-    description: 'A 55-inch 4K UHD Smart TV with HDR and streaming apps built-in.',
-    category: 'electronics',
-    imageUrl: '/images/tv.jpg',
-    stock: 15,
-    rating: 4.8
-  },
-  {
-    id: '7',
-    name: 'Noise-Cancelling Headphones',
-    brand: 'AudioPhile',
-    price: 249.99,
-    description: 'Wireless over-ear headphones with active noise-cancellation.',
-    category: 'electronics',
-    imageUrl: '/images/headphones.jpg',
-    stock: 22,
-    rating: 4.9
-  },
-  {
-    id: '8',
-    name: '2-Person Camping Tent',
-    brand: 'Outdoor Gear',
-    price: 129.99,
-    description: 'A lightweight and waterproof tent, perfect for weekend camping trips.',
-    category: 'outdoors',
-    imageUrl: '/images/tent.jpg',
-    stock: 18,
-    rating: 4.6
-  },
-  {
-    id: '9',
-    name: 'Hiking Backpack 50L',
-    brand: 'Outdoor Gear',
-    price: 89.99,
-    description: 'A durable 50-litre backpack with multiple compartments for hiking.',
-    category: 'outdoors',
-    imageUrl: '/images/backpack.jpg',
-    stock: 30,
-    rating: 4.4
-  },
-  {
-    id: '10',
-    name: 'Non-Stick Frying Pan',
-    brand: 'KitchenPro',
-    price: 39.99,
-    description: 'A 10-inch non-stick frying pan, suitable for all cooktops.',
-    category: 'home',
-    imageUrl: '/images/pan.jpg',
-    stock: 45,
-    rating: 4.7
-  },
-  {
-    id: '11',
-    name: 'Robot Vacuum Cleaner',
-    brand: 'CleanBot',
-    price: 399.00,
-    description: 'An autonomous robot vacuum with smart mapping and app control.',
-    category: 'appliances',
-    imageUrl: '/images/robot-vacuum.jpg',
-    stock: 12,
-    rating: 4.5
-  },
-  {
-    id: '12',
-    name: 'Organic Carrots',
-    brand: 'FarmFresh',
-    price: 1.99,
-    description: 'A 1kg bag of fresh, sweet organic carrots.',
-    category: 'vegetables',
-    imageUrl: '/images/carrots.jpg',
-    stock: 60,
-    rating: 4.1
-  },
-  {
-    id: '13',
-    name: 'Greek Yogurt',
-    brand: 'DairyLand',
-    price: 3.99,
-    description: 'A 500g tub of thick and creamy Greek yogurt.',
-    category: 'dairy',
-    imageUrl: '/images/yogurt.jpg',
-    stock: 35,
-    rating: 4.4
-  },
-  {
-    id: '14',
-    name: 'Espresso Coffee Machine',
-    brand: 'KitchenPro',
-    price: 199.99,
-    description: 'A compact espresso machine with a milk frother.',
-    category: 'appliances',
-    imageUrl: '/images/coffee-machine.jpg',
-    stock: 20,
-    rating: 4.6
-  },
-  {
-    id: '15',
-    name: 'Yoga Mat',
-    brand: 'FitLife',
-    price: 29.99,
-    description: 'A non-slip, eco-friendly yoga mat for your daily practice.',
-    category: 'sports',
-    imageUrl: '/images/yoga-mat.jpg',
-    stock: 50,
-    rating: 4.8
-  }
-];
 
-const categories: Category[] = [
-  { id: 'fruits', name: 'Fruits' },
-  { id: 'vegetables', name: 'Vegetables' },
-  { id: 'dairy', name: 'Dairy' },
-  { id: 'bakery', name: 'Bakery' },
-  { id: 'electronics', name: 'Electronics' },
-  { id: 'outdoors', name: 'Outdoors' },
-  { id: 'home', name: 'Home Goods' },
-  { id: 'appliances', name: 'Appliances' },
-  { id: 'sports', name: 'Sports' }
-];
+let globalProductCatalogueModel: ProductCatalogueModel | null = null;
 
 export class ProductCatalogueModel {
-    // --- FIX: Restoring the missing methods ---
-    getProductsByCategory(categoryId: string): Product[] {
-        if (categoryId === 'all') {
-            return productLists;
-        }
-        return productLists.filter(product => product.category === categoryId);
+  private products: Product[];
+  private categories: Category[];
+
+  constructor() {
+    // Deep copy to avoid mutation of the imported JSON
+    this.products = (productsData as Product[]).map(p => ({ ...p }));
+    this.categories = this.extractCategories();
+  }
+
+  static getInstance(): ProductCatalogueModel {
+    if (!globalProductCatalogueModel) {
+      globalProductCatalogueModel = new ProductCatalogueModel();
     }
+    return globalProductCatalogueModel;
+  }
 
-    getProductDetails(productId: string): Product | undefined {
-        return productLists.find(product => product.id === productId);
+  private extractCategories(): Category[] {
+    const unique = Array.from(new Set(this.products.map(p => p.category)));
+    return unique.map(cat => ({ id: cat, name: cat.charAt(0).toUpperCase() + cat.slice(1) }));
+  }
+
+  getProductsByCategory(categoryId: string): Product[] {
+    if (categoryId === 'all') return this.products;
+    return this.products.filter(product => product.category === categoryId);
+  }
+
+  getProductDetails(productId: string): Product | undefined {
+    return this.products.find(product => product.id === productId);
+  }
+
+  sortProducts(products: Product[], sortBy: string, ascending: boolean = true): Product[] {
+    const sortedProducts = [...products];
+    switch (sortBy) {
+      case 'price':
+        sortedProducts.sort((a, b) => ascending ? a.priceCents - b.priceCents : b.priceCents - a.priceCents);
+        break;
+      case 'name':
+        sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+        if (!ascending) sortedProducts.reverse();
+        break;
+      default:
+        sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
     }
+    return sortedProducts;
+  }
 
-    sortProducts(products: Product[], sortBy: string, ascending: boolean = true): Product[] {
-        const sortedProducts = [...products];
+  getAllCategories(): Category[] {
+    return [{ id: 'all', name: 'All Categories' }, ...this.categories];
+  }
 
-        switch(sortBy) {
-            case 'price':
-                sortedProducts.sort((a, b) => ascending ? a.price - b.price : b.price - a.price);
-                break;
+  searchProducts(query: string): Product[] {
+    const lowerCaseQuery = query.toLowerCase();
+    return this.products.filter(product =>
+      product.name.toLowerCase().includes(lowerCaseQuery)
+    );
+  }
 
-            case 'name':
-                sortedProducts.sort((a, b) => {
-                    const nameA = a.name.toUpperCase();
-                    const nameB = b.name.toUpperCase();
-                    if (ascending) {
-                        return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
-                    } else {
-                        return nameA > nameB ? -1 : nameA < nameB ? 1 : 0;
-                    }
-                });
-                break;
-            
-            case 'brand':
-                sortedProducts.sort((a, b) => {
-                    const brandA = a.brand.toUpperCase();
-                    const brandB = b.brand.toUpperCase();
-                    if (ascending) {
-                        return brandA < brandB ? -1 : brandA > brandB ? 1 : 0;
-                    } else {
-                        return brandA > brandB ? -1 : brandA < brandB ? 1 : 0;
-                    }
-                });
-                break;
+  getAllProducts(): Product[] {
+    return this.products;
+  }
 
-            case 'rating':
-                sortedProducts.sort((a, b) => {
-                    const ratingA = a.rating || 0;
-                    const ratingB = b.rating || 0;
-                    return ascending ? ratingB - ratingA : ratingA - ratingB;
-                });
-                break;
-
-            default:
-                sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
-        }
-
-        return sortedProducts;
+  // Decrement stock when added to cart
+  decrementStock(productId: string, quantity: number = 1): boolean {
+    const product = this.products.find(p => p.id === productId);
+    if (product && product.stockQty >= quantity) {
+      product.stockQty -= quantity;
+      return true;
     }
-    // --- End of restored methods ---
-
-    getAllCategories(): Category[] {
-        return categories;
-    }
-
-    // Search logic is now correctly only searching name and description
-    searchProducts(query: string): Product[] {
-        const lowerCaseQuery = query.toLowerCase();
-        return productLists.filter(product => 
-            product.name.toLowerCase().includes(lowerCaseQuery) ||
-            product.description.toLowerCase().includes(lowerCaseQuery)
-        );
-    }
-
-    getAllProducts(): Product[] {
-        return productLists;
-    }
-<<<<<<< HEAD
+    return false;
+  }
 }
-=======
-
-}
->>>>>>> origin/dev

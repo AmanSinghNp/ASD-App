@@ -4,10 +4,8 @@ import { ProductTable } from '../../components/admin/ProductTable';
 import { ProductForm } from '../../components/admin/ProductForm';
 import { ConfirmDialog } from '../../components/admin/ConfirmDialog';
 import type { Product, ProductFormData } from '../../types/product';
-<<<<<<< HEAD
+
 import productsData from '../../lib/mock/products.json';
-=======
->>>>>>> origin/dev
 
 export const AdminDashboard: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
