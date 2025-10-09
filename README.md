@@ -10,7 +10,7 @@ This iteration implements a fully functional Supermarket website and prototype d
 - **View/Edit Profile**: View and update profile details, including name and email
 - **Delete**: Delete user account
 
-## Order History - Belinda
+### Order History - Belinda
 - **View Order History**: view order history, including name of products, quantity, individual and total prices
 
 ### Admin Dashboard Interface - Aman
