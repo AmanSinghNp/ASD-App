@@ -1,16 +1,25 @@
-# ASD Project - Iteration 0
+# ASD Project - Iteration 2
 
-This iteration implements a static Admin Dashboard UI and prototype database setup for the ASD (Autism Spectrum Disorder) project.
+This iteration implements a static Admin Dashboard UI and prototype database setup for the ASD project.
 
 ## Features Implemented
 
-### Admin Dashboard Interface
+### User Account - Belinda
+- **Signup**: Make an account as a user
+- **Login**: Login into session with credentials
+- **View/Edit Profile**: View and update profile details, including name and email
+- **Delete**: Delete user account
+
+## Order History - Belinda
+- **View Order History**: view order history, including name of products, quantity, individual and total prices
+
+### Admin Dashboard Interface - Aman
 - **Product Management**: View, add, edit, hide/unhide, and remove products
 - **Filtering**: Search by name or SKU, filter by category and status
 - **Pagination**: Client-side pagination with 25 items per page
 - **Responsive Design**: Modern UI using Tailwind CSS and shadcn/ui components
 
-### Database Setup
+### Database Setup - Aman
 - **SQLite Database**: Development database with Prisma ORM
 - **Entity Models**: User, Product, Cart, CartItem with proper relations
 - **Seed Data**: Initial data including staff user, customer, products, and sample cart
@@ -32,14 +41,14 @@ This iteration implements a static Admin Dashboard UI and prototype database set
 ## Project Structure
 
 ```
-├── client/                 # React frontend
+├── client/                   # React frontend
 │   ├── src/
-│   │   ├── components/admin/  # Admin components
-│   │   ├── pages/admin/        # Admin pages
-│   │   ├── types/             # TypeScript types
-│   │   └── lib/mock/          # Mock data
+│   │   ├── components/       # Components
+│   │   ├── pages/            # Pages
+│   │   ├── types/            # TypeScript types
+│   │   └── lib/mock/         # Mock data
 │   └── package.json
-├── server/                 # Backend (database only for now)
+├── server/                   # Backend (database only for now)
 │   ├── prisma/
 │   │   ├── schema.prisma     # Database schema
 │   │   └── seed.js           # Seed script
