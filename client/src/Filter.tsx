@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/dev
 import "./Filter.css"; // Importing the CSS file
 
 // --- Mock Data ---
