@@ -284,7 +284,7 @@ const Checkout: React.FC = () => {
               value={formData.lastName}
               onChange={(e) => {
                 const val = e.target.value.replace(/[^a-zA-Z]/g, "");
-                setFormData({ ...formData, firstName: val });
+                setFormData({ ...formData, lastName: val });
               }}
               required
             />
@@ -297,6 +297,7 @@ const Checkout: React.FC = () => {
               value={formData.email}
               onChange={handleChange}
               required
+              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
             />
             <input
               type="tel"
@@ -622,7 +623,7 @@ const Checkout: React.FC = () => {
                     <p>
                       Shipping: <span>${(shipping / 100).toFixed(2)}</span>
                     </p>
-                    <h4 style={{ color: "purple" }}>
+                    <h4 style={{ color: "Black" }}>
                       Total: <span>${(total / 100).toFixed(2)}</span>
                     </h4>
                   </>
