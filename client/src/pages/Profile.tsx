@@ -26,7 +26,8 @@ function Profile() {
       }
 
       try {
-        const response = await fetch("http://localhost:3000/auth/profile", {
+        // "http://localhost:3000/auth/profile"
+        const response = await fetch("http://localhost:4000/api/auth/profile", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -56,7 +57,7 @@ function Profile() {
     if (!window.confirm("Are you sure you want to delete your account?")) return;
 
     try {
-      const response = await fetch("http://localhost:3000/auth/delete", {
+      const response = await fetch("http://localhost:4000/api/auth/delete", {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

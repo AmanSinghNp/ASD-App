@@ -7,6 +7,10 @@ import ProductCatalogue from './ProductCatalogue';
 import Checkout from './Checkout';
 import { Settings, Truck, ShoppingCart, Package } from 'lucide-react';
 import './App.css';
+import Login from './pages/Login';
+import Profile from './pages/Profile';
+import Signup from './pages/Signup';
+import EditProfile from './pages/EditProfile';
 
 /**
  * Navigation component for the main application header
@@ -55,7 +59,9 @@ const Navigation: React.FC = () => {
                 { to: '/', label: 'Product Catalogue', icon: Package },
                 { to: '/checkout', label: 'Checkout', icon: ShoppingCart },
                 { to: '/admin', label: 'Admin Dashboard (F007)', icon: Settings },
-                { to: '/delivery', label: 'Delivery Interface (F008)', icon: Truck }
+                { to: '/delivery', label: 'Delivery Interface (F008)', icon: Truck },
+                { to: '/auth/login', label: 'Login', icon: null},
+                { to: '/auth/signup', label: 'Signup', icon: null}
               ].map(({ to, label, icon: Icon }) => (
                 <Link
                   key={to}
@@ -86,7 +92,7 @@ const Navigation: React.FC = () => {
                     }
                   }}
                 >
-                  <Icon size={16} />
+                  {Icon && <Icon size={16} />}
                   {label}
                 </Link>
               ))}
@@ -115,6 +121,10 @@ function App() {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/delivery" element={<DeliveryInterface />} />
+            <Route path="/auth/login" element={<Login />} />
+            <Route path="/auth/profile" element={<Profile />} />
+            <Route path="/auth/signup" element={<Signup />} />
+            <Route path="/auth/edit-profile" element={<EditProfile />} />
           </Routes>
         </div>
       </Router>
