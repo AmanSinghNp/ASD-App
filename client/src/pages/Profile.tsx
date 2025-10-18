@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext"; // Import useAuth to call logout
 import "../Auth.css";
 
 interface Customer {
@@ -9,6 +10,7 @@ interface Customer {
 }
 
 function Profile() {
+  const { logout } = useAuth(); // Get the logout function from AuthContext
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -26,7 +28,6 @@ function Profile() {
       }
 
       try {
-        // "http://localhost:3000/auth/profile"
         const response = await fetch("http://localhost:4000/api/auth/profile", {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -38,7 +39,7 @@ function Profile() {
           return;
         }
 
-        const data: Customer = await response.json(); // matches Prisma select
+        const data: Customer = await response.json();
         setCustomer(data);
         setLoading(false);
       } catch (err) {
@@ -70,6 +71,11 @@ function Profile() {
 
       alert("Account deleted successfully.");
       localStorage.removeItem("token");
+
+      // Call logout from AuthContext to clear user state and trigger UI changes
+      logout();
+
+      // Redirect to homepage (or login/signup page)
       navigate("/");
     } catch (err) {
       console.error(err);
