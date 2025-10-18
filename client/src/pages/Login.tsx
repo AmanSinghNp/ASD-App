@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";  // Import useAuth to use login
 import "../Auth.css";
 
 function Login() {
@@ -7,6 +8,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();  // Get the login function from AuthContext
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,18 +27,20 @@ function Login() {
         return;
       }
 
-      const data = await response.json();
+      const data = await response.json();  // This contains the token and potentially user data
       if (!data.token) {
         setMessage("No token received. Login failed ❌");
         return;
       }
 
-      // localStorage.setItem("token", data.token); 
-      // // save token
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-      }
-      
+      // Assuming your response contains the user object and the token
+      const user = { name: data.name, email: data.email, id: data.id, role: data.role };  // Adjust based on response structure
+
+      login(user);  // Update the AuthContext with the logged-in user's details
+
+      // Optionally store the token in localStorage for persistence
+      localStorage.setItem("token", data.token);
+
       setMessage("Login successful ✅");
 
       // Redirect to Product Catalogue (homepage)
