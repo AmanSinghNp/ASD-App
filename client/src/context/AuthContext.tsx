@@ -10,7 +10,7 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (user: User) => void;
+  login: (user: User, token: string) => void;
   logout: () => void;
 }
 
@@ -19,19 +19,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
+  // Check for token in localStorage when the app loads
   useEffect(() => {
-    // Check if there's a JWT token in localStorage or elsewhere (for example, via cookies)
     const storedToken = localStorage.getItem('token');
     if (storedToken) {
-      // If there's a token, you can decode it or fetch the user's data from an API
-      // For this example, we assume you have a `getUserFromToken` function that fetches the user details based on the token
-      fetchUserFromToken(storedToken);
+      fetchUserFromToken(storedToken);  // If there's a token, fetch user data
     }
   }, []);
 
+  // Fetch user data based on the token
   const fetchUserFromToken = async (token: string) => {
     try {
-      // For example, decode the token to get the user's information (if you don't want to decode it manually, use a library like `jwt-decode`)
       const response = await fetch('http://localhost:4000/api/auth/profile', {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -40,21 +38,26 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (response.ok) {
         const userData: User = await response.json();
         setUser(userData);
+      } else {
+        // If token is invalid or expired, clear the token
+        localStorage.removeItem('token');
       }
     } catch (error) {
       console.error('Error fetching user data:', error);
+      localStorage.removeItem('token');
     }
   };
 
-  const login = (user: User) => {
+  // Login function: set the user and store the token
+  const login = (user: User, token: string) => {
     setUser(user);
-    // Store the token in localStorage (or cookies)
-    localStorage.setItem('token', 'your-jwt-token');  // Store actual JWT token here
+    localStorage.setItem('token', token);  // Store the token in localStorage
   };
 
+  // Logout function: clear the user and remove the token
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('token'); // Remove token on logout
+    localStorage.removeItem('token');
   };
 
   return (

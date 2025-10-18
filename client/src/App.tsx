@@ -41,7 +41,7 @@ const Navigation: React.FC = () => {
     navigate('/');  // Redirect to home page after logout
   };
 
-  return (
+    return (
     <nav style={{
       backgroundColor: 'var(--bg-primary)',
       boxShadow: 'var(--shadow-sm)',
@@ -72,17 +72,18 @@ const Navigation: React.FC = () => {
               ASD App
             </h1>
 
-            {/* Navigation links */}
             <div style={{
               display: 'flex',
               gap: 'var(--spacing-sm)',
-            }}>    
+            }}>
+
+              {/* Navigation links */}
               {[ 
                 { to: '/', label: 'Product Catalogue', icon: Package },
                 { to: '/checkout', label: 'Checkout', icon: ShoppingCart },
                 { to: '/admin', label: 'Admin Dashboard', icon: Settings },
                 { to: '/delivery', label: 'Delivery Interface', icon: Truck },
-                { to: '/auth/profile', label: 'Profile', icon: User}, // Only show this if user is logged in
+                { to: '/auth/profile', label: 'Profile', icon: User }, // Only show this if user is logged in
               ].map(({ to, label, icon: Icon}) => (
                 (to === '/auth/profile' && user) || to !== '/auth/profile' ? (
                   <Link
@@ -162,7 +163,7 @@ const Navigation: React.FC = () => {
               {/* Show Logout button if user is logged in */}
               {user && (
                 <button
-                  onClick={handleLogout}  // Use handleLogout for logout and redirect
+                  onClick={handleLogout}
                   style={{
                     display: 'flex',
                     alignItems: 'center',

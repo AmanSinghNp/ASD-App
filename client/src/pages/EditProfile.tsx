@@ -60,7 +60,7 @@ function EditProfile() {
     if (!token) return;
 
     try {
-      const response = await fetch("http://localhost:3000/auth/profile", {
+      const response = await fetch("http://localhost:4000/api/auth/profile", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

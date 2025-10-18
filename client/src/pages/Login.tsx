@@ -34,9 +34,15 @@ function Login() {
       }
 
       // Assuming your response contains the user object and the token
-      const user = { name: data.name, email: data.email, id: data.id, role: data.role };  // Adjust based on response structure
+      const user = { 
+        id: data.id, 
+        name: data.name, 
+        email: data.email, 
+        role: data.role 
+      };  // Adjust based on response structure
 
-      login(user);  // Update the AuthContext with the logged-in user's details
+      // Pass both user and token to login function
+      login(user, data.token);
 
       // Optionally store the token in localStorage for persistence
       localStorage.setItem("token", data.token);

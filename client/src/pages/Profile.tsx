@@ -70,7 +70,7 @@ function Profile() {
 
       alert("Account deleted successfully.");
       localStorage.removeItem("token");
-      navigate("/login");
+      navigate("/");
     } catch (err) {
       console.error(err);
       alert("Failed to delete account.");
@@ -89,7 +89,7 @@ function Profile() {
           <p><strong>Email:</strong> {customer.email}</p>
 
           <div className="button-group">
-            <button onClick={() => navigate("/edit-profile")}>Edit Account</button>
+            <button onClick={() => navigate("/api/auth/edit-profile")}>Edit Account</button>
             <button onClick={handleDelete} style={{ backgroundColor: "red" }}>Delete Account</button>
           </div>
         </>
