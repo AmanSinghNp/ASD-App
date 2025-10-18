@@ -95,7 +95,7 @@ function Profile() {
           <p><strong>Email:</strong> {customer.email}</p>
 
           <div className="button-group">
-            <button onClick={() => navigate("/api/auth/edit-profile")}>Edit Account</button>
+            <button onClick={() => navigate("/edit-profile")}>Edit Account</button>
             <button onClick={handleDelete} style={{ backgroundColor: "red" }}>Delete Account</button>
           </div>
         </>

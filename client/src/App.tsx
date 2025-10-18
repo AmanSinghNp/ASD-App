@@ -213,7 +213,7 @@ function App() {
               <Route path="/auth/login" element={<Login />} />
               <Route path="/auth/profile" element={<Profile />} />
               <Route path="/auth/signup" element={<Signup />} />
-              <Route path="/auth/edit-profile" element={<EditProfile />} />
+              <Route path="/edit-profile" element={<EditProfile />} />
             </Routes>
           </div>
         </Router>
