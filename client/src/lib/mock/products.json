@@ -7,7 +7,7 @@
     "category": "Fruits",
     "priceCents": 999,
     "stockQty": 0,
-    "imageUrl": "",
+    "imageUrl": "/dragon.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -20,7 +20,7 @@
     "category": "Snacks",
     "priceCents": 299,
     "stockQty": 0,
-    "imageUrl": "",
+    "imageUrl": "/seaweed.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -33,7 +33,7 @@
     "category": "Fruits",
     "priceCents": 450,
     "stockQty": 120,
-    "imageUrl": "",
+    "imageUrl": "/apple.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -46,7 +46,7 @@
     "category": "Dairy",
     "priceCents": 390,
     "stockQty": 80,
-    "imageUrl": "",
+    "imageUrl": "/milk.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -59,7 +59,7 @@
     "category": "Pantry",
     "priceCents": 1690,
     "stockQty": 40,
-    "imageUrl": "",
+    "imageUrl": "/brown_rice.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -72,7 +72,7 @@
     "category": "Fruits",
     "priceCents": 250,
     "stockQty": 200,
-    "imageUrl": "",
+    "imageUrl": "/banana.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -85,7 +85,7 @@
     "category": "Bakery",
     "priceCents": 320,
     "stockQty": 60,
-    "imageUrl": "",
+    "imageUrl": "/bread.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -98,7 +98,7 @@
     "category": "Dairy",
     "priceCents": 520,
     "stockQty": 90,
-    "imageUrl": "",
+    "imageUrl": "/eggs.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -111,7 +111,7 @@
     "category": "Vegetables",
     "priceCents": 340,
     "stockQty": 110,
-    "imageUrl": "",
+    "imageUrl": "/tomato.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -124,7 +124,7 @@
     "category": "Dairy",
     "priceCents": 850,
     "stockQty": 50,
-    "imageUrl": "",
+    "imageUrl": "/cheese.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -137,7 +137,7 @@
     "category": "Vegetables",
     "priceCents": 210,
     "stockQty": 130,
-    "imageUrl": "",
+    "imageUrl": "/carrot.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -150,7 +150,7 @@
     "category": "Snacks",
     "priceCents": 350,
     "stockQty": 150,
-    "imageUrl": "",
+    "imageUrl": "/chips.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -163,7 +163,7 @@
     "category": "Drinks",
     "priceCents": 420,
     "stockQty": 100,
-    "imageUrl": "",
+    "imageUrl": "/orange.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -176,7 +176,7 @@
     "category": "Cleaning",
     "priceCents": 990,
     "stockQty": 60,
-    "imageUrl": "",
+    "imageUrl": "/detergent.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -189,7 +189,7 @@
     "category": "Frozen",
     "priceCents": 270,
     "stockQty": 80,
-    "imageUrl": "",
+    "imageUrl": "/peas.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -202,7 +202,7 @@
     "category": "Beverages",
     "priceCents": 1590,
     "stockQty": 40,
-    "imageUrl": "",
+    "imageUrl": "/coffee.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -215,7 +215,7 @@
     "category": "Dairy",
     "priceCents": 690,
     "stockQty": 70,
-    "imageUrl": "",
+    "imageUrl": "/yogurt.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -228,7 +228,7 @@
     "category": "Fruits",
     "priceCents": 480,
     "stockQty": 90,
-    "imageUrl": "",
+    "imageUrl": "/avocado.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -241,7 +241,7 @@
     "category": "Pantry",
     "priceCents": 220,
     "stockQty": 120,
-    "imageUrl": "",
+    "imageUrl": "/penne.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -254,7 +254,7 @@
     "category": "Pantry",
     "priceCents": 180,
     "stockQty": 200,
-    "imageUrl": "",
+    "imageUrl": "/tuna.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -267,7 +267,7 @@
     "category": "Frozen",
     "priceCents": 650,
     "stockQty": 60,
-    "imageUrl": "",
+    "imageUrl": "/ice_cream.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -280,7 +280,7 @@
     "category": "Snacks",
     "priceCents": 320,
     "stockQty": 110,
-    "imageUrl": "",
+    "imageUrl": "/biscuits.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -293,7 +293,7 @@
     "category": "Vegetables",
     "priceCents": 350,
     "stockQty": 80,
-    "imageUrl": "",
+    "imageUrl": "/spinach.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -306,7 +306,7 @@
     "category": "Meat",
     "priceCents": 990,
     "stockQty": 50,
-    "imageUrl": "",
+    "imageUrl": "/salmon.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -319,7 +319,7 @@
     "category": "Drinks",
     "priceCents": 160,
     "stockQty": 180,
-    "imageUrl": "",
+    "imageUrl": "/water.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
@@ -332,7 +332,7 @@
     "category": "Cleaning",
     "priceCents": 210,
     "stockQty": 140,
-    "imageUrl": "",
+    "imageUrl": "/hand_soap.jpeg",
     "isActive": true,
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
