@@ -96,6 +96,7 @@ function Profile() {
 
           <div className="button-group">
             <button onClick={() => navigate("/edit-profile")}>Edit Account</button>
+            <button onClick={() => navigate("/orders/my-orders")}>View Order History</button>
             <button onClick={handleDelete} style={{ backgroundColor: "red" }}>Delete Account</button>
           </div>
         </>

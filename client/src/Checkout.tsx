@@ -168,9 +168,14 @@ const Checkout: React.FC = () => {
         }),
       };
 
+      const token = localStorage.getItem("token");
+
       const response = await fetch("http://localhost:4000/api/orders", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // ✅ Include token here
+        },
         body: JSON.stringify(orderData),
       });
 

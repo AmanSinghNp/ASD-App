@@ -12,6 +12,7 @@ import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Signup from './pages/Signup';
 import EditProfile from './pages/EditProfile';
+import OrderHistory from './pages/OrderHistory';
 
 /**
  * Navigation component for the main application header
@@ -214,6 +215,7 @@ function App() {
               <Route path="/auth/profile" element={<Profile />} />
               <Route path="/auth/signup" element={<Signup />} />
               <Route path="/edit-profile" element={<EditProfile />} />
+              <Route path="/orders/my-orders" element={<OrderHistory />}></Route>
             </Routes>
           </div>
         </Router>
