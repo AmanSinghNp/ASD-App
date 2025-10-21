@@ -1,6 +1,6 @@
 body {
   font-family: "Inter", sans-serif;
-  background: #f5f7fa;
+  background: var(--bg-secondary);
   margin: 0;
   display: flex;
   justify-content: center;
@@ -11,65 +11,71 @@ body {
 .checkout-page {
   display: grid;
   grid-template-columns: 1.3fr 1fr;
-  gap: 25px;
+  gap: var(--spacing-xl);
   max-width: 1000px;
   width: 100%;
-  margin: 30px auto;
-  padding: 15px;
+  margin: var(--spacing-xl) auto;
+  padding: var(--spacing-lg);
   justify-content: center;
   align-items: start;
 }
 
 /* Checkout Form */
 .checkout-form {
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+  background: var(--bg-primary);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--spacing-lg);
 }
 
 .checkout-form h2 {
-  font-size: 25px;
-  margin-bottom: 2px;
-  color: #333;
+  font-size: 1.875rem;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-primary);
+  font-weight: 700;
 }
 
 .form-section {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--spacing-md);
 }
 
 .form-section h3 {
-  font-size: 15px;
-  margin-bottom: 10px;
-  color: #444;
+  font-size: 1rem;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 .form-row {
   display: flex;
-  gap: 12px;
+  gap: var(--spacing-md);
   width: 100%;
 }
 
 .checkout-form input,
 .checkout-form select {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  background: #fafafa;
-  font-size: 13px;
+  padding: var(--spacing-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--bg-primary);
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
 }
 
 .checkout-form input:focus,
 .checkout-form select:focus {
-  border-color: #4f46e5;
-  background: #fff;
+  border-color: var(--primary-blue);
+  background: var(--bg-primary);
   outline: none;
+  box-shadow: 0 0 0 3px var(--primary-blue-light);
 }
 
 /* Payment options */
@@ -114,34 +120,38 @@ body {
 /* Button */
 .place-order-btn {
   width: 100%;
-  padding: 12px;
-  background: #4f46e5;
+  padding: var(--spacing-md);
+  background: var(--primary-blue);
   color: white;
-  font-size: 15px;
+  font-size: 0.875rem;
   font-weight: 600;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: background 0.3s ease;
-  margin-top: 8px;
+  transition: all 0.2s ease;
+  margin-top: var(--spacing-sm);
+  box-shadow: var(--shadow-sm);
 }
 
 .place-order-btn:hover {
-  background: #4338ca;
+  background: var(--primary-blue-hover);
+  box-shadow: var(--shadow-md);
 }
 
 /* Order Summary */
 .order-summary {
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+  background: var(--bg-primary);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
 }
 
 .order-summary h3 {
-  margin-bottom: 15px;
-  font-size: 25px;
-  color: #333;
+  margin-bottom: var(--spacing-lg);
+  font-size: 1.875rem;
+  color: var(--text-primary);
+  font-weight: 700;
 }
 
 .order-item {
@@ -195,7 +205,7 @@ body {
 }
 
 .summary-details h4 span {
-  color: #4f46e5;
+  color: var(--primary-blue);
 }
 
 .payment-options {

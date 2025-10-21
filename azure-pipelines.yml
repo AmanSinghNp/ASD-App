@@ -1,30 +1,82 @@
-trigger: none
-pr: none
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  branches:
+<<<<<<< HEAD
+    include:
+      - main
+      - develop
 
 pool:
   vmImage: "ubuntu-latest"
 
+variables:
+  nodeVersion: "18.x"
+
+stages:
+  - stage: Test
+    displayName: 'Test Stage'
+    jobs:
+      - job: FrontendTests
+        displayName: 'Frontend Tests'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVersion)
+            displayName: 'Install Node.js'
+
+          - script: |
+              cd client
+              npm install --legacy-peer-deps
+            displayName: 'Install Frontend Dependencies'
+
+          - script: |
+              cd client
+              npm run test
+            displayName: 'Run Frontend Tests'
+
+      - job: BackendTests
+        displayName: 'Backend Tests'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVersion)
+            displayName: 'Install Node.js'
+
+          - script: |
+              cd server
+              npm install
+            displayName: 'Install Backend Dependencies'
+
+          - script: |
+              cd server
+              npm run test
+            displayName: 'Run Backend Tests'
+
+=======
+    include: 
+      - main
+      # - feature/belinda
+      # - feature/danny
+
+pool:
+  vmImage: ubuntu-latest
+
 steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: "20.x"
+- task: NodeTool@0
+  inputs:
+    versionSpec: '20.x'
+  displayName: 'Install Node.js'
 
-  - script: npm ci
-    displayName: Install
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
 
-  - script: npx prisma generate
-    workingDirectory: server
-    displayName: Prisma generate
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
 
-  - script: npx prisma migrate deploy || npx prisma migrate dev -n ci
-    workingDirectory: server
-    displayName: Prisma migrate
-
-  - script: npm run seed || echo "no seed"
-    displayName: Seed
-
-  - script: npm test
-    displayName: Test
-
-  - script: npm run build || echo "no build"
-    displayName: Build
+>>>>>>> origin/dev

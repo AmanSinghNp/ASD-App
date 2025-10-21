@@ -1,22 +1,21 @@
-// src/server.ts
-
-// Import dependencies at the top
+// server/src/index.ts
+import dotenv from "dotenv";
+import app from "./app.ts";
 import express from "express";
 import cors from "cors";
 import productRoutes from "./routes/productRoutes";
 import analyticsRoutes from "./routes/analyticsRoutes";
 import deliveryRoutes from "./routes/deliveryRoutes";
 import orderRoutes from "./routes/orderRoutes";
+dotenv.config();
 
-// Create the Express app
-const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Routes
+// Health route
 app.get("/", (_, res) => {
   res.send("Welcome to the Supermarket API!");
 });
@@ -26,8 +25,6 @@ app.use("/api/products", productRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/delivery", deliveryRoutes);
 app.use("/api/orders", orderRoutes);
-
-// Start server
 app.listen(PORT, () => {
-  console.log(`Server listening at http://localhost:${PORT}`);
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });

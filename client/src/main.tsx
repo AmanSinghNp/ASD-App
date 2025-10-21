@@ -1,12 +1,10 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import ProductCatalogue from "./ProductCatalogue";
-import Checkout from "./Checkout";
+import App from "./App";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <Checkout />
-    <ProductCatalogue />
+    <App />
   </StrictMode>
 );

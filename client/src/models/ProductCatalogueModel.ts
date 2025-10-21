@@ -1,3 +1,7 @@
+
+import type { ReactNode } from 'react';
+import productsData from '../lib/mock/products.json';
+
 export interface Product {
     id: string;
     name: string;
