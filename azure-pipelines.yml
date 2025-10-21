@@ -1,82 +1,123 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
 
 trigger:
   branches:
-<<<<<<< HEAD
     include:
       - main
-      - develop
+      - dev
+
 
 pool:
   vmImage: "ubuntu-latest"
 
+
 variables:
   nodeVersion: "18.x"
 
+
 stages:
+  
   - stage: Test
     displayName: 'Test Stage'
     jobs:
+      
       - job: FrontendTests
-        displayName: 'Frontend Tests'
+        displayName: 'Run Client (Frontend) Tests'
         steps:
+          
           - task: NodeTool@0
             inputs:
               versionSpec: $(nodeVersion)
             displayName: 'Install Node.js'
 
-          - script: |
-              cd client
-              npm install --legacy-peer-deps
-            displayName: 'Install Frontend Dependencies'
+       
+          - script: npm install
+            displayName: 'Install client dependencies'
+            workingDirectory: 'client' 
 
-          - script: |
-              cd client
-              npm run test
-            displayName: 'Run Frontend Tests'
+        
+          - script: npm test
+            displayName: 'Run client unit tests'
+            workingDirectory: 'client'
 
+      
       - job: BackendTests
-        displayName: 'Backend Tests'
+        displayName: 'Run Server (Backend) Tests'
         steps:
+          
           - task: NodeTool@0
             inputs:
               versionSpec: $(nodeVersion)
             displayName: 'Install Node.js'
 
+         
+          - script: npm install
+            displayName: 'Install server dependencies'
+            workingDirectory: 'server'
+            
+         
+          - script: npm test
+            displayName: 'Run server unit tests'
+            workingDirectory: 'server'
+
+ 
+  - stage: Build
+    displayName: 'Build Stage'
+    dependsOn: Test 
+    jobs:
+      
+      - job: BuildClient
+        displayName: 'Build Client (Frontend)'
+        steps:
+          
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVersion)
+            displayName: 'Install Node.js'
+
+          
           - script: |
-              cd server
               npm install
-            displayName: 'Install Backend Dependencies'
+              npm run build
+            displayName: 'Install dependencies and build client'
+            workingDirectory: 'client'
+            
+          
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: 'client/dist'
+              ArtifactName: 'client'
+              publishLocation: 'Container'
+            displayName: 'Publish client artifact'
 
-          - script: |
-              cd server
-              npm run test
-            displayName: 'Run Backend Tests'
+     
+      - job: BuildServer
+        displayName: 'Build Server (Backend)'
+        steps:
+          
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVersion)
+            displayName: 'Install Node.js'
 
-=======
-    include: 
-      - main
-      # - feature/belinda
-      # - feature/danny
+          
+          - script: npm install
+            displayName: 'Install server dependencies'
+            workingDirectory: 'server'
+            
+          
+          - script: npx prisma generate
+            displayName: 'Run Prisma Generate'
+            workingDirectory: 'server'
 
-pool:
-  vmImage: ubuntu-latest
+          
+          - script: npm run build
+            displayName: 'Build server'
+            workingDirectory: 'server'
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '20.x'
-  displayName: 'Install Node.js'
-
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
-
->>>>>>> origin/dev
+          
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: 'server' 
+              ArtifactName: 'server'
+              publishLocation: 'Container'
+            displayName: 'Publish server artifact'

@@ -1,7 +1,7 @@
 {
   "name": "asd-app",
   "version": "1.0.0",
-  "description": "```bash\r # Fork this repository on GitHub first, then clone your fork\r git clone https://github.com/YOUR_USERNAME/ASD-App.git\r cd ASD-App\r ```",
+  "description": "```bash\r # Fork this repository on GitHub first, then clone your fork\r git clone [https://github.com/YOUR_USERNAME/ASD-App.git](https://github.com/YOUR_USERNAME/ASD-App.git)\r cd ASD-App\r ```",
   "main": "index.js",
   "scripts": {
     "dev": "concurrently -k \"npm:dev:client\" \"npm:dev:server\"",
@@ -37,6 +37,8 @@
     "@types/react-dom": "^19.1.9",
     "autoprefixer": "^10.4.21",
     "concurrently": "^9.2.1",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
@@ -50,6 +52,7 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.3",
+    "server": "^1.0.42",
     "vite": "^7.1.4"
   },
   "type": "commonjs"
