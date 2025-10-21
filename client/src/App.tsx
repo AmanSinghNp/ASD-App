@@ -1,3 +1,4 @@
+// client/src/App.tsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
@@ -5,7 +6,8 @@ import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { DeliveryInterface } from './pages/delivery/DeliveryInterface';
 import ProductCatalogue from './ProductCatalogue';
 import Checkout from './Checkout';
-import { Settings, Truck, ShoppingCart, Package } from 'lucide-react';
+import FAQ from './pages/FAQ'; 
+import { Settings, Truck, ShoppingCart, Package, HelpCircle } from 'lucide-react';
 import './App.css';
 
 /**
@@ -14,7 +16,15 @@ import './App.css';
  */
 const Navigation: React.FC = () => {
   const location = useLocation();
-  
+
+  const links = [
+    { to: '/', label: 'Product Catalogue', icon: Package },
+    { to: '/checkout', label: 'Checkout', icon: ShoppingCart },
+    { to: '/admin', label: 'Admin Dashboard (F007)', icon: Settings },
+    { to: '/delivery', label: 'Delivery Interface (F008)', icon: Truck },
+    { to: '/support', label: 'Support / FAQ', icon: HelpCircle }, // ← 新增：支持中心
+  ] as const;
+
   return (
     <nav style={{
       backgroundColor: 'var(--bg-primary)',
@@ -32,64 +42,55 @@ const Navigation: React.FC = () => {
           height: '4rem',
           gap: 'var(--spacing-lg)'
         }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--spacing-xl)'
-          }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xl)' }}>
             {/* Application title */}
             <h1 style={{
               fontSize: '1.5rem',
-              fontWeight: '700',
+              fontWeight: 700,
               color: 'var(--text-primary)',
               margin: 0
             }}>
               ASD App
             </h1>
             {/* Navigation links */}
-            <div style={{
-              display: 'flex',
-              gap: 'var(--spacing-sm)'
-            }}>
-              {[
-                { to: '/', label: 'Product Catalogue', icon: Package },
-                { to: '/checkout', label: 'Checkout', icon: ShoppingCart },
-                { to: '/admin', label: 'Admin Dashboard (F007)', icon: Settings },
-                { to: '/delivery', label: 'Delivery Interface (F008)', icon: Truck }
-              ].map(({ to, label, icon: Icon }) => (
-                <Link
-                  key={to}
-                  to={to}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    padding: 'var(--spacing-sm) var(--spacing-md)',
-                    borderRadius: 'var(--radius-md)',
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                    textDecoration: 'none',
-                    transition: 'all 0.2s ease',
-                    gap: 'var(--spacing-sm)',
-                    backgroundColor: location.pathname === to ? 'var(--primary-blue-light)' : 'transparent',
-                    color: location.pathname === to ? 'var(--primary-blue-dark)' : 'var(--text-secondary)'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (location.pathname !== to) {
-                      e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
-                      e.currentTarget.style.color = 'var(--text-primary)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (location.pathname !== to) {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                      e.currentTarget.style.color = 'var(--text-secondary)';
-                    }
-                  }}
-                >
-                  <Icon size={16} />
-                  {label}
-                </Link>
-              ))}
+            <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
+              {links.map(({ to, label, icon: Icon }) => {
+                const active = location.pathname === to;
+                return (
+                  <Link
+                    key={to}
+                    to={to}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: 'var(--spacing-sm) var(--spacing-md)',
+                      borderRadius: 'var(--radius-md)',
+                      fontSize: '0.875rem',
+                      fontWeight: 500,
+                      textDecoration: 'none',
+                      transition: 'all 0.2s ease',
+                      gap: 'var(--spacing-sm)',
+                      backgroundColor: active ? 'var(--primary-blue-light)' : 'transparent',
+                      color: active ? 'var(--primary-blue-dark)' : 'var(--text-secondary)'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!active) {
+                        e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
+                        e.currentTarget.style.color = 'var(--text-primary)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!active) {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                        e.currentTarget.style.color = 'var(--text-secondary)';
+                      }
+                    }}
+                  >
+                    <Icon size={16} />
+                    {label}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -115,6 +116,7 @@ function App() {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/delivery" element={<DeliveryInterface />} />
+            <Route path="/support" element={<FAQ />} /> {/* ← 新增：FAQ 路由 */}
           </Routes>
         </div>
       </Router>
