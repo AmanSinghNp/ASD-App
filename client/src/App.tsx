@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';  // Import AuthPr
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { DeliveryInterface } from './pages/delivery/DeliveryInterface';
 import ProductCatalogue from './ProductCatalogue';
+import Cart from './components/Cart';
 import Checkout from './Checkout';
 import FAQ from './pages/FAQ'; 
 import { Settings, Truck, ShoppingCart, Package, User, LogIn, Edit, LogOut, HelpCircle } from 'lucide-react';
