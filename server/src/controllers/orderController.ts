@@ -1,12 +1,43 @@
 import type { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+import prisma from "../utils/database";
 
-const prisma = new PrismaClient();
+dotenv.config();
+
+const SECRET = process.env.JWT_SECRET!;
+
+/**
+ * Helper function to verify JWT token and get user ID
+ * @param authHeader - Authorization header from request
+ * @returns User ID if token is valid, null otherwise
+ */
+const getUserIdFromToken = (authHeader: string | undefined): string | null => {
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return null;
+  }
+
+  try {
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, SECRET) as { id: string };
+    return decoded.id;
+  } catch (error) {
+    return null;
+  }
+};
 
 // POST /api/orders
 export const createOrder = async (req: Request, res: Response) => {
   try {
-    const { items, deliveryMethod, address, slotStart, slotEnd } = req.body;
+    const userId = getUserIdFromToken(req.headers.authorization);
+    const {
+      items,
+      deliveryMethod,
+      address,
+      slotStart,
+      slotEnd,
+      paymentMethod,
+    } = req.body;
 
     // Validation
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -34,7 +65,7 @@ export const createOrder = async (req: Request, res: Response) => {
 
       for (const item of items) {
         const product = await tx.product.findUnique({
-          where: { id: item.productId }
+          where: { id: item.productId },
         });
 
         if (!product) {
@@ -52,13 +83,14 @@ export const createOrder = async (req: Request, res: Response) => {
           productId: item.productId,
           nameAtPurchase: product.name,
           priceCents: product.priceCents,
-          quantity: item.quantity
+          quantity: item.quantity,
         });
       }
 
-      // Create order
+      // Create order with payment information
       const order = await tx.order.create({
         data: {
+          userId: userId || null,
           deliveryMethod,
           addressLine1: address?.addressLine1 || null,
           suburb: address?.suburb || null,
@@ -67,28 +99,58 @@ export const createOrder = async (req: Request, res: Response) => {
           slotStart: slotStart ? new Date(slotStart) : null,
           slotEnd: slotEnd ? new Date(slotEnd) : null,
           totalCents,
-          status: "Processing"
-        }
+          paymentMethod: paymentMethod || "cash_on_delivery",
+          paymentStatus: "pending",
+          status: "Processing",
+        },
       });
 
       // Create order items
       await tx.orderItem.createMany({
-        data: orderItems.map(item => ({
+        data: orderItems.map((item) => ({
           orderId: order.id,
-          ...item
-        }))
+          ...item,
+        })),
       });
 
-      // Update product stock
+      // Create initial status history entry
+      await tx.orderStatusHistory.create({
+        data: {
+          orderId: order.id,
+          status: "Processing",
+          notes: "Order created successfully",
+        },
+      });
+
+      // Update product stock and log stock changes
       for (const item of items) {
-        await tx.product.update({
+        const product = await tx.product.findUnique({
           where: { id: item.productId },
-          data: {
-            stockQty: {
-              decrement: item.quantity
-            }
-          }
         });
+
+        if (product) {
+          const oldQuantity = product.stockQty;
+          const newQuantity = oldQuantity - item.quantity;
+
+          await tx.product.update({
+            where: { id: item.productId },
+            data: {
+              stockQty: newQuantity,
+            },
+          });
+
+          // Log stock change
+          await tx.stockHistory.create({
+            data: {
+              productId: item.productId,
+              userId: userId || null,
+              oldQuantity,
+              newQuantity,
+              changeType: "purchase",
+              reason: `Order ${order.id} - ${item.quantity} units sold`,
+            },
+          });
+        }
       }
 
       return order;
@@ -97,11 +159,16 @@ export const createOrder = async (req: Request, res: Response) => {
     res.status(201).json({
       data: {
         orderId: result.id,
-        status: result.status
-      }
+        status: result.status,
+        paymentMethod: result.paymentMethod,
+        paymentStatus: result.paymentStatus,
+      },
     });
   } catch (error: any) {
-    if (error.message.includes("not found") || error.message.includes("Insufficient stock")) {
+    if (
+      error.message.includes("not found") ||
+      error.message.includes("Insufficient stock")
+    ) {
       res.status(400).json({ error: error.message });
     } else {
       res.status(500).json({ error: "Failed to create order" });
@@ -114,41 +181,53 @@ export const getOrders = async (req: Request, res: Response) => {
   try {
     const orders = await prisma.order.findMany({
       include: {
-        items: true
+        items: true,
+        statusHistory: {
+          orderBy: { createdAt: "desc" },
+        },
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
       },
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: "desc",
+      },
     });
 
-    // Generate realistic customer data based on order ID for consistency
-    const customerNames = ['John Smith', 'Sarah Johnson', 'Mike Chen', 'Emma Wilson', 'David Brown', 'Lisa Davis', 'Tom Anderson', 'Amy Taylor'];
-    const emails = ['john.smith@email.com', 'sarah.j@email.com', 'mike.chen@email.com', 'emma.wilson@email.com', 'david.brown@email.com', 'lisa.davis@email.com', 'tom.anderson@email.com', 'amy.taylor@email.com'];
-    const phones = ['0412345678', '0423456789', '0434567890', '0445678901', '0456789012', '0467890123', '0478901234', '0489012345'];
-
     // Transform orders to match frontend interface
-    const transformedOrders = orders.map((order, index) => {
-      const customerIndex = index % customerNames.length;
+    const transformedOrders = orders.map((order) => {
       return {
         id: order.id,
-        customerName: customerNames[customerIndex],
-        email: emails[customerIndex],
-        phone: phones[customerIndex],
-        address: order.addressLine1 ? 
-          `${order.addressLine1}, ${order.suburb}, ${order.state} ${order.postcode}` : 
-          'Store Pickup',
-        items: order.items.map(item => ({
+        customerName: order.user?.name || "Guest Customer",
+        email: order.user?.email || "guest@example.com",
+        phone: "N/A", // Phone not stored in current schema
+        address: order.addressLine1
+          ? `${order.addressLine1}, ${order.suburb}, ${order.state} ${order.postcode}`
+          : "Store Pickup",
+        items: order.items.map((item) => ({
           name: item.nameAtPurchase,
           quantity: item.quantity,
-          price: item.priceCents
+          price: item.priceCents,
         })),
         total: order.totalCents,
         status: mapStatusToFrontend(order.status),
+        paymentMethod: order.paymentMethod,
+        paymentStatus: order.paymentStatus,
         deliveryMethod: order.deliveryMethod,
         slotStart: order.slotStart?.toISOString(),
         slotEnd: order.slotEnd?.toISOString(),
+        statusHistory: order.statusHistory.map((status) => ({
+          id: status.id,
+          status: status.status,
+          notes: status.notes,
+          createdAt: status.createdAt.toISOString(),
+        })),
         createdAt: order.createdAt.toISOString(),
-        updatedAt: order.updatedAt.toISOString()
+        updatedAt: order.updatedAt.toISOString(),
       };
     });
 
@@ -161,41 +240,48 @@ export const getOrders = async (req: Request, res: Response) => {
 // Helper function to map backend status to frontend status
 const mapStatusToFrontend = (backendStatus: string): string => {
   const statusMap: { [key: string]: string } = {
-    'Processing': 'pending',
-    'Packed': 'confirmed', 
-    'OutForDelivery': 'out_for_delivery',
-    'Delivered': 'delivered'
+    Processing: "pending",
+    Packed: "confirmed",
+    OutForDelivery: "out_for_delivery",
+    Delivered: "delivered",
   };
-  return statusMap[backendStatus] || 'pending';
+  return statusMap[backendStatus] || "pending";
 };
 
 // Helper function to map frontend status to backend status
 const mapStatusToBackend = (frontendStatus: string): string => {
   const statusMap: { [key: string]: string } = {
-    'pending': 'Processing',
-    'confirmed': 'Packed',
-    'preparing': 'Packed',
-    'out_for_delivery': 'OutForDelivery',
-    'delivered': 'Delivered',
-    'cancelled': 'Processing' // Handle cancellation separately
+    pending: "Processing",
+    confirmed: "Packed",
+    preparing: "Packed",
+    out_for_delivery: "OutForDelivery",
+    delivered: "Delivered",
+    cancelled: "Processing", // Handle cancellation separately
   };
-  return statusMap[frontendStatus] || 'Processing';
+  return statusMap[frontendStatus] || "Processing";
 };
 
 // PATCH /api/orders/:id/status
 export const updateOrderStatus = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { status } = req.body;
+    const { status, notes } = req.body;
 
-    const validStatuses = ["pending", "confirmed", "preparing", "out_for_delivery", "delivered", "cancelled"];
+    const validStatuses = [
+      "pending",
+      "confirmed",
+      "preparing",
+      "out_for_delivery",
+      "delivered",
+      "cancelled",
+    ];
     if (!status || !validStatuses.includes(status)) {
       return res.status(400).json({ error: "Invalid status" });
     }
 
     // Get current order
     const currentOrder = await prisma.order.findUnique({
-      where: { id }
+      where: { id },
     });
 
     if (!currentOrder) {
@@ -205,12 +291,35 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
     // Map frontend status to backend status
     const backendStatus = mapStatusToBackend(status);
 
-    const updatedOrder = await prisma.order.update({
-      where: { id },
-      data: { status: backendStatus }
+    // Use transaction to update order and log status change
+    const result = await prisma.$transaction(async (tx) => {
+      // Update order status
+      const updatedOrder = await tx.order.update({
+        where: { id },
+        data: { status: backendStatus },
+      });
+
+      // Log status change in history
+      await tx.orderStatusHistory.create({
+        data: {
+          orderId: id,
+          status: backendStatus,
+          notes: notes || `Status changed to ${backendStatus}`,
+        },
+      });
+
+      return updatedOrder;
     });
 
-    res.json({ data: updatedOrder });
+    res.json({
+      data: {
+        id: result.id,
+        status: mapStatusToFrontend(result.status),
+        paymentMethod: result.paymentMethod,
+        paymentStatus: result.paymentStatus,
+        updatedAt: result.updatedAt.toISOString(),
+      },
+    });
   } catch (error: any) {
     if (error.code === "P2025") {
       res.status(404).json({ error: "Order not found" });
@@ -220,3 +329,48 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * GET /api/orders/:id/status-history
+ * Get order status history timeline (F008 - Delivery)
+ * @param req - Express request object with order ID in params
+ * @param res - Express response object
+ */
+export const getOrderStatusHistory = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    // Check if order exists
+    const order = await prisma.order.findUnique({
+      where: { id },
+      select: { id: true, status: true },
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        error: "Order not found",
+      });
+    }
+
+    // Get status history
+    const statusHistory = await prisma.orderStatusHistory.findMany({
+      where: { orderId: id },
+      orderBy: { createdAt: "asc" },
+    });
+
+    res.json({
+      orderId: order.id,
+      currentStatus: mapStatusToFrontend(order.status),
+      statusHistory: statusHistory.map((status) => ({
+        id: status.id,
+        status: mapStatusToFrontend(status.status),
+        notes: status.notes,
+        createdAt: status.createdAt.toISOString(),
+      })),
+    });
+  } catch (error: any) {
+    console.error("Get order status history error:", error);
+    res.status(500).json({
+      error: "Failed to get order status history",
+    });
+  }
+};

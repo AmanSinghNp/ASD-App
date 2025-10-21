@@ -2,19 +2,21 @@
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
-import { PrismaClient } from '@prisma/client'; 
+import prisma from "./utils/database";
 
 // Import your route handlers
 import productRoutes from "./routes/productRoutes";
 import analyticsRoutes from "./routes/analyticsRoutes";
 import deliveryRoutes from "./routes/deliveryRoutes";
 import orderRoutes from "./routes/orderRoutes";
+import userRoutes from "./routes/userRoutes";
+import cartRoutes from "./routes/cartRoutes";
+import stockRoutes from "./routes/stockRoutes";
+import faqRoutes from "./routes/faqRoutes";
+import chatRoutes from "./routes/chatRoutes";
 
 // Load environment variables
 dotenv.config();
-
-// Initialize Prisma Client
-const prisma = new PrismaClient();
 
 // Create the Express app
 const app = express();
@@ -34,12 +36,15 @@ app.get("/", (_, res) => {
 });
 
 // API Routes
-// This uses the dedicated route files, which is a better practice.
 app.use("/api/products", productRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/delivery", deliveryRoutes);
 app.use("/api/orders", orderRoutes);
-
+app.use("/api/users", userRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/stock", stockRoutes);
+app.use("/api/faqs", faqRoutes);
+app.use("/api/chat", chatRoutes);
 
 // --- Server Start ---
 app.listen(PORT, () => {

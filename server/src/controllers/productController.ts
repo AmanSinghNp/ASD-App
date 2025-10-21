@@ -1,7 +1,5 @@
 import type { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../utils/database";
 
 /**
  * GET /api/products?includeHidden=false
@@ -12,11 +10,11 @@ const prisma = new PrismaClient();
 export const getProducts = async (req: Request, res: Response) => {
   try {
     const includeHidden = req.query.includeHidden === "true";
-    
+
     // Fetch products from database with conditional filtering
     const products = await prisma.product.findMany({
       where: includeHidden ? {} : { isActive: true },
-      orderBy: { createdAt: "desc" }
+      orderBy: { createdAt: "desc" },
     });
 
     res.json({ data: products });
@@ -39,11 +37,23 @@ export const createProduct = async (req: Request, res: Response) => {
     if (!name || name.length < 1 || name.length > 120) {
       return res.status(400).json({ error: "Name must be 1-120 characters" });
     }
-    if (typeof priceCents !== "number" || priceCents < 0 || !Number.isInteger(priceCents)) {
-      return res.status(400).json({ error: "priceCents must be a non-negative integer" });
+    if (
+      typeof priceCents !== "number" ||
+      priceCents < 0 ||
+      !Number.isInteger(priceCents)
+    ) {
+      return res
+        .status(400)
+        .json({ error: "priceCents must be a non-negative integer" });
     }
-    if (typeof stockQty !== "number" || stockQty < 0 || !Number.isInteger(stockQty)) {
-      return res.status(400).json({ error: "stockQty must be a non-negative integer" });
+    if (
+      typeof stockQty !== "number" ||
+      stockQty < 0 ||
+      !Number.isInteger(stockQty)
+    ) {
+      return res
+        .status(400)
+        .json({ error: "stockQty must be a non-negative integer" });
     }
 
     // Create product in database
@@ -54,8 +64,8 @@ export const createProduct = async (req: Request, res: Response) => {
         category,
         priceCents,
         stockQty,
-        imageUrl: imageUrl || null
-      }
+        imageUrl: imageUrl || null,
+      },
     });
 
     res.status(201).json({ data: product });
@@ -84,11 +94,25 @@ export const updateProduct = async (req: Request, res: Response) => {
     if (name !== undefined && (name.length < 1 || name.length > 120)) {
       return res.status(400).json({ error: "Name must be 1-120 characters" });
     }
-    if (priceCents !== undefined && (typeof priceCents !== "number" || priceCents < 0 || !Number.isInteger(priceCents))) {
-      return res.status(400).json({ error: "priceCents must be a non-negative integer" });
+    if (
+      priceCents !== undefined &&
+      (typeof priceCents !== "number" ||
+        priceCents < 0 ||
+        !Number.isInteger(priceCents))
+    ) {
+      return res
+        .status(400)
+        .json({ error: "priceCents must be a non-negative integer" });
     }
-    if (stockQty !== undefined && (typeof stockQty !== "number" || stockQty < 0 || !Number.isInteger(stockQty))) {
-      return res.status(400).json({ error: "stockQty must be a non-negative integer" });
+    if (
+      stockQty !== undefined &&
+      (typeof stockQty !== "number" ||
+        stockQty < 0 ||
+        !Number.isInteger(stockQty))
+    ) {
+      return res
+        .status(400)
+        .json({ error: "stockQty must be a non-negative integer" });
     }
 
     // Update product in database with only provided fields
@@ -100,8 +124,8 @@ export const updateProduct = async (req: Request, res: Response) => {
         ...(category !== undefined && { category }),
         ...(priceCents !== undefined && { priceCents }),
         ...(stockQty !== undefined && { stockQty }),
-        ...(imageUrl !== undefined && { imageUrl })
-      }
+        ...(imageUrl !== undefined && { imageUrl }),
+      },
     });
 
     res.json({ data: product });
@@ -130,7 +154,7 @@ export const hideProduct = async (req: Request, res: Response) => {
     // Update product to set isActive to false
     const product = await prisma.product.update({
       where: { id },
-      data: { isActive: false }
+      data: { isActive: false },
     });
 
     res.json({ data: product });
@@ -143,4 +167,3 @@ export const hideProduct = async (req: Request, res: Response) => {
     }
   }
 };
-

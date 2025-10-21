@@ -1,7 +1,5 @@
 import type { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../utils/database";
 
 // POST /api/delivery/validate-address
 export const validateAddress = async (req: Request, res: Response) => {
@@ -19,7 +17,10 @@ export const validateAddress = async (req: Request, res: Response) => {
     }
 
     if (!addressLine1 || !suburb) {
-      return res.json({ valid: false, error: "Address line 1 and suburb required" });
+      return res.json({
+        valid: false,
+        error: "Address line 1 and suburb required",
+      });
     }
 
     res.json({ valid: true });
@@ -32,7 +33,7 @@ export const validateAddress = async (req: Request, res: Response) => {
 export const getDeliverySlots = async (req: Request, res: Response) => {
   try {
     const { date } = req.query;
-    
+
     if (!date) {
       return res.status(400).json({ error: "Date parameter required" });
     }
@@ -47,7 +48,7 @@ export const getDeliverySlots = async (req: Request, res: Response) => {
     for (let hour = 10; hour <= 17; hour++) {
       const slotStart = new Date(targetDate);
       slotStart.setHours(hour, 0, 0, 0);
-      
+
       const slotEnd = new Date(targetDate);
       slotEnd.setHours(hour + 1, 0, 0, 0);
 
@@ -56,9 +57,9 @@ export const getDeliverySlots = async (req: Request, res: Response) => {
         where: {
           slotStart: {
             gte: slotStart,
-            lt: slotEnd
-          }
-        }
+            lt: slotEnd,
+          },
+        },
       });
 
       const remaining = Math.max(0, 10 - orderCount);
@@ -66,7 +67,7 @@ export const getDeliverySlots = async (req: Request, res: Response) => {
       slots.push({
         slotStart: slotStart.toISOString(),
         slotEnd: slotEnd.toISOString(),
-        remaining
+        remaining,
       });
     }
 
@@ -75,4 +76,3 @@ export const getDeliverySlots = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to fetch delivery slots" });
   }
 };
-
