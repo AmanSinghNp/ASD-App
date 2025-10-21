@@ -180,8 +180,11 @@ const Cart: React.FC = () => {
                   .reduce(
                     (
                       sum: number,
-                      item: { product: { price: number }; quantity: number }
-                    ) => sum + (item.product.price * item.quantity) / 100,
+                      item: {
+                        product: { priceCents: number };
+                        quantity: number;
+                      }
+                    ) => sum + (item.product.priceCents * item.quantity) / 100,
                     0
                   )
                   .toFixed(2)}
@@ -301,7 +304,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, onRemove }) => {
           <span
             style={{ color: "#493aecff", fontWeight: 600, fontSize: "1.1em" }}
           >
-            ${(item.product.price / 100).toFixed(2)}
+            ${(item.product.priceCents / 100).toFixed(2)}
           </span>
           <span style={{ color: "black", fontSize: "1em" }}>
             × {item.quantity}
@@ -309,7 +312,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, onRemove }) => {
           <span
             style={{ color: "#28a745", fontWeight: 600, fontSize: "1.1em" }}
           >
-            = ${((item.product.price * item.quantity) / 100).toFixed(2)}
+            = ${((item.product.priceCents * item.quantity) / 100).toFixed(2)}
           </span>
         </div>
       </div>
