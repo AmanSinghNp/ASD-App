@@ -1,10 +1,7 @@
-<<<<<<< HEAD
-// client/src/models/ProductCatalogueModel.ts
-=======
 
 import type { ReactNode } from 'react';
 import productsData from '../lib/mock/products.json';
->>>>>>> origin/dev
+
 
 export interface Product {
     id: string;
@@ -205,6 +202,17 @@ const categories: Category[] = [
 ];
 
 export class ProductCatalogueModel {
+    private static instance: ProductCatalogueModel;
+
+    private constructor() {}
+
+    public static getInstance(): ProductCatalogueModel {
+        if (!ProductCatalogueModel.instance) {
+            ProductCatalogueModel.instance = new ProductCatalogueModel();
+        }
+        return ProductCatalogueModel.instance;
+    }
+
     // --- FIX: Restoring the missing methods ---
     getProductsByCategory(categoryId: string): Product[] {
         if (categoryId === 'all') {
@@ -281,9 +289,6 @@ export class ProductCatalogueModel {
     getAllProducts(): Product[] {
         return productLists;
     }
-<<<<<<< HEAD
-}
-=======
 
 }
->>>>>>> origin/dev
+

@@ -1,10 +1,6 @@
-<<<<<<< HEAD
-
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-=======
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
->>>>>>> origin/dev
+import { CartProvider } from './context/CartContext';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { DeliveryInterface } from './pages/delivery/DeliveryInterface';
 import ProductCatalogue from './ProductCatalogue';
@@ -108,19 +104,21 @@ const Navigation: React.FC = () => {
  */
 function App() {
   return (
-    <Router>
-      <div className="App">
-        {/* Global navigation header */}
-        <Navigation />
-        {/* Application routes */}
-        <Routes>
-          <Route path="/" element={<ProductCatalogue />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/delivery" element={<DeliveryInterface />} />
-        </Routes>
-      </div>
-    </Router>
+    <CartProvider>
+      <Router>
+        <div className="App">
+          {/* Global navigation header */}
+          <Navigation />
+          {/* Application routes */}
+          <Routes>
+            <Route path="/" element={<ProductCatalogue />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/delivery" element={<DeliveryInterface />} />
+          </Routes>
+        </div>
+      </Router>
+    </CartProvider>
   );
 }
 
