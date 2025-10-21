@@ -8,6 +8,32 @@ const router = express.Router();
 // GET /api/orders - Get all orders
 router.get("/", getOrders);
 
+router.get("/my-orders", authenticate, async (req, res) => {
+  const userId = (req as any).user?.id;
+
+  try {
+    const orders = await prisma.order.findMany({
+      where: { userId },
+      include: {
+        items: {
+          include: {
+            product: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    res.json({ data: orders });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch orders" });
+  }
+});
+
+
 // POST /api/orders - Create new order
 router.post("/", createOrder);
 
