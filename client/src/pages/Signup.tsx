@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext"; // Import useAuth to access the login function
 import "../Auth.css";
 
 function Signup() {
@@ -8,12 +9,13 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth(); // Access the login function from context
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:3000/auth/signup", {
+      const response = await fetch("http://localhost:4000/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password, role: "CUSTOMER" }),
@@ -25,18 +27,34 @@ function Signup() {
         return;
       }
 
-      // Expect backend to return { token, message }
+      // Expect backend to return { token, user, message }
       const data = await response.json();
 
-      // Save token so session persists
-      if (data.token) {
-        localStorage.setItem("token", data.token);
+      // Check if the token is returned from the backend
+      if (!data.token) {
+        setMessage("Signup failed, no token received ❌");
+        return;
       }
+
+      // Create the user object based on the response
+      const user = { 
+        id: data.id, 
+        name: data.name, 
+        email: data.email, 
+        role: data.role 
+      };
+
+      // Log the user in immediately after signup
+      login(user, data.token);
+
+      // Store the token for persistence
+      localStorage.setItem("token", data.token);
 
       setMessage(data.message || "Signup successful ✅");
 
-      // Redirect straight to product catalogue
+      // Redirect the user to the homepage or another page
       navigate("/");
+
     } catch (err) {
       console.error("Signup error:", err);
       setMessage("Server error. Please try again later ❌");
