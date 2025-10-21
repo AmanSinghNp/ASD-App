@@ -12,7 +12,7 @@ export class CartController {
   addToCart(product: Product, quantity: number = 1): boolean {
     try {
       // Check if product has stock
-      if (product.stock <= 0) {
+      if (product.stockQty <= 0) {
         throw new Error("Product is out of stock");
       }
 
@@ -22,7 +22,7 @@ export class CartController {
       const allowedQty = Math.min(
         quantity,
         MAX_QTY - currentQuantity,
-        product.stock - currentQuantity
+        product.stockQty - currentQuantity
       );
       if (allowedQty <= 0) {
         throw new Error(
