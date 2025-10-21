@@ -13,25 +13,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserRole {
-  CUSTOMER
-  STAFF
-}
-
-enum CartStatus {
-  OPEN
-  CHECKED_OUT
-}
-
 model User {
   id           String   @id @default(cuid())
+  name         String   @default("Unknown")
   email        String   @unique
   passwordHash String
-  role         UserRole
+  role         String   @default("CUSTOMER")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   carts Cart[]
+  orders Order[]
+  stockHistory StockHistory[]
 
   @@map("users")
 }
@@ -49,19 +42,21 @@ model Product {
   updatedAt   DateTime @updatedAt
 
   cartItems CartItem[]
+  orderItems OrderItem[]
+  stockHistory StockHistory[]
 
   @@map("products")
 }
 
 model Cart {
-  id        String     @id @default(cuid())
+  id        String   @id @default(cuid())
   userId    String
-  status    CartStatus @default(OPEN)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  status    String   @default("OPEN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items     CartItem[]
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items CartItem[]
 
   @@map("carts")
 }
@@ -79,4 +74,109 @@ model CartItem {
 
   @@unique([cartId, productId])
   @@map("cart_items")
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  userId         String?
+  deliveryMethod String
+  addressLine1   String?
+  suburb         String?
+  state          String?
+  postcode       String?
+  slotStart      DateTime?
+  slotEnd        DateTime?
+  status         String      @default("Processing")
+  totalCents      Int         @default(0)
+  paymentMethod  String?     // NEW: Track payment method (card, cash, etc.)
+  paymentStatus  String?     @default("pending") // NEW: Track payment status
+  items          OrderItem[]
+  statusHistory  OrderStatusHistory[] // NEW: Track status timeline
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id             String   @id @default(cuid())
+  orderId        String
+  productId      String
+  nameAtPurchase String
+  priceCents     Int
+  quantity       Int
+  order          Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product        Product  @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
+
+// NEW MODELS FOR RELEASE 2
+
+model StockHistory {
+  id          String   @id @default(cuid())
+  productId   String
+  userId      String?  // Who made the change (null for system changes)
+  oldQuantity Int
+  newQuantity Int
+  changeType  String   // "purchase", "restock", "adjustment", "admin_update"
+  reason      String?  // Optional reason for the change
+  createdAt   DateTime @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("stock_history")
+}
+
+model OrderStatusHistory {
+  id          String   @id @default(cuid())
+  orderId     String
+  status      String   // "Processing", "Confirmed", "Preparing", "Out for Delivery", "Delivered", "Cancelled"
+  notes       String?  // Optional notes about the status change
+  createdAt   DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("order_status_history")
+}
+
+model FAQ {
+  id          String   @id @default(cuid())
+  question    String
+  answer      String
+  category    String   // "shipping", "payment", "account", "products", "general"
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("faqs")
+}
+
+model ChatSession {
+  id          String   @id @default(cuid())
+  userId      String?  // Customer who started the chat (null for anonymous)
+  status      String   @default("open") // "open", "closed", "resolved"
+  subject     String?  // Optional subject/topic
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  messages ChatMessage[]
+
+  @@map("chat_sessions")
+}
+
+model ChatMessage {
+  id            String   @id @default(cuid())
+  sessionId     String
+  senderType    String   // "customer", "staff", "system"
+  senderName    String?  // Name of sender (null for system messages)
+  message       String
+  createdAt     DateTime @default(now())
+
+  session ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("chat_messages")
 }

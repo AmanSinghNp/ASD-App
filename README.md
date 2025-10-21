@@ -1,4 +1,4 @@
-# ASD Project - Release 2
+# ASD Project - Release 1
 
 This release implements core e-commerce functionality including User Management, Cart functionality, Checkout/Payment system, Product Catalogue, Search & Filters, Admin Dashboard, and Delivery tracking for the ASD (Advanced Software Development) project.
 
@@ -100,11 +100,11 @@ This release implements core e-commerce functionality including User Management,
 │   ├── src/
 │   │   ├── controllers/      # Route controllers
 │   │   ├── routes/           # API routes
-│   │   └── middleware/       # Express middleware
+│   │   ├── middleware/       # Express middleware
+│   │   └── index.ts          # Server entry point
 │   ├── prisma/
 │   │   ├── schema.prisma     # Database schema
 │   │   └── seed.ts           # Seed script
-|   ├── index.ts          # Server entry point
 │   └── package.json
 └── README.md
 ```
@@ -295,6 +295,15 @@ The database is seeded with:
 - 🔄 Order Logs (F010) - Order history tracking
 - 🔄 Customer Support Chat (F009) - FAQ and chat functionality
 - 🔄 Stock Management (F006) - Real-time stock updates
+
+## Next Steps (Release 2)
+
+- Complete remaining features (F006, F009, F010)
+- Enhanced security and authentication
+- Real-time notifications
+- Advanced analytics and reporting
+- Mobile app development
+- Performance optimization
 
 ## Troubleshooting
 

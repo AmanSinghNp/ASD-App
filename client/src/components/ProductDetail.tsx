@@ -2,22 +2,25 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ProductController } from "../controllers/ProductCatalogueController";
 import type { Product } from "../models/ProductCatalogueModel";
-import { useCart } from "../components/CartContext";
 
 const ProductDetail: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
-  const { addToCart } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
-    const controller = new ProductController();
-    if (productId) {
-      const productDetails = controller.getProductDetails(productId);
-      setProduct(productDetails || null);
-    }
-    setLoading(false);
+    const fetchProduct = async () => {
+      const controller = new ProductController();
+      if (productId) {
+        const productDetails = await controller.getProductDetails(productId);
+        setProduct(productDetails || null);
+      }
+      setLoading(false);
+    };
+    fetchProduct();
+    setQuantity(1);
   }, [productId]);
 
   if (loading) {
@@ -46,6 +49,11 @@ const ProductDetail: React.FC = () => {
       </div>
     );
   }
+
+  const addToCart = () => {
+    console.log("Add to cart:", product, quantity);
+    // Add your cart logic here
+  };
 
   return (
     <div
@@ -138,29 +146,42 @@ const ProductDetail: React.FC = () => {
               </p>
             </div>
 
-            <button
-              disabled={product.stock === 0}
-              onClick={() => {
-                if (!product) return;
-                addToCart({
-                  id: product.id,
-                  name: product.name,
-                  price: product.price,
-                  quantity: 1,
-                });
-              }}
+            <div
               style={{
-                padding: "12px 24px",
-                backgroundColor: product.stock > 0 ? "#493aecff" : "#ccc",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: product.stock > 0 ? "pointer" : "not-allowed",
-                fontSize: "1.1em",
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                marginTop: "10px",
               }}
             >
-              {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
-            </button>
+              <label style={{ fontWeight: 500 }}>Qty:</label>
+              <input
+                type="number"
+                value={quantity}
+                min={1}
+                max={product.stock}
+                disabled={product.stock === 0}
+                onChange={(e) => {
+                  const val = Number(e.target.value);
+                  if (val >= 1 && val <= product.stock) setQuantity(val);
+                }}
+                style={{ width: "60px", padding: "4px 8px" }}
+              />
+              <button
+                onClick={addToCart}
+                disabled={product.stock === 0}
+                style={{
+                  padding: "8px 16px",
+                  backgroundColor: product.stock > 0 ? "#493aecff" : "#ccc",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: product.stock > 0 ? "pointer" : "not-allowed",
+                }}
+              >
+                {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
+              </button>
+            </div>
           </div>
         </div>
       </div>
