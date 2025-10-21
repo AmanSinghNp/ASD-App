@@ -222,50 +222,52 @@ const topics: Topic[] = [
             </button>
           </div>
 
-          {/* Search Bar */}
-          <div style={{ position: 'relative' }}>
-            <Search style={{
-              position: 'absolute',
-              left: 'var(--spacing-md)',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              color: 'var(--text-muted)',
-              width: '20px',
-              height: '20px',
-              pointerEvents: 'none'
-            }} />
-            <input
-              type="text"
-              placeholder="Search our help library..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={{
-                width: '100%',
-                padding: 'var(--spacing-md) var(--spacing-md) var(--spacing-md) 3rem',
-                border: '1px solid var(--border-color)',
-                borderRadius: 'var(--radius-lg)',
-                backgroundColor: 'var(--bg-primary)',
-                color: 'var(--text-primary)',
-                fontSize: '1rem',
-                transition: 'all 0.2s ease'
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = 'var(--primary-blue)';
-                e.target.style.boxShadow = '0 0 0 3px var(--primary-blue-light)';
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = 'var(--border-color)';
-                e.target.style.boxShadow = 'none';
-              }}
-            />
-          </div>
+          {/* Search Bar - only visible while FAQ tab is active */}
+          {activeTab === 'faq' && (
+            <div style={{ position: 'relative' }}>
+              <Search style={{
+                position: 'absolute',
+                left: 'var(--spacing-md)',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                color: 'var(--text-muted)',
+                width: '20px',
+                height: '20px',
+                pointerEvents: 'none'
+              }} />
+              <input
+                type="text"
+                placeholder="Search our help library..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: 'var(--spacing-md) var(--spacing-md) var(--spacing-md) 3rem',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: 'var(--radius-lg)',
+                  backgroundColor: 'var(--bg-primary)',
+                  color: 'var(--text-primary)',
+                  fontSize: '1rem',
+                  transition: 'all 0.2s ease'
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = 'var(--primary-blue)';
+                  e.target.style.boxShadow = '0 0 0 3px var(--primary-blue-light)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = 'var(--border-color)';
+                  e.target.style.boxShadow = 'none';
+                }}
+              />
+            </div>
+          )}
         </div>
 
         {/* Main Content */}
         {activeTab === 'faq' ? (
           <div style={{
             display: 'grid',
-            gridTemplateColumns: '300px 1fr',
+            gridTemplateColumns: '320px minmax(0, 1fr)',
             gap: 'var(--spacing-2xl)',
             alignItems: 'start'
           }}>
@@ -349,9 +351,8 @@ const topics: Topic[] = [
               }}>
                 {selectedTopic === 'all' ? 'All Questions' : topics.find(t => t.id === selectedTopic)?.name}
               </h2>
-              <div style={{
+              <div className="faq-grid" style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
                 gap: 'var(--spacing-lg)'
               }}>
                 {filteredQuestions.map(q => (

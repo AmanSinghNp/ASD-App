@@ -46,16 +46,17 @@ const ProductList: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1280px', margin: '0 auto', fontFamily: 'Arial, sans-serif' }}>
-      <h2 style={{ color: '#333', marginBottom: '20px', fontSize: '2rem' }}>Product Catalogue</h2>
+    <div className="container" style={{ padding: 'var(--spacing-2xl) 0' }}>
+      <h2 style={{ color: 'var(--text-primary)', marginBottom: 'var(--spacing-lg)', fontSize: '1.5rem', fontWeight: 600 }}>Product Catalogue</h2>
       
       {/* Filters Section */}
       <div
+        className="filters"
         style={{
           display: "flex",
           flexWrap: "wrap",
-          gap: "15px",
-          marginBottom: "20px",
+          gap: "var(--spacing-md)",
+          marginBottom: "var(--spacing-lg)",
           alignItems: "center",
         }}
       >
@@ -71,7 +72,7 @@ const ProductList: React.FC = () => {
             value={inputValue}
             onChange={handleSearchChange}
             autoComplete="off"
-            style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ddd" }}
+            style={{ padding: "8px", borderRadius: "4px", border: "1px solid var(--border-color)" }}
           />
           {suggestions.length > 0 && (
             <ul style={{
@@ -103,7 +104,7 @@ const ProductList: React.FC = () => {
             id="category"
             // The value is controlled by a local state, but the filter is applied via setAppliedCategory
             onChange={(e) => setAppliedCategory(e.target.value)}
-            style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ddd" }}
+            style={{ padding: "8px", borderRadius: "4px", border: "1px solid var(--border-color)" }}
           >
             <option value="all">All Categories</option>
             {categories.map((category) => (
@@ -125,7 +126,7 @@ const ProductList: React.FC = () => {
               const [by, direction] = e.target.value.split("-");
               setAppliedSort({ by, ascending: direction === "asc" });
             }}
-            style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ddd" }}
+            style={{ padding: "8px", borderRadius: "4px", border: "1px solid var(--border-color)" }}
           >
             <option value="name-asc">Name (A-Z)</option>
             <option value="name-desc">Name (Z-A)</option>
@@ -137,7 +138,7 @@ const ProductList: React.FC = () => {
       </div>
       
       {/* Results Count */}
-      <p style={{ marginBottom: "15px", color: "#666" }}>
+      <p style={{ marginBottom: "var(--spacing-md)", color: "var(--text-secondary)" }}>
         Showing {products.length} product{products.length !== 1 ? "s" : ""}
       </p>
 
@@ -145,7 +146,7 @@ const ProductList: React.FC = () => {
       <div style={{ 
         display: 'grid', 
         gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
-        gap: '20px'
+        gap: 'var(--spacing-lg)'
       }}>
         {products.length > 0 ? (
           products.map((product: Product) => (
