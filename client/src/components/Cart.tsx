@@ -28,7 +28,7 @@ const Cart: React.FC = () => {
         textAlign: 'center',
         color: '#666'
       }}>
-        <h2 style={{ color: '#333', marginBottom: '10px' }}>Your Cart</h2>
+        {/* <h2 style={{ color: '#333', marginBottom: '10px' }}>Your Cart</h2> */}
         <p>Your cart is empty</p>
         <p style={{ fontSize: '14px', color: '#888' }}>Add some products to get started!</p>
         <button

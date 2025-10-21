@@ -1,6 +1,5 @@
 
 import { ProductCatalogueModel } from '../models/ProductCatalogueModel';
-import type { Product } from '../models/ProductCatalogueModel'; // Ensure Product type is imported
 
 export class ProductController {
   private model: ProductCatalogueModel;
@@ -27,8 +26,7 @@ export class ProductController {
     }
   }
 
-  // Ensure the 'products' parameter is correctly typed as Product[]
-  sortProducts(products: Product[], sortBy: string, ascending: boolean = true) {
+  sortProducts(products: any[], sortBy: string, ascending: boolean = true) {
     try {
       return this.model.sortProducts(products, sortBy, ascending);
     } catch (error) {
@@ -51,15 +49,6 @@ export class ProductController {
       return this.model.searchProducts(query);
     } catch (error) {
       console.error('Error searching products:', error);
-      return [];
-    }
-  }
-
-  getAllProducts() {
-    try {
-      return this.model.getAllProducts();
-    } catch (error) {
-      console.error('Error getting all products:', error);
       return [];
     }
   }
