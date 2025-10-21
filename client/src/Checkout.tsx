@@ -52,7 +52,7 @@ const Checkout: React.FC = () => {
   };
 
   const subtotalCents = useMemo(() => {
-    return cartItems.reduce((sum, item) => {
+    return cartItems.reduce((sum: number, item: { product: any; quantity: any; }) => {
       const priceCents = getPriceCents(item.product);
       const qty = Number(item.quantity) || 0;
       return sum + priceCents * qty;
@@ -526,7 +526,7 @@ const Checkout: React.FC = () => {
           <p>Your cart is empty</p>
         ) : (
           <>
-            {cartItems.map((item) => {
+            {cartItems.map((item: { product: { id: React.Key | null | undefined; name: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }; quantity: any; }) => {
               const priceCents = getPriceCents(item.product);
               const unitPrice = priceCents / 100;
               const qty = Number(item.quantity) || 0;
@@ -611,7 +611,7 @@ const Checkout: React.FC = () => {
             {/* Summary Section */}
             <div className="summary-details" style={{ marginTop: "20px" }}>
               {(() => {
-                const subtotal = cartItems.reduce((sum, item) => {
+                const subtotal = cartItems.reduce((sum: number, item: { product: any; quantity: any; }) => {
                   const priceCents = getPriceCents(item.product);
                   return sum + priceCents * (Number(item.quantity) || 0);
                 }, 0);

@@ -84,6 +84,7 @@ const Navigation: React.FC = () => {
               {/* Navigation links */}
               {[ 
                 { to: '/', label: 'Product Catalogue', icon: Package },
+                { to: '/cart', label: 'Cart', icon: ShoppingCart },
                 { to: '/checkout', label: 'Checkout', icon: ShoppingCart },
                 { to: '/admin', label: 'Admin Dashboard', icon: Settings },
                 { to: '/delivery', label: 'Delivery Interface', icon: Truck },
@@ -213,6 +214,7 @@ function App() {
             <Routes>
               <Route path="/" element={<ProductCatalogue />} />
               <Route path="/checkout" element={<Checkout />} />
+              <Route path="/cart" element={<Cart />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/delivery" element={<DeliveryInterface />} />
               <Route path="/auth/login" element={<Login />} />
