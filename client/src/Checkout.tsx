@@ -52,11 +52,14 @@ const Checkout: React.FC = () => {
   };
 
   const subtotalCents = useMemo(() => {
-    return cartItems.reduce((sum: number, item: { product: any; quantity: any; }) => {
-      const priceCents = getPriceCents(item.product);
-      const qty = Number(item.quantity) || 0;
-      return sum + priceCents * qty;
-    }, 0);
+    return cartItems.reduce(
+      (sum: number, item: { product: any; quantity: any }) => {
+        const priceCents = getPriceCents(item.product);
+        const qty = Number(item.quantity) || 0;
+        return sum + priceCents * qty;
+      },
+      0
+    );
   }, [cartItems]);
 
   const [deliveryMethod, setDeliveryMethod] = useState<"Delivery" | "Pickup">(
@@ -147,7 +150,7 @@ const Checkout: React.FC = () => {
     try {
       const orderData = {
         items: cartItems.map((ci: any) => ({
-          productId: ci.product.id,
+          productId: String(ci.product.id),
           quantity: Number(ci.quantity) || 0,
         })),
         deliveryMethod,
@@ -174,7 +177,7 @@ const Checkout: React.FC = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // ✅ Include token here
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(orderData),
       });
@@ -526,95 +529,132 @@ const Checkout: React.FC = () => {
           <p>Your cart is empty</p>
         ) : (
           <>
-            {cartItems.map((item: { product: { id: React.Key | null | undefined; name: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }; quantity: any; }) => {
-              const priceCents = getPriceCents(item.product);
-              const unitPrice = priceCents / 100;
-              const qty = Number(item.quantity) || 0;
+            {cartItems.map(
+              (item: {
+                product: {
+                  id: React.Key | null | undefined;
+                  name:
+                    | string
+                    | number
+                    | bigint
+                    | boolean
+                    | React.ReactElement<
+                        unknown,
+                        string | React.JSXElementConstructor<any>
+                      >
+                    | Iterable<React.ReactNode>
+                    | React.ReactPortal
+                    | Promise<
+                        | string
+                        | number
+                        | bigint
+                        | boolean
+                        | React.ReactPortal
+                        | React.ReactElement<
+                            unknown,
+                            string | React.JSXElementConstructor<any>
+                          >
+                        | Iterable<React.ReactNode>
+                        | null
+                        | undefined
+                      >
+                    | null
+                    | undefined;
+                };
+                quantity: any;
+              }) => {
+                const priceCents = getPriceCents(item.product);
+                const unitPrice = priceCents / 100;
+                const qty = Number(item.quantity) || 0;
 
-              const handleIncrease = () => {
-                const newQty = qty + 1;
-                updateQuantity(item.product.id, newQty);
-              };
+                const handleIncrease = () => {
+                  const newQty = qty + 1;
+                  updateQuantity(item.product.id, newQty);
+                };
 
-              const handleDecrease = () => {
-                if (qty > 1) {
-                  updateQuantity(item.product.id, qty - 1);
-                } else {
-                  removeFromCart(item.product.id);
-                }
-              };
+                const handleDecrease = () => {
+                  if (qty > 1) {
+                    updateQuantity(item.product.id, qty - 1);
+                  } else {
+                    removeFromCart(item.product.id);
+                  }
+                };
 
-              return (
-                <div
-                  className="order-item"
-                  key={item.product.id}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginBottom: "10px",
-                  }}
-                >
-                  <div>
-                    <p style={{ margin: "0", fontWeight: "bold" }}>
-                      {item.product.name}
-                    </p>
-                    <p style={{ margin: "4px 0" }}>${unitPrice.toFixed(2)}</p>
+                return (
+                  <div
+                    className="order-item"
+                    key={item.product.id}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    <div>
+                      <p style={{ margin: "0", fontWeight: "bold" }}>
+                        {item.product.name}
+                      </p>
+                      <p style={{ margin: "4px 0" }}>${unitPrice.toFixed(2)}</p>
+                    </div>
+
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <button
+                        onClick={handleDecrease}
+                        style={{
+                          border: "none",
+                          background: "#eee",
+                          padding: "4px 8px",
+                          cursor: "pointer",
+                          borderRadius: "4px",
+                          marginRight: "6px",
+                        }}
+                      >
+                        -
+                      </button>
+                      {qty}
+                      <button
+                        onClick={handleIncrease}
+                        style={{
+                          border: "none",
+                          background: "#eee",
+                          padding: "4px 8px",
+                          cursor: "pointer",
+                          borderRadius: "4px",
+                          marginLeft: "6px",
+                        }}
+                      >
+                        +
+                      </button>
+                      <button
+                        onClick={() => removeFromCart(item.product.id)}
+                        style={{
+                          marginLeft: "10px",
+                          background: "none",
+                          border: "none",
+                          color: "red",
+                          cursor: "pointer",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        x
+                      </button>
+                    </div>
                   </div>
-
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <button
-                      onClick={handleDecrease}
-                      style={{
-                        border: "none",
-                        background: "#eee",
-                        padding: "4px 8px",
-                        cursor: "pointer",
-                        borderRadius: "4px",
-                        marginRight: "6px",
-                      }}
-                    >
-                      -
-                    </button>
-                    {qty}
-                    <button
-                      onClick={handleIncrease}
-                      style={{
-                        border: "none",
-                        background: "#eee",
-                        padding: "4px 8px",
-                        cursor: "pointer",
-                        borderRadius: "4px",
-                        marginLeft: "6px",
-                      }}
-                    >
-                      +
-                    </button>
-                    <button
-                      onClick={() => removeFromCart(item.product.id)}
-                      style={{
-                        marginLeft: "10px",
-                        background: "none",
-                        border: "none",
-                        color: "red",
-                        cursor: "pointer",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      x
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              }
+            )}
 
             {/* Summary Section */}
             <div className="summary-details" style={{ marginTop: "20px" }}>
               {(() => {
-                const subtotal = cartItems.reduce((sum: number, item: { product: any; quantity: any; }) => {
-                  const priceCents = getPriceCents(item.product);
-                  return sum + priceCents * (Number(item.quantity) || 0);
-                }, 0);
+                const subtotal = cartItems.reduce(
+                  (sum: number, item: { product: any; quantity: any }) => {
+                    const priceCents = getPriceCents(item.product);
+                    return sum + priceCents * (Number(item.quantity) || 0);
+                  },
+                  0
+                );
 
                 const shipping =
                   deliveryMethod === "Delivery" ? shippingPriceCents : 0;
