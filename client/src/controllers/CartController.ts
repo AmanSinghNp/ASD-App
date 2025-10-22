@@ -1,5 +1,6 @@
 import { CartModel, type CartItem } from "../models/CartModel";
 import type { Product } from "../models/ProductCatalogueModel";
+import { ProductCatalogueModel } from "../models/ProductCatalogueModel";
 
 export class CartController {
   private model: CartModel;
@@ -31,21 +32,10 @@ export class CartController {
       }
 
       // Decrement stock in the product catalogue model (singleton)
-      try {
-        const {
-          ProductCatalogueModel,
-        } = require("../models/ProductCatalogueModel");
-        const catalogue = ProductCatalogueModel.getInstance();
-        const stockDecremented = catalogue.decrementStock(
-          product.id,
-          allowedQty
-        );
-        if (!stockDecremented) throw new Error("Failed to decrement stock");
-      } catch (e) {
-        console.warn(
-          "Stock decrement not applied globally. Ensure shared model instance if needed."
-        );
-      }
+      const catalogue = ProductCatalogueModel.getInstance();
+      const stockDecremented = catalogue.decrementStock(product.id, allowedQty);
+      if (!stockDecremented) throw new Error("Failed to decrement stock");
+
       this.model.addItem(product, allowedQty);
       return true;
     } catch (error) {

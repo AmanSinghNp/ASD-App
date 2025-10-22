@@ -146,7 +146,7 @@ const Cart: React.FC = () => {
           <div style={{ marginBottom: "36px" }}>
             {cartItems.map((item: CartItemType) => (
               <CartItem
-                key={item.productId}
+                key={item.product.id}
                 item={item}
                 onRemove={handleRemoveItem}
               />
@@ -322,7 +322,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, onRemove }) => {
 
       {/* Remove Button */}
       <button
-        onClick={() => onRemove(item.productId)}
+        onClick={() => onRemove(item.product.id)}
         style={{
           padding: "5px 10px",
           backgroundColor: "#ff6b6b",

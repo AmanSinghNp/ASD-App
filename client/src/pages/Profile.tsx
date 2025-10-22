@@ -18,8 +18,11 @@ function Profile() {
 
   const token = localStorage.getItem("token");
 
+  console.log(token)
+
   // Fetch user data on mount
   useEffect(() => {
+    console.log("Token", token);
     const fetchCustomer = async () => {
       if (!token) {
         setError("You are not logged in.");

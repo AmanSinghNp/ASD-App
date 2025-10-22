@@ -30,6 +30,8 @@ export class ProductCatalogueModel {
   private products: Product[];
   private categories: Category[];
 
+  private static instance: ProductCatalogueModel;
+
   constructor() {
     // Deep copy to avoid mutation of the imported JSON
     this.products = (productsData as Product[]).map(p => ({ ...p }));
@@ -37,10 +39,14 @@ export class ProductCatalogueModel {
   }
 
   static getInstance(): ProductCatalogueModel {
-    if (!globalProductCatalogueModel) {
-      globalProductCatalogueModel = new ProductCatalogueModel();
+    // if (!globalProductCatalogueModel) {
+    //   globalProductCatalogueModel = new ProductCatalogueModel();
+    // }
+    // return globalProductCatalogueModel;
+    if (!ProductCatalogueModel.instance) {
+      ProductCatalogueModel.instance = new ProductCatalogueModel();
     }
-    return globalProductCatalogueModel;
+    return ProductCatalogueModel.instance;
   }
 
   private extractCategories(): Category[] {
