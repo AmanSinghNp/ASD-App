@@ -22,8 +22,8 @@ dotenv.config();
 // Create the Express app
 const app = express();
 
-// Use the port from environment variables, with a fallback to 3000
-const PORT = process.env.PORT || 3000;
+// Use the port from environment variables, with a fallback to 4000
+const PORT = process.env.PORT || 4000;
 
 // --- Middleware Setup ---
 // app.use(cors());

@@ -1,4 +1,6 @@
 import { PrismaClient } from "@prisma/client";
+import fs from "fs";
+import path from "path";
 
 const prisma = new PrismaClient();
 
@@ -30,7 +32,7 @@ async function main() {
 
   // Check if products exist, create 10 if none
   const existingProducts = await prisma.product.count();
-  let products = [];
+  let products = [] as any[];
 
   if (existingProducts === 0) {
     console.log("No products found, creating 10 active products...");
@@ -124,6 +126,50 @@ async function main() {
   } else {
     products = await prisma.product.findMany();
     console.log("Found existing products:", products.length);
+  }
+
+  // Sync all products from client mock JSON (adds missing, updates prices/stock)
+  try {
+    const mockPath = path.resolve(__dirname, "../../client/src/lib/mock/products.json");
+    if (fs.existsSync(mockPath)) {
+      const raw = fs.readFileSync(mockPath, "utf8");
+      const mock = JSON.parse(raw);
+      let created = 0;
+      let updated = 0;
+      for (const p of mock) {
+        const result = await prisma.product.upsert({
+          where: { sku: p.sku },
+          update: {
+            name: p.name,
+            category: p.category,
+            priceCents: Number(p.priceCents) || 0,
+            stockQty: Number(p.stockQty) || 0,
+            isActive: true,
+          },
+          create: {
+            sku: p.sku,
+            name: p.name,
+            category: p.category,
+            priceCents: Number(p.priceCents) || 0,
+            stockQty: Number(p.stockQty) || 0,
+            imageUrl: p.imageUrl || "",
+            isActive: true,
+          },
+        });
+        // Heuristic: if createdAt is very recent, treat as created
+        if ((result as any).createdAt && Math.abs(new Date().getTime() - new Date((result as any).createdAt).getTime()) < 1000) {
+          created++;
+        } else {
+          updated++;
+        }
+      }
+      console.log(`Synced products from mock JSON: created ${created}, upserted ${created + updated}`);
+      products = await prisma.product.findMany();
+    } else {
+      console.warn("Mock products.json not found at:", mockPath);
+    }
+  } catch (e) {
+    console.warn("Skipping mock product sync due to error:", e);
   }
 
   // Create realistic delivery orders with varied statuses

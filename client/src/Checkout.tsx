@@ -151,6 +151,7 @@ const Checkout: React.FC = () => {
       const orderData = {
         items: cartItems.map((ci: any) => ({
           productId: String(ci.product.id),
+          sku: ci.product?.sku,
           quantity: Number(ci.quantity) || 0,
         })),
         deliveryMethod,
@@ -191,9 +192,9 @@ const Checkout: React.FC = () => {
       } else {
         alert("Failed to create order: " + (result.error || "Unknown error"));
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Order submission failed:", error);
-      alert("Failed to submit order");
+      alert("Failed to submit order: " + (error?.message || "Network error"));
     } finally {
       setLoading(false);
     }
@@ -305,7 +306,7 @@ const Checkout: React.FC = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+              pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
             />
             <input
               type="tel"

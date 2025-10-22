@@ -7,6 +7,10 @@ import {
 } from "../controllers/orderController";
 import { prisma } from "../index";
 import { authenticate } from "../middleware/authMiddleware";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
+const SECRET = process.env.JWT_SECRET!;
 
 const router = express.Router();
 
@@ -45,8 +49,20 @@ router.get("/my-orders", authenticate, async (req, res) => {
  * POST /api/orders
  * Create a new order and automatically update product stock
  */
-router.post("/", authenticate, async (req, res) => {
-  const userId = (req as any).user?.id;
+router.post("/", async (req, res) => {
+  // Optional auth: extract userId if a valid token is provided
+  let userId: string | null = null;
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    try {
+      const token = authHeader.split(" ")[1];
+      const decoded = jwt.verify(token, SECRET) as { id: string };
+      userId = decoded.id;
+    } catch (_) {
+      // ignore invalid tokens for guest checkout
+      userId = null;
+    }
+  }
 
   try {
     const { items, deliveryMethod, totals, address, slotStart, slotEnd } =
@@ -55,7 +71,7 @@ router.post("/", authenticate, async (req, res) => {
     // Step 1️⃣: Create order and items
     const order = await prisma.order.create({
       data: {
-        userId,
+        userId: userId ?? null,
         deliveryMethod,
         addressLine1: address?.addressLine1,
         suburb: address?.suburb,
@@ -67,8 +83,16 @@ router.post("/", authenticate, async (req, res) => {
         items: {
           create: await Promise.all(
             items.map(async (item: any) => {
-              const product = await prisma.product.findUnique({
-                where: { id: item.productId },
+              const variants: any[] = [];
+              if (item?.productId) variants.push({ id: String(item.productId) });
+              if (item?.sku) variants.push({ sku: String(item.sku) });
+              const pid = String(item?.productId ?? "");
+              if (/^\d+$/.test(pid)) {
+                const padded = pid.padStart(3, "0");
+                variants.push({ sku: { endsWith: `-${padded}` } });
+              }
+              const product = await prisma.product.findFirst({
+                where: { OR: variants },
               });
               if (!product)
                 throw new Error(`Product not found: ${item.productId}`);
@@ -76,7 +100,7 @@ router.post("/", authenticate, async (req, res) => {
                 throw new Error(`Insufficient stock for ${product.name}`);
 
               return {
-                productId: item.productId,
+                productId: product.id,
                 nameAtPurchase: product.name,
                 priceCents: product.priceCents,
                 quantity: item.quantity,
@@ -90,21 +114,27 @@ router.post("/", authenticate, async (req, res) => {
 
     // Step 2️⃣: Deduct stock & record stock change
     for (const item of items) {
-      const product = await prisma.product.findUnique({
-        where: { id: item.productId },
-      });
+      const variants: any[] = [];
+      if (item?.productId) variants.push({ id: String(item.productId) });
+      if (item?.sku) variants.push({ sku: String(item.sku) });
+      const pid = String(item?.productId ?? "");
+      if (/^\d+$/.test(pid)) {
+        const padded = pid.padStart(3, "0");
+        variants.push({ sku: { endsWith: `-${padded}` } });
+      }
+      const product = await prisma.product.findFirst({ where: { OR: variants } });
       if (product) {
         const newQty = product.stockQty - item.quantity;
 
         await prisma.product.update({
-          where: { id: item.productId },
+          where: { id: product.id },
           data: { stockQty: newQty },
         });
 
         await prisma.stockHistory.create({
           data: {
-            productId: item.productId,
-            userId,
+            productId: product.id,
+            userId: userId ?? null,
             oldQuantity: product.stockQty,
             newQuantity: newQty,
             changeType: "purchase",
