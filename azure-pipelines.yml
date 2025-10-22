@@ -9,7 +9,7 @@ pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  nodeVersion: "18.x"
+  nodeVersion: "20.x"
 
 stages:
   

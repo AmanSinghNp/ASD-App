@@ -17,8 +17,7 @@
     "prisma:studio": "npm --prefix server run prisma:studio",
     "prisma:migrate": "npm --prefix server run prisma:migrate",
     "prisma:seed": "npm --prefix server run prisma:seed",
-    "prisma:generate": "npm --prefix server run prisma:generate",
-    "postinstall": "npm --prefix server run prisma:generate"
+    "prisma:generate": "npm --prefix server run prisma:generate"
   },
   "repository": {
     "type": "git",
@@ -62,7 +61,7 @@
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.3",
     "server": "^1.0.42",
-    "vite": "^7.1.4"
+    "vite": "^5.4.10"
   },
   "type": "commonjs"
 }
