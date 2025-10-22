@@ -1,35 +1,37 @@
 import express from "express";
-import { createOrder, updateOrderStatus, getOrders, getOrderStatusHistory } from "../controllers/orderController";
+import {
+  createOrder,
+  updateOrderStatus,
+  getOrders,
+  getOrderStatusHistory,
+} from "../controllers/orderController";
+import { requireAuth, requireAdmin } from "../middleware/auth";
+import type { AuthRequest } from "../middleware/auth";
 import { prisma } from "../index";
 import { authenticate } from "../middleware/authMiddleware";
-import { requireAuth, requireAdmin } from "../middleware/auth";
 
 const router = express.Router();
 
 // GET /api/orders - Get all orders (Admin only for delivery interface)
 router.get("/", requireAuth, requireAdmin, getOrders);
 
-router.get("/my-orders", authenticate, async (req, res) => {
-  const userId = (req as any).user?.id;
-
+// GET /api/orders/my-orders - Get current user's orders
+router.get("/my-orders", requireAuth, async (req: AuthRequest, res) => {
   try {
+    const userId = req.user?.id;
     const orders = await prisma.order.findMany({
       where: { userId },
       include: {
         items: {
-          include: {
-            product: true,
-          },
+          include: { product: true },
         },
       },
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: { createdAt: "desc" },
     });
 
     res.json({ data: orders });
   } catch (err) {
-    console.error(err);
+    console.error("❌ Error fetching user orders:", err);
     res.status(500).json({ error: "Failed to fetch orders" });
   }
 });
