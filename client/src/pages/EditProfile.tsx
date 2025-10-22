@@ -28,8 +28,8 @@ function EditProfile() {
       }
 
       try {
-        const response = await fetch("http://localhost:3000/auth/profile", {
-            headers: { Authorization: `Bearer ${token}` },
+        const response = await fetch("http://localhost:4000/api/auth/profile", {
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         if (!response.ok) {
@@ -60,7 +60,7 @@ function EditProfile() {
     if (!token) return;
 
     try {
-      const response = await fetch("http://localhost:3000/auth/profile", {
+      const response = await fetch("http://localhost:4000/api/auth/profile", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -77,13 +77,10 @@ function EditProfile() {
       }
 
       // Update the token if backend returned new one (optional)
-      // Or request new JWT from a refresh endpoint
-      // For simplicity, backend could return new JWT here
-      // Example: data.token
       if (data.token) localStorage.setItem("token", data.token);
 
       setMessage("Profile updated successfully ✅");
-      navigate("/profile"); // redirect back to profile page
+      navigate("/auth/profile"); // redirect back to profile page
     } catch (err) {
       console.error(err);
       setMessage("Something went wrong ❌");
@@ -116,14 +113,13 @@ function EditProfile() {
 
           <button 
             type="submit" 
-            onClick={() => navigate("/profile")}
             style={{ backgroundColor: "#4f46e5", color: "white" }}
           >
             Save Changes
           </button>
           <button
             type="button"
-            onClick={() => navigate("/profile")}
+            onClick={() => navigate("/auth/profile")}
             style={{ marginTop: "10px", backgroundColor: "gray", color: "white" }}
           >
             Cancel

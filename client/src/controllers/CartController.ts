@@ -1,5 +1,5 @@
-import { CartModel, type CartItem } from '../models/CartModel';
-import type { Product } from '../models/ProductCatalogueModel';
+import { CartModel, type CartItem } from "../models/CartModel";
+import type { Product } from "../models/ProductCatalogueModel";
 
 export class CartController {
   private model: CartModel;
@@ -13,30 +13,43 @@ export class CartController {
     try {
       // Check if product has stock
       if (product.stockQty <= 0) {
-        throw new Error('Product is out of stock');
+        throw new Error("Product is out of stock");
       }
 
       // Enforce maximum quantity limit per product
       const MAX_QTY = 20;
       const currentQuantity = this.model.getItemQuantity(product.id);
-      const allowedQty = Math.min(quantity, MAX_QTY - currentQuantity, product.stockQty - currentQuantity);
+      const allowedQty = Math.min(
+        quantity,
+        MAX_QTY - currentQuantity,
+        product.stockQty - currentQuantity
+      );
       if (allowedQty <= 0) {
-        throw new Error('Maximum quantity reached or not enough stock available');
+        throw new Error(
+          "Maximum quantity reached or not enough stock available"
+        );
       }
 
       // Decrement stock in the product catalogue model (singleton)
       try {
-        const { ProductCatalogueModel } = require('../models/ProductCatalogueModel');
+        const {
+          ProductCatalogueModel,
+        } = require("../models/ProductCatalogueModel");
         const catalogue = ProductCatalogueModel.getInstance();
-        const stockDecremented = catalogue.decrementStock(product.id, allowedQty);
-        if (!stockDecremented) throw new Error('Failed to decrement stock');
+        const stockDecremented = catalogue.decrementStock(
+          product.id,
+          allowedQty
+        );
+        if (!stockDecremented) throw new Error("Failed to decrement stock");
       } catch (e) {
-        console.warn('Stock decrement not applied globally. Ensure shared model instance if needed.');
+        console.warn(
+          "Stock decrement not applied globally. Ensure shared model instance if needed."
+        );
       }
       this.model.addItem(product, allowedQty);
       return true;
     } catch (error) {
-      console.error('Error adding to cart:', error);
+      console.error("Error adding to cart:", error);
       return false;
     }
   }
@@ -47,7 +60,7 @@ export class CartController {
       this.model.removeItem(productId);
       return true;
     } catch (error) {
-      console.error('Error removing from cart:', error);
+      console.error("Error removing from cart:", error);
       return false;
     }
   }
@@ -56,14 +69,14 @@ export class CartController {
   updateQuantity(productId: string, quantity: number): boolean {
     try {
       if (quantity < 0) {
-        throw new Error('Quantity cannot be negative');
+        throw new Error("Quantity cannot be negative");
       }
       const MAX_QTY = 20;
       const newQty = Math.min(quantity, MAX_QTY);
       this.model.updateQuantity(productId, newQty);
       return true;
     } catch (error) {
-      console.error('Error updating quantity:', error);
+      console.error("Error updating quantity:", error);
       return false;
     }
   }
@@ -73,7 +86,7 @@ export class CartController {
     try {
       return this.model.getItems();
     } catch (error) {
-      console.error('Error getting cart items:', error);
+      console.error("Error getting cart items:", error);
       return [];
     }
   }
@@ -83,7 +96,7 @@ export class CartController {
     try {
       return this.model.getTotalPrice();
     } catch (error) {
-      console.error('Error calculating total price:', error);
+      console.error("Error calculating total price:", error);
       return 0;
     }
   }
@@ -93,7 +106,7 @@ export class CartController {
     try {
       return this.model.getTotalItems();
     } catch (error) {
-      console.error('Error calculating total items:', error);
+      console.error("Error calculating total items:", error);
       return 0;
     }
   }
@@ -104,7 +117,7 @@ export class CartController {
       this.model.clearCart();
       return true;
     } catch (error) {
-      console.error('Error clearing cart:', error);
+      console.error("Error clearing cart:", error);
       return false;
     }
   }

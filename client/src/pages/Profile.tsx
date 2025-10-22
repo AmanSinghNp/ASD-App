@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext"; // Import useAuth to call logout
 import "../Auth.css";
 
 interface Customer {
@@ -9,6 +10,7 @@ interface Customer {
 }
 
 function Profile() {
+  const { logout } = useAuth(); // Get the logout function from AuthContext
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -26,7 +28,7 @@ function Profile() {
       }
 
       try {
-        const response = await fetch("http://localhost:3000/auth/profile", {
+        const response = await fetch("http://localhost:4000/api/auth/profile", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -37,7 +39,7 @@ function Profile() {
           return;
         }
 
-        const data: Customer = await response.json(); // matches Prisma select
+        const data: Customer = await response.json();
         setCustomer(data);
         setLoading(false);
       } catch (err) {
@@ -56,7 +58,7 @@ function Profile() {
     if (!window.confirm("Are you sure you want to delete your account?")) return;
 
     try {
-      const response = await fetch("http://localhost:3000/auth/delete", {
+      const response = await fetch("http://localhost:4000/api/auth/delete", {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -69,7 +71,12 @@ function Profile() {
 
       alert("Account deleted successfully.");
       localStorage.removeItem("token");
-      navigate("/login");
+
+      // Call logout from AuthContext to clear user state and trigger UI changes
+      logout();
+
+      // Redirect to homepage (or login/signup page)
+      navigate("/");
     } catch (err) {
       console.error(err);
       alert("Failed to delete account.");
@@ -89,6 +96,7 @@ function Profile() {
 
           <div className="button-group">
             <button onClick={() => navigate("/edit-profile")}>Edit Account</button>
+            <button onClick={() => navigate("/orders/my-orders")}>View Order History</button>
             <button onClick={handleDelete} style={{ backgroundColor: "red" }}>Delete Account</button>
           </div>
         </>
