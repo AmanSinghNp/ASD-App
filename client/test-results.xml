@@ -1,121 +1,121 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites name="vitest tests" tests="51" failures="0" errors="0" time="0.0566926">
-    <testsuite name="src/test/orderSummary.test.ts" timestamp="2025-10-22T21:21:27.590Z" hostname="Laliguras" tests="2" failures="0" errors="0" skipped="0" time="0.0047672">
-        <testcase classname="src/test/orderSummary.test.ts" name="Order Summary Calculations &gt; calculates subtotal correctly" time="0.0020395">
+<testsuites name="vitest tests" tests="51" failures="0" errors="0" time="0.0504411">
+    <testsuite name="src/test/orderSummary.test.ts" timestamp="2025-10-22T21:28:40.852Z" hostname="Laliguras" tests="2" failures="0" errors="0" skipped="0" time="0.0041882">
+        <testcase classname="src/test/orderSummary.test.ts" name="Order Summary Calculations &gt; calculates subtotal correctly" time="0.0017682">
         </testcase>
-        <testcase classname="src/test/orderSummary.test.ts" name="Order Summary Calculations &gt; calculates total correctly with shipping" time="0.0006402">
-        </testcase>
-    </testsuite>
-    <testsuite name="src/test/utils.test.ts" timestamp="2025-10-22T21:21:27.592Z" hostname="Laliguras" tests="19" failures="0" errors="0" skipped="0" time="0.0091649">
-        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; formatPrice &gt; formats price in cents to dollars" time="0.0020978">
-        </testcase>
-        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; formatPrice &gt; handles large prices correctly" time="0.0002972">
-        </testcase>
-        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; calculateSubtotal &gt; calculates subtotal for single item" time="0.000289">
-        </testcase>
-        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; calculateSubtotal &gt; calculates subtotal for multiple items" time="0.0002211">
-        </testcase>
-        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; calculateSubtotal &gt; returns 0 for empty array" time="0.0001436">
-        </testcase>
-        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; calculateTotal &gt; calculates total with shipping" time="0.0003787">
-        </testcase>
-        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; calculateTotal &gt; calculates total without shipping" time="0.0001926">
-        </testcase>
-        <testcase classname="src/test/utils.test.ts" name="Validation Utilities &gt; validateEmail &gt; validates correct email addresses" time="0.0003744">
-        </testcase>
-        <testcase classname="src/test/utils.test.ts" name="Validation Utilities &gt; validateEmail &gt; rejects invalid email addresses" time="0.000462">
-        </testcase>
-        <testcase classname="src/test/utils.test.ts" name="Validation Utilities &gt; validatePhoneNumber &gt; validates correct phone numbers" time="0.0004048">
-        </testcase>
-        <testcase classname="src/test/utils.test.ts" name="Validation Utilities &gt; validatePhoneNumber &gt; rejects invalid phone numbers" time="0.0001862">
-        </testcase>
-        <testcase classname="src/test/utils.test.ts" name="Validation Utilities &gt; validatePostcode &gt; validates correct postcodes" time="0.0002752">
-        </testcase>
-        <testcase classname="src/test/utils.test.ts" name="Validation Utilities &gt; validatePostcode &gt; rejects invalid postcodes" time="0.0001606">
-        </testcase>
-        <testcase classname="src/test/utils.test.ts" name="String Utilities &gt; truncateText &gt; truncates long text" time="0.000133">
-        </testcase>
-        <testcase classname="src/test/utils.test.ts" name="String Utilities &gt; truncateText &gt; returns original text if shorter than max length" time="0.0000855">
-        </testcase>
-        <testcase classname="src/test/utils.test.ts" name="String Utilities &gt; truncateText &gt; handles empty string" time="0.0000773">
-        </testcase>
-        <testcase classname="src/test/utils.test.ts" name="String Utilities &gt; capitalizeFirstLetter &gt; capitalizes first letter and lowercases rest" time="0.0002279">
-        </testcase>
-        <testcase classname="src/test/utils.test.ts" name="String Utilities &gt; capitalizeFirstLetter &gt; handles single character" time="0.0001087">
-        </testcase>
-        <testcase classname="src/test/utils.test.ts" name="String Utilities &gt; capitalizeFirstLetter &gt; handles empty string" time="0.0000765">
+        <testcase classname="src/test/orderSummary.test.ts" name="Order Summary Calculations &gt; calculates total correctly with shipping" time="0.0004873">
         </testcase>
     </testsuite>
-    <testsuite name="src/components/__tests__/App.test.js" timestamp="2025-10-22T21:21:27.600Z" hostname="Laliguras" tests="4" failures="0" errors="0" skipped="0" time="0.0103383">
-        <testcase classname="src/components/__tests__/App.test.js" name="App &gt; app - basic smoke test" time="0.0022182">
+    <testsuite name="src/test/utils.test.ts" timestamp="2025-10-22T21:28:40.855Z" hostname="Laliguras" tests="19" failures="0" errors="0" skipped="0" time="0.0095647">
+        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; formatPrice &gt; formats price in cents to dollars" time="0.0020585">
         </testcase>
-        <testcase classname="src/components/__tests__/App.test.js" name="App &gt; app configuration check" time="0.005483">
+        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; formatPrice &gt; handles large prices correctly" time="0.0002813">
         </testcase>
-        <testcase classname="src/components/__tests__/App.test.js" name="App &gt; environment variables check" time="0.000288">
+        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; calculateSubtotal &gt; calculates subtotal for single item" time="0.0003274">
         </testcase>
-        <testcase classname="src/components/__tests__/App.test.js" name="App &gt; route paths are defined" time="0.0004523">
+        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; calculateSubtotal &gt; calculates subtotal for multiple items" time="0.0002477">
         </testcase>
-    </testsuite>
-    <testsuite name="src/components/__tests__/Cart.test.js" timestamp="2025-10-22T21:21:27.602Z" hostname="Laliguras" tests="6" failures="0" errors="0" skipped="0" time="0.006306">
-        <testcase classname="src/components/__tests__/Cart.test.js" name="Cart &gt; cart - basic functionality" time="0.0016111">
+        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; calculateSubtotal &gt; returns 0 for empty array" time="0.0002041">
         </testcase>
-        <testcase classname="src/components/__tests__/Cart.test.js" name="Cart &gt; calculates total cart price" time="0.0004708">
+        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; calculateTotal &gt; calculates total with shipping" time="0.0004049">
         </testcase>
-        <testcase classname="src/components/__tests__/Cart.test.js" name="Cart &gt; handles empty cart" time="0.0012959">
+        <testcase classname="src/test/utils.test.ts" name="Price Utilities &gt; calculateTotal &gt; calculates total without shipping" time="0.0001833">
         </testcase>
-        <testcase classname="src/components/__tests__/Cart.test.js" name="Cart &gt; updates item quantity in cart" time="0.0003338">
+        <testcase classname="src/test/utils.test.ts" name="Validation Utilities &gt; validateEmail &gt; validates correct email addresses" time="0.0004731">
         </testcase>
-        <testcase classname="src/components/__tests__/Cart.test.js" name="Cart &gt; removes item from cart" time="0.0003595">
+        <testcase classname="src/test/utils.test.ts" name="Validation Utilities &gt; validateEmail &gt; rejects invalid email addresses" time="0.0004779">
         </testcase>
-        <testcase classname="src/components/__tests__/Cart.test.js" name="Cart &gt; calculates total number of items in cart" time="0.0002739">
+        <testcase classname="src/test/utils.test.ts" name="Validation Utilities &gt; validatePhoneNumber &gt; validates correct phone numbers" time="0.0005295">
         </testcase>
-    </testsuite>
-    <testsuite name="src/components/__tests__/InputValidation.test.js" timestamp="2025-10-22T21:21:27.608Z" hostname="Laliguras" tests="4" failures="0" errors="0" skipped="0" time="0.0074122">
-        <testcase classname="src/components/__tests__/InputValidation.test.js" name="Input Validation &gt; validates required fields are not empty" time="0.0037178">
+        <testcase classname="src/test/utils.test.ts" name="Validation Utilities &gt; validatePhoneNumber &gt; rejects invalid phone numbers" time="0.0002393">
         </testcase>
-        <testcase classname="src/components/__tests__/InputValidation.test.js" name="Input Validation &gt; validates email format" time="0.0008661">
+        <testcase classname="src/test/utils.test.ts" name="Validation Utilities &gt; validatePostcode &gt; validates correct postcodes" time="0.0003069">
         </testcase>
-        <testcase classname="src/components/__tests__/InputValidation.test.js" name="Input Validation &gt; validates price is positive number" time="0.0005172">
+        <testcase classname="src/test/utils.test.ts" name="Validation Utilities &gt; validatePostcode &gt; rejects invalid postcodes" time="0.0001696">
         </testcase>
-        <testcase classname="src/components/__tests__/InputValidation.test.js" name="Input Validation &gt; validates quantity is non-negative integer" time="0.0004822">
+        <testcase classname="src/test/utils.test.ts" name="String Utilities &gt; truncateText &gt; truncates long text" time="0.0001481">
         </testcase>
-    </testsuite>
-    <testsuite name="src/components/__tests__/ProductDetail.test.js" timestamp="2025-10-22T21:21:27.611Z" hostname="Laliguras" tests="7" failures="0" errors="0" skipped="0" time="0.0061594">
-        <testcase classname="src/components/__tests__/ProductDetail.test.js" name="ProductDetail &gt; product detail - basic test" time="0.0018013">
+        <testcase classname="src/test/utils.test.ts" name="String Utilities &gt; truncateText &gt; returns original text if shorter than max length" time="0.0000908">
         </testcase>
-        <testcase classname="src/components/__tests__/ProductDetail.test.js" name="ProductDetail &gt; product detail - mock data verification" time="0.0004357">
+        <testcase classname="src/test/utils.test.ts" name="String Utilities &gt; truncateText &gt; handles empty string" time="0.0000768">
         </testcase>
-        <testcase classname="src/components/__tests__/ProductDetail.test.js" name="ProductDetail &gt; product detail - string matching" time="0.0004594">
+        <testcase classname="src/test/utils.test.ts" name="String Utilities &gt; capitalizeFirstLetter &gt; capitalizes first letter and lowercases rest" time="0.0002197">
         </testcase>
-        <testcase classname="src/components/__tests__/ProductDetail.test.js" name="ProductDetail &gt; product data has required properties" time="0.0007183">
+        <testcase classname="src/test/utils.test.ts" name="String Utilities &gt; capitalizeFirstLetter &gt; handles single character" time="0.0001113">
         </testcase>
-        <testcase classname="src/components/__tests__/ProductDetail.test.js" name="ProductDetail &gt; price conversion from cents to dollars" time="0.0003673">
-        </testcase>
-        <testcase classname="src/components/__tests__/ProductDetail.test.js" name="ProductDetail &gt; handles zero stock quantity" time="0.0002983">
-        </testcase>
-        <testcase classname="src/components/__tests__/ProductDetail.test.js" name="ProductDetail &gt; handles free product" time="0.0001643">
+        <testcase classname="src/test/utils.test.ts" name="String Utilities &gt; capitalizeFirstLetter &gt; handles empty string" time="0.0000844">
         </testcase>
     </testsuite>
-    <testsuite name="src/components/__tests__/ProductList.test.js" timestamp="2025-10-22T21:21:27.626Z" hostname="Laliguras" tests="5" failures="0" errors="0" skipped="0" time="0.0053058">
-        <testcase classname="src/components/__tests__/ProductList.test.js" name="ProductList &gt; product list - basic rendering" time="0.0014804">
+    <testsuite name="src/components/__tests__/App.test.js" timestamp="2025-10-22T21:28:40.863Z" hostname="Laliguras" tests="4" failures="0" errors="0" skipped="0" time="0.0058811">
+        <testcase classname="src/components/__tests__/App.test.js" name="App &gt; app - basic smoke test" time="0.0015265">
         </testcase>
-        <testcase classname="src/components/__tests__/ProductList.test.js" name="ProductList &gt; product list contains multiple products" time="0.0013467">
+        <testcase classname="src/components/__tests__/App.test.js" name="App &gt; app configuration check" time="0.0018459">
         </testcase>
-        <testcase classname="src/components/__tests__/ProductList.test.js" name="ProductList &gt; filters products by stock availability" time="0.0004715">
+        <testcase classname="src/components/__tests__/App.test.js" name="App &gt; environment variables check" time="0.0003318">
         </testcase>
-        <testcase classname="src/components/__tests__/ProductList.test.js" name="ProductList &gt; sorts products by price" time="0.0002981">
-        </testcase>
-        <testcase classname="src/components/__tests__/ProductList.test.js" name="ProductList &gt; calculates total value of product list" time="0.0001739">
+        <testcase classname="src/components/__tests__/App.test.js" name="App &gt; route paths are defined" time="0.0005377">
         </testcase>
     </testsuite>
-    <testsuite name="src/components/__tests__/Util.test.js" timestamp="2025-10-22T21:21:27.668Z" hostname="Laliguras" tests="4" failures="0" errors="0" skipped="0" time="0.0072388">
-        <testcase classname="src/components/__tests__/Util.test.js" name="Utility Functions &gt; formatPrice formats cents to dollars correctly" time="0.0029478">
+    <testsuite name="src/components/__tests__/Cart.test.js" timestamp="2025-10-22T21:28:40.865Z" hostname="Laliguras" tests="6" failures="0" errors="0" skipped="0" time="0.0065355">
+        <testcase classname="src/components/__tests__/Cart.test.js" name="Cart &gt; cart - basic functionality" time="0.0018104">
         </testcase>
-        <testcase classname="src/components/__tests__/Util.test.js" name="Utility Functions &gt; calculateTotal calculates order total" time="0.0003764">
+        <testcase classname="src/components/__tests__/Cart.test.js" name="Cart &gt; calculates total cart price" time="0.0003939">
         </testcase>
-        <testcase classname="src/components/__tests__/Util.test.js" name="Utility Functions &gt; isInStock checks product availability" time="0.0002371">
+        <testcase classname="src/components/__tests__/Cart.test.js" name="Cart &gt; handles empty cart" time="0.0015056">
         </testcase>
-        <testcase classname="src/components/__tests__/Util.test.js" name="Utility Functions &gt; generateId creates unique identifiers" time="0.0017726">
+        <testcase classname="src/components/__tests__/Cart.test.js" name="Cart &gt; updates item quantity in cart" time="0.0003817">
+        </testcase>
+        <testcase classname="src/components/__tests__/Cart.test.js" name="Cart &gt; removes item from cart" time="0.0003824">
+        </testcase>
+        <testcase classname="src/components/__tests__/Cart.test.js" name="Cart &gt; calculates total number of items in cart" time="0.0003421">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/components/__tests__/InputValidation.test.js" timestamp="2025-10-22T21:28:40.869Z" hostname="Laliguras" tests="4" failures="0" errors="0" skipped="0" time="0.0045213">
+        <testcase classname="src/components/__tests__/InputValidation.test.js" name="Input Validation &gt; validates required fields are not empty" time="0.0017698">
+        </testcase>
+        <testcase classname="src/components/__tests__/InputValidation.test.js" name="Input Validation &gt; validates email format" time="0.0006494">
+        </testcase>
+        <testcase classname="src/components/__tests__/InputValidation.test.js" name="Input Validation &gt; validates price is positive number" time="0.0003332">
+        </testcase>
+        <testcase classname="src/components/__tests__/InputValidation.test.js" name="Input Validation &gt; validates quantity is non-negative integer" time="0.0002672">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/components/__tests__/ProductDetail.test.js" timestamp="2025-10-22T21:28:40.871Z" hostname="Laliguras" tests="7" failures="0" errors="0" skipped="0" time="0.0064604">
+        <testcase classname="src/components/__tests__/ProductDetail.test.js" name="ProductDetail &gt; product detail - basic test" time="0.002071">
+        </testcase>
+        <testcase classname="src/components/__tests__/ProductDetail.test.js" name="ProductDetail &gt; product detail - mock data verification" time="0.000397">
+        </testcase>
+        <testcase classname="src/components/__tests__/ProductDetail.test.js" name="ProductDetail &gt; product detail - string matching" time="0.0006624">
+        </testcase>
+        <testcase classname="src/components/__tests__/ProductDetail.test.js" name="ProductDetail &gt; product data has required properties" time="0.0011321">
+        </testcase>
+        <testcase classname="src/components/__tests__/ProductDetail.test.js" name="ProductDetail &gt; price conversion from cents to dollars" time="0.0002857">
+        </testcase>
+        <testcase classname="src/components/__tests__/ProductDetail.test.js" name="ProductDetail &gt; handles zero stock quantity" time="0.0002025">
+        </testcase>
+        <testcase classname="src/components/__tests__/ProductDetail.test.js" name="ProductDetail &gt; handles free product" time="0.0001205">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/components/__tests__/ProductList.test.js" timestamp="2025-10-22T21:28:40.873Z" hostname="Laliguras" tests="5" failures="0" errors="0" skipped="0" time="0.0064341">
+        <testcase classname="src/components/__tests__/ProductList.test.js" name="ProductList &gt; product list - basic rendering" time="0.0015519">
+        </testcase>
+        <testcase classname="src/components/__tests__/ProductList.test.js" name="ProductList &gt; product list contains multiple products" time="0.0015876">
+        </testcase>
+        <testcase classname="src/components/__tests__/ProductList.test.js" name="ProductList &gt; filters products by stock availability" time="0.0010338">
+        </testcase>
+        <testcase classname="src/components/__tests__/ProductList.test.js" name="ProductList &gt; sorts products by price" time="0.0003766">
+        </testcase>
+        <testcase classname="src/components/__tests__/ProductList.test.js" name="ProductList &gt; calculates total value of product list" time="0.000204">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/components/__tests__/Util.test.js" timestamp="2025-10-22T21:28:40.874Z" hostname="Laliguras" tests="4" failures="0" errors="0" skipped="0" time="0.0068558">
+        <testcase classname="src/components/__tests__/Util.test.js" name="Utility Functions &gt; formatPrice formats cents to dollars correctly" time="0.0021277">
+        </testcase>
+        <testcase classname="src/components/__tests__/Util.test.js" name="Utility Functions &gt; calculateTotal calculates order total" time="0.000803">
+        </testcase>
+        <testcase classname="src/components/__tests__/Util.test.js" name="Utility Functions &gt; isInStock checks product availability" time="0.0003117">
+        </testcase>
+        <testcase classname="src/components/__tests__/Util.test.js" name="Utility Functions &gt; generateId creates unique identifiers" time="0.002155">
         </testcase>
     </testsuite>
 </testsuites>
