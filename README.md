@@ -39,6 +39,13 @@ This release implements core e-commerce functionality including User Management,
 - **Advanced Filters**: Filter by brand, price range, dietary tags
 - **Category Navigation**: Browseable product categories
 
+### F006 – Stock Management (Danny)
+- **Real-Time Tracking**: Monitor stock levels for all available products.
+- **Automatic Deduction**: Reduce product quantities automatically after each confirmed purchase.
+- **Stock Visibility**: Display current stock status on product pages.
+- **Purchase Prevention**: Prevent checkout or item addition if stock level is zero.
+- **Inventory Accuracy**: Ensure stock data remains synchronized across the catalogue, cart, and checkout systems.
+
 ### F007 - Admin Dashboard (Aman)
 
 - **Product Management**: Add, edit, remove products with full CRUD operations
