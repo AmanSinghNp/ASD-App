@@ -60,6 +60,18 @@ body {
   font-family: inherit;
 }
 
+/* Prevent layout shift when vertical scrollbar appears/disappears */
+html {
+  height: 100%;
+  scrollbar-gutter: stable both-edges;
+  /* Always show vertical scrollbar to keep layout width stable */
+  overflow-y: scroll;
+}
+
+body {
+  min-height: 100vh;
+}
+
 #root {
   min-height: 100vh;
   display: flex;
@@ -167,6 +179,23 @@ input:focus, select:focus, textarea:focus {
 
 .section {
   padding: var(--spacing-2xl) 0;
+}
+
+/* Stable FAQ grid: prevent column-count flicker near breakpoints */
+.faq-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 1024px) {
+  .faq-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .faq-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .text-center {
