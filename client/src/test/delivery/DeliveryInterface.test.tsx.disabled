@@ -16,67 +16,6 @@ global.fetch = vi.fn()
 describe('DeliveryInterface Component - F008', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    
-    // Mock successful API responses
-    const mockOrders = [
-      {
-        id: 'order-1',
-        customerName: 'John Doe',
-        email: 'john@example.com',
-        phone: '1234567890',
-        address: '123 Main St, Sydney, NSW 2000',
-        items: [
-          { name: 'Apple', quantity: 2, price: 100 }
-        ],
-        total: 200,
-        status: 'pending',
-        deliveryMethod: 'Delivery',
-        slotStart: '2025-10-25T10:00:00Z',
-        slotEnd: '2025-10-25T11:00:00Z',
-        createdAt: '2025-10-25T09:00:00Z',
-        updatedAt: '2025-10-25T09:00:00Z'
-      },
-      {
-        id: 'order-2',
-        customerName: 'Jane Smith',
-        email: 'jane@example.com',
-        phone: '0987654321',
-        address: '456 Oak Ave, Melbourne, VIC 3000',
-        items: [
-          { name: 'Banana', quantity: 1, price: 200 }
-        ],
-        total: 200,
-        status: 'confirmed',
-        deliveryMethod: 'Pickup',
-        slotStart: null,
-        slotEnd: null,
-        createdAt: '2025-10-25T08:00:00Z',
-        updatedAt: '2025-10-25T08:30:00Z'
-      }
-    ]
-    
-    const mockDeliverySlots = [
-      {
-        slotStart: '2025-10-25T10:00:00Z',
-        slotEnd: '2025-10-25T11:00:00Z',
-        remaining: 5
-      },
-      {
-        slotStart: '2025-10-25T11:00:00Z',
-        slotEnd: '2025-10-25T12:00:00Z',
-        remaining: 3
-      }
-    ]
-
-    ;(global.fetch as any)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve({ data: mockOrders })
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve({ data: mockDeliverySlots })
-      })
   })
 
   it('renders delivery interface without crashing', async () => {

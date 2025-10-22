@@ -96,9 +96,13 @@ export const createOrder = async (req: Request, res: Response) => {
         });
       }
 
+      // Generate order ID
+      const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
       // Create order with payment information
       const order = await tx.order.create({
         data: {
+          id: orderId,
           userId: userId || null,
           deliveryMethod,
           addressLine1: address?.addressLine1 || null,

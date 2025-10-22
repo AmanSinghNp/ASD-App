@@ -1,0 +1,51 @@
+{
+  "sales": {
+    "totalRevenue": 1250.50,
+    "totalOrders": 45,
+    "averageOrderValue": 27.79,
+    "growthRate": 12.5
+  },
+  "products": {
+    "totalProducts": 25,
+    "activeProducts": 22,
+    "lowStockProducts": 3,
+    "topSelling": [
+      {
+        "id": "PROD-APL-001",
+        "name": "Apple Gala 1kg",
+        "sales": 15,
+        "revenue": 67.50
+      },
+      {
+        "id": "PROD-MLK-002",
+        "name": "Milk 1L",
+        "sales": 12,
+        "revenue": 30.00
+      },
+      {
+        "id": "PROD-BRD-003",
+        "name": "Bread Wholemeal",
+        "sales": 10,
+        "revenue": 28.00
+      }
+    ]
+  },
+  "orders": {
+    "statusDistribution": {
+      "pending": 8,
+      "confirmed": 12,
+      "preparing": 6,
+      "out_for_delivery": 4,
+      "delivered": 15,
+      "cancelled": 0
+    },
+    "deliveryMethod": {
+      "Delivery": 32,
+      "Pickup": 13
+    }
+  },
+  "timeRange": {
+    "startDate": "2025-10-15",
+    "endDate": "2025-10-22"
+  }
+}

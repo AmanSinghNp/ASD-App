@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom';
+import { vi } from 'vitest';
 
 // Mock dependencies
-jest.mock('react-router-dom', () => ({
-  useNavigate: () => jest.fn(),
+vi.mock('react-router-dom', () => ({
+  useNavigate: () => vi.fn(),
 }));
 
 // Remove the CartContext mock or fix the path

@@ -1,0 +1,267 @@
+"use strict";
+/**
+ * Delivery Controller Unit Tests
+ * Author: Aman Singh (Student ID: 25104201)
+ * Feature: F008 - Delivery
+ * Description: Comprehensive tests for delivery functionality including address validation and slot management
+ * Last Updated: 2025-10-22
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+const globals_1 = require("@jest/globals");
+const deliveryController_1 = require("../../controllers/deliveryController");
+// Mock Prisma client
+const mockPrisma = {
+    order: {
+        count: globals_1.jest.fn(),
+    },
+};
+globals_1.jest.mock('../../utils/database', () => ({
+    __esModule: true,
+    default: mockPrisma,
+}));
+(0, globals_1.describe)('Delivery Controller - F008 Delivery', () => {
+    let mockReq;
+    let mockRes;
+    let mockJson;
+    let mockStatus;
+    (0, globals_1.beforeEach)(() => {
+        mockJson = globals_1.jest.fn();
+        mockStatus = globals_1.jest.fn().mockReturnValue({ json: mockJson });
+        mockRes = {
+            json: mockJson,
+            status: mockStatus,
+        };
+        globals_1.jest.clearAllMocks();
+    });
+    (0, globals_1.describe)('validateAddress', () => {
+        (0, globals_1.it)('should accept valid Australian address', async () => {
+            const validAddress = {
+                addressLine1: '123 George Street',
+                suburb: 'Sydney',
+                state: 'NSW',
+                postcode: '2000'
+            };
+            mockReq = { body: validAddress };
+            await (0, deliveryController_1.validateAddress)(mockReq, mockRes);
+            (0, globals_1.expect)(mockJson).toHaveBeenCalledWith({ valid: true });
+        });
+        (0, globals_1.it)('should reject invalid postcode format', async () => {
+            const invalidAddress = {
+                addressLine1: '123 George Street',
+                suburb: 'Sydney',
+                state: 'NSW',
+                postcode: 'ABC1' // Invalid - not 4 digits
+            };
+            mockReq = { body: invalidAddress };
+            await (0, deliveryController_1.validateAddress)(mockReq, mockRes);
+            (0, globals_1.expect)(mockJson).toHaveBeenCalledWith({
+                valid: false,
+                error: 'Postcode must be 4 digits'
+            });
+        });
+        (0, globals_1.it)('should reject postcode that is too short', async () => {
+            const invalidAddress = {
+                addressLine1: '123 George Street',
+                suburb: 'Sydney',
+                state: 'NSW',
+                postcode: '200' // Too short
+            };
+            mockReq = { body: invalidAddress };
+            await (0, deliveryController_1.validateAddress)(mockReq, mockRes);
+            (0, globals_1.expect)(mockJson).toHaveBeenCalledWith({
+                valid: false,
+                error: 'Postcode must be 4 digits'
+            });
+        });
+        (0, globals_1.it)('should reject postcode that is too long', async () => {
+            const invalidAddress = {
+                addressLine1: '123 George Street',
+                suburb: 'Sydney',
+                state: 'NSW',
+                postcode: '20000' // Too long
+            };
+            mockReq = { body: invalidAddress };
+            await (0, deliveryController_1.validateAddress)(mockReq, mockRes);
+            (0, globals_1.expect)(mockJson).toHaveBeenCalledWith({
+                valid: false,
+                error: 'Postcode must be 4 digits'
+            });
+        });
+        (0, globals_1.it)('should reject invalid Australian state', async () => {
+            const invalidAddress = {
+                addressLine1: '123 Main St',
+                suburb: 'Sydney',
+                state: 'XX', // Invalid state
+                postcode: '2000'
+            };
+            mockReq = { body: invalidAddress };
+            await (0, deliveryController_1.validateAddress)(mockReq, mockRes);
+            (0, globals_1.expect)(mockJson).toHaveBeenCalledWith({
+                valid: false,
+                error: 'Invalid state'
+            });
+        });
+        (0, globals_1.it)('should accept all valid Australian states', async () => {
+            const validStates = ['NSW', 'VIC', 'QLD', 'SA', 'WA', 'TAS', 'ACT', 'NT'];
+            for (const state of validStates) {
+                const address = {
+                    addressLine1: '123 Main St',
+                    suburb: 'Test City',
+                    state: state,
+                    postcode: '2000'
+                };
+                mockReq = { body: address };
+                globals_1.jest.clearAllMocks();
+                await (0, deliveryController_1.validateAddress)(mockReq, mockRes);
+                (0, globals_1.expect)(mockJson).toHaveBeenCalledWith({ valid: true });
+            }
+        });
+        (0, globals_1.it)('should reject empty required fields', async () => {
+            const incompleteAddress = {
+                addressLine1: '',
+                suburb: 'Sydney',
+                state: 'NSW',
+                postcode: '2000'
+            };
+            mockReq = { body: incompleteAddress };
+            await (0, deliveryController_1.validateAddress)(mockReq, mockRes);
+            (0, globals_1.expect)(mockJson).toHaveBeenCalledWith({
+                valid: false,
+                error: 'Address line 1 and suburb required'
+            });
+        });
+        (0, globals_1.it)('should reject missing suburb', async () => {
+            const incompleteAddress = {
+                addressLine1: '123 Main St',
+                suburb: '',
+                state: 'NSW',
+                postcode: '2000'
+            };
+            mockReq = { body: incompleteAddress };
+            await (0, deliveryController_1.validateAddress)(mockReq, mockRes);
+            (0, globals_1.expect)(mockJson).toHaveBeenCalledWith({
+                valid: false,
+                error: 'Address line 1 and suburb required'
+            });
+        });
+        (0, globals_1.it)('should handle database errors gracefully', async () => {
+            const validAddress = {
+                addressLine1: '123 George Street',
+                suburb: 'Sydney',
+                state: 'NSW',
+                postcode: '2000'
+            };
+            mockReq = { body: validAddress };
+            mockPrisma.order.count.mockRejectedValue(new Error('Database error'));
+            await (0, deliveryController_1.validateAddress)(mockReq, mockRes);
+            (0, globals_1.expect)(mockStatus).toHaveBeenCalledWith(500);
+            (0, globals_1.expect)(mockJson).toHaveBeenCalledWith({ error: 'Failed to validate address' });
+        });
+    });
+    (0, globals_1.describe)('getDeliverySlots', () => {
+        (0, globals_1.it)('should return only available time slots', async () => {
+            const targetDate = '2025-10-25';
+            mockReq = { query: { date: targetDate } };
+            // Mock that some slots are partially booked
+            mockPrisma.order.count
+                .mockResolvedValueOnce(3) // 10am slot: 3 booked
+                .mockResolvedValueOnce(7) // 11am slot: 7 booked
+                .mockResolvedValueOnce(10) // 12pm slot: fully booked
+                .mockResolvedValueOnce(2) // 1pm slot: 2 booked
+                .mockResolvedValueOnce(5) // 2pm slot: 5 booked
+                .mockResolvedValueOnce(8) // 3pm slot: 8 booked
+                .mockResolvedValueOnce(1) // 4pm slot: 1 booked
+                .mockResolvedValueOnce(0); // 5pm slot: empty
+            await (0, deliveryController_1.getDeliverySlots)(mockReq, mockRes);
+            (0, globals_1.expect)(mockJson).toHaveBeenCalledWith({
+                data: globals_1.expect.arrayContaining([
+                    globals_1.expect.objectContaining({
+                        slotStart: globals_1.expect.any(String),
+                        slotEnd: globals_1.expect.any(String),
+                        remaining: 7 // 10 - 3
+                    }),
+                    globals_1.expect.objectContaining({
+                        remaining: 3 // 10 - 7
+                    }),
+                    globals_1.expect.objectContaining({
+                        remaining: 8 // 10 - 2
+                    }),
+                    globals_1.expect.objectContaining({
+                        remaining: 5 // 10 - 5
+                    }),
+                    globals_1.expect.objectContaining({
+                        remaining: 2 // 10 - 8
+                    }),
+                    globals_1.expect.objectContaining({
+                        remaining: 9 // 10 - 1
+                    }),
+                    globals_1.expect.objectContaining({
+                        remaining: 10 // 10 - 0
+                    })
+                ])
+            });
+            // Should not include fully booked slots (12pm slot with 10 booked)
+            const responseData = mockJson.mock.calls[0][0].data;
+            const fullyBookedSlots = responseData.filter((slot) => slot.remaining === 0);
+            (0, globals_1.expect)(fullyBookedSlots).toHaveLength(0);
+        });
+        (0, globals_1.it)('should generate 8 hourly slots from 10am to 6pm', async () => {
+            const targetDate = '2025-10-25';
+            mockReq = { query: { date: targetDate } };
+            // Mock all slots as available
+            mockPrisma.order.count.mockResolvedValue(0);
+            await (0, deliveryController_1.getDeliverySlots)(mockReq, mockRes);
+            const responseData = mockJson.mock.calls[0][0].data;
+            (0, globals_1.expect)(responseData).toHaveLength(8); // 10am, 11am, 12pm, 1pm, 2pm, 3pm, 4pm, 5pm
+            // Check time slots are correct
+            const expectedHours = [10, 11, 12, 13, 14, 15, 16, 17];
+            responseData.forEach((slot, index) => {
+                const slotStart = new Date(slot.slotStart);
+                (0, globals_1.expect)(slotStart.getHours()).toBe(expectedHours[index]);
+            });
+        });
+        (0, globals_1.it)('should calculate remaining capacity correctly', async () => {
+            const targetDate = '2025-10-25';
+            mockReq = { query: { date: targetDate } };
+            // Mock different booking levels
+            mockPrisma.order.count
+                .mockResolvedValueOnce(0) // 10am: 0 booked -> 10 remaining
+                .mockResolvedValueOnce(5) // 11am: 5 booked -> 5 remaining
+                .mockResolvedValueOnce(10) // 12pm: 10 booked -> 0 remaining (excluded)
+                .mockResolvedValueOnce(15) // 1pm: 15 booked -> 0 remaining (capped at 0)
+                .mockResolvedValueOnce(3) // 2pm: 3 booked -> 7 remaining
+                .mockResolvedValueOnce(8) // 3pm: 8 booked -> 2 remaining
+                .mockResolvedValueOnce(1) // 4pm: 1 booked -> 9 remaining
+                .mockResolvedValueOnce(0); // 5pm: 0 booked -> 10 remaining
+            await (0, deliveryController_1.getDeliverySlots)(mockReq, mockRes);
+            const responseData = mockJson.mock.calls[0][0].data;
+            const remainingCounts = responseData.map((slot) => slot.remaining);
+            (0, globals_1.expect)(remainingCounts).toContain(10); // 10am and 5pm
+            (0, globals_1.expect)(remainingCounts).toContain(5); // 11am
+            (0, globals_1.expect)(remainingCounts).toContain(7); // 2pm
+            (0, globals_1.expect)(remainingCounts).toContain(2); // 3pm
+            (0, globals_1.expect)(remainingCounts).toContain(9); // 4pm
+            (0, globals_1.expect)(remainingCounts).not.toContain(0); // No fully booked slots should be returned
+        });
+        (0, globals_1.it)('should require date parameter', async () => {
+            mockReq = { query: {} };
+            await (0, deliveryController_1.getDeliverySlots)(mockReq, mockRes);
+            (0, globals_1.expect)(mockStatus).toHaveBeenCalledWith(400);
+            (0, globals_1.expect)(mockJson).toHaveBeenCalledWith({ error: 'Date parameter required' });
+        });
+        (0, globals_1.it)('should reject invalid date format', async () => {
+            mockReq = { query: { date: 'invalid-date' } };
+            await (0, deliveryController_1.getDeliverySlots)(mockReq, mockRes);
+            (0, globals_1.expect)(mockStatus).toHaveBeenCalledWith(400);
+            (0, globals_1.expect)(mockJson).toHaveBeenCalledWith({ error: 'Invalid date format' });
+        });
+        (0, globals_1.it)('should handle database errors gracefully', async () => {
+            const targetDate = '2025-10-25';
+            mockReq = { query: { date: targetDate } };
+            mockPrisma.order.count.mockRejectedValue(new Error('Database error'));
+            await (0, deliveryController_1.getDeliverySlots)(mockReq, mockRes);
+            (0, globals_1.expect)(mockStatus).toHaveBeenCalledWith(500);
+            (0, globals_1.expect)(mockJson).toHaveBeenCalledWith({ error: 'Failed to fetch delivery slots' });
+        });
+    });
+});

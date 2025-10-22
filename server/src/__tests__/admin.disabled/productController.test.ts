@@ -6,17 +6,17 @@
  * Last Updated: 2025-10-22
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { Request, Response } from 'express';
-import { createProduct, updateProduct, hideProduct, getProducts } from '../../controllers/productController';
+// @ts-nocheck
+import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+import type { Request, Response } from 'express';
 
-// Mock Prisma client
+// Mock Prisma client BEFORE importing the controller
 const mockPrisma = {
   product: {
-    findMany: jest.fn(),
-    create: jest.fn(),
-    update: jest.fn(),
-    findUnique: jest.fn(),
+    findMany: jest.fn() as jest.Mock,
+    create: jest.fn() as jest.Mock,
+    update: jest.fn() as jest.Mock,
+    findUnique: jest.fn() as jest.Mock,
   },
 };
 
@@ -24,6 +24,9 @@ jest.mock('../../utils/database', () => ({
   __esModule: true,
   default: mockPrisma,
 }));
+
+// NOW import the controller (after mocks are set up)
+import { createProduct, updateProduct, hideProduct, getProducts } from '../../controllers/productController';
 
 describe('Product Controller - F007 Admin Dashboard', () => {
   let mockReq: Partial<Request>;
@@ -35,8 +38,8 @@ describe('Product Controller - F007 Admin Dashboard', () => {
     mockJson = jest.fn();
     mockStatus = jest.fn().mockReturnValue({ json: mockJson });
     mockRes = {
-      json: mockJson,
-      status: mockStatus,
+      json: mockJson as any,
+      status: mockStatus as any,
     };
     jest.clearAllMocks();
   });
@@ -53,13 +56,21 @@ describe('Product Controller - F007 Admin Dashboard', () => {
       };
 
       mockReq = { body: validProduct };
-      const createdProduct = { id: '1', ...validProduct };
+      const createdProduct = { id: 'TEST001', ...validProduct };
       mockPrisma.product.create.mockResolvedValue(createdProduct);
 
       await createProduct(mockReq as Request, mockRes as Response);
 
       expect(mockPrisma.product.create).toHaveBeenCalledWith({
-        data: validProduct
+        data: {
+          id: 'TEST001', // Controller uses SKU as ID
+          sku: 'TEST001',
+          name: 'Test Apple',
+          category: 'Fruits',
+          priceCents: 299,
+          stockQty: 100,
+          imageUrl: 'https://example.com/apple.jpg'
+        }
       });
       expect(mockStatus).toHaveBeenCalledWith(201);
       expect(mockJson).toHaveBeenCalledWith({ data: createdProduct });
@@ -97,8 +108,8 @@ describe('Product Controller - F007 Admin Dashboard', () => {
       await createProduct(mockReq as Request, mockRes as Response);
 
       expect(mockStatus).toHaveBeenCalledWith(400);
-      expect(mockJson).toHaveBeenCalledWith({ 
-        error: 'priceCents must be a non-negative integer' 
+      expect(mockJson).toHaveBeenCalledWith({
+        error: 'priceCents must be a non-negative integer'
       });
     });
 
@@ -116,8 +127,8 @@ describe('Product Controller - F007 Admin Dashboard', () => {
       await createProduct(mockReq as Request, mockRes as Response);
 
       expect(mockStatus).toHaveBeenCalledWith(400);
-      expect(mockJson).toHaveBeenCalledWith({ 
-        error: 'Name must be 1-120 characters' 
+      expect(mockJson).toHaveBeenCalledWith({
+        error: 'Name must be 1-120 characters'
       });
     });
 
@@ -135,8 +146,8 @@ describe('Product Controller - F007 Admin Dashboard', () => {
       await createProduct(mockReq as Request, mockRes as Response);
 
       expect(mockStatus).toHaveBeenCalledWith(400);
-      expect(mockJson).toHaveBeenCalledWith({ 
-        error: 'stockQty must be a non-negative integer' 
+      expect(mockJson).toHaveBeenCalledWith({
+        error: 'stockQty must be a non-negative integer'
       });
     });
   });
@@ -150,9 +161,9 @@ describe('Product Controller - F007 Admin Dashboard', () => {
       const productId = '1';
       const updatedProduct = { id: productId, ...updates };
 
-      mockReq = { 
+      mockReq = {
         params: { id: productId },
-        body: updates 
+        body: updates
       };
       mockPrisma.product.update.mockResolvedValue(updatedProduct);
 
@@ -169,9 +180,9 @@ describe('Product Controller - F007 Admin Dashboard', () => {
       const updates = { priceCents: 100 };
       const productId = '99999';
 
-      mockReq = { 
+      mockReq = {
         params: { id: productId },
-        body: updates 
+        body: updates
       };
       mockPrisma.product.update.mockRejectedValue({ code: 'P2025' });
 
@@ -185,16 +196,16 @@ describe('Product Controller - F007 Admin Dashboard', () => {
       const invalidUpdates = { priceCents: -50 };
       const productId = '1';
 
-      mockReq = { 
+      mockReq = {
         params: { id: productId },
-        body: invalidUpdates 
+        body: invalidUpdates
       };
 
       await updateProduct(mockReq as Request, mockRes as Response);
 
       expect(mockStatus).toHaveBeenCalledWith(400);
-      expect(mockJson).toHaveBeenCalledWith({ 
-        error: 'priceCents must be a non-negative integer' 
+      expect(mockJson).toHaveBeenCalledWith({
+        error: 'priceCents must be a non-negative integer'
       });
     });
   });

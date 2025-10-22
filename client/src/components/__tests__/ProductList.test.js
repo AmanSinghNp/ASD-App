@@ -1,12 +1,13 @@
 import '@testing-library/jest-dom';
+import { vi } from 'vitest';
 
 // Mock dependencies
-jest.mock('react-router-dom', () => ({
-  useNavigate: () => jest.fn(),
+vi.mock('react-router-dom', () => ({
+  useNavigate: () => vi.fn(),
 }));
 
-jest.mock('../../controllers/ProductCatalogueController', () => ({
-  ProductController: jest.fn().mockImplementation(() => ({
+vi.mock('../../controllers/ProductCatalogueController', () => ({
+  ProductController: vi.fn().mockImplementation(() => ({
     getProducts: () => [
       {
         id: '1',

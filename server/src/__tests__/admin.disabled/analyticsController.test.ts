@@ -6,14 +6,24 @@
  * Last Updated: 2025-10-22
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { Request, Response } from 'express';
-import { getAnalytics } from '../../controllers/analyticsController';
+// @ts-nocheck
+import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+import type { Request, Response } from 'express';
 
-// Mock Prisma client
+// Mock the cache module BEFORE importing the controller
+jest.mock('../../utils/cache', () => ({
+  cache: {
+    get: jest.fn(),
+    set: jest.fn(),
+    clear: jest.fn(),
+    delete: jest.fn(),
+  },
+}));
+
+// Mock Prisma client BEFORE importing the controller
 const mockPrisma = {
   order: {
-    findMany: jest.fn(),
+    findMany: jest.fn() as jest.Mock,
   },
 };
 
@@ -21,6 +31,10 @@ jest.mock('../../utils/database', () => ({
   __esModule: true,
   default: mockPrisma,
 }));
+
+// NOW import the controller (after mocks are set up)
+import { getAnalytics } from '../../controllers/analyticsController';
+import { cache } from '../../utils/cache';
 
 describe('Analytics Controller - F007 Admin Dashboard', () => {
   let mockReq: Partial<Request>;
@@ -32,10 +46,12 @@ describe('Analytics Controller - F007 Admin Dashboard', () => {
     mockJson = jest.fn();
     mockStatus = jest.fn().mockReturnValue({ json: mockJson });
     mockRes = {
-      json: mockJson,
-      status: mockStatus,
+      json: mockJson as any,
+      status: mockStatus as any,
     };
     jest.clearAllMocks();
+    // Ensure cache.get returns null by default (no cached data)
+    (cache.get as jest.Mock).mockReturnValue(null);
   });
 
   describe('getAnalytics', () => {

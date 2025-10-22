@@ -1,0 +1,130 @@
+[
+  {
+    "id": "ORD-20251022-001",
+    "customerName": "John Smith",
+    "email": "john.smith@email.com",
+    "phone": "0412345678",
+    "address": "123 Main St, Sydney NSW 2000",
+    "items": [
+      {
+        "name": "Apple Gala 1kg",
+        "quantity": 2,
+        "price": 4.50
+      },
+      {
+        "name": "Milk 1L",
+        "quantity": 1,
+        "price": 2.50
+      }
+    ],
+    "total": 11.50,
+    "status": "pending",
+    "deliveryMethod": "Delivery",
+    "slotStart": "2025-10-22T10:00:00Z",
+    "slotEnd": "2025-10-22T12:00:00Z",
+    "createdAt": "2025-10-22T08:30:00Z",
+    "updatedAt": "2025-10-22T08:30:00Z"
+  },
+  {
+    "id": "ORD-20251022-002",
+    "customerName": "Sarah Johnson",
+    "email": "sarah.j@email.com",
+    "phone": "0423456789",
+    "address": "456 Oak Ave, Melbourne VIC 3000",
+    "items": [
+      {
+        "name": "Banana 1kg",
+        "quantity": 1,
+        "price": 3.00
+      },
+      {
+        "name": "Bread Wholemeal",
+        "quantity": 2,
+        "price": 2.80
+      }
+    ],
+    "total": 8.60,
+    "status": "confirmed",
+    "deliveryMethod": "Pickup",
+    "createdAt": "2025-10-22T09:15:00Z",
+    "updatedAt": "2025-10-22T09:20:00Z"
+  },
+  {
+    "id": "ORD-20251022-003",
+    "customerName": "Mike Wilson",
+    "email": "mike.w@email.com",
+    "phone": "0434567890",
+    "address": "789 Pine St, Brisbane QLD 4000",
+    "items": [
+      {
+        "name": "Salmon Fillet 500g",
+        "quantity": 1,
+        "price": 18.00
+      },
+      {
+        "name": "Spinach 200g",
+        "quantity": 2,
+        "price": 3.50
+      }
+    ],
+    "total": 25.00,
+    "status": "preparing",
+    "deliveryMethod": "Delivery",
+    "slotStart": "2025-10-22T14:00:00Z",
+    "slotEnd": "2025-10-22T16:00:00Z",
+    "createdAt": "2025-10-22T10:45:00Z",
+    "updatedAt": "2025-10-22T11:30:00Z"
+  },
+  {
+    "id": "ORD-20251022-004",
+    "customerName": "Emma Davis",
+    "email": "emma.d@email.com",
+    "phone": "0445678901",
+    "address": "321 Elm St, Perth WA 6000",
+    "items": [
+      {
+        "name": "Cheese Cheddar 200g",
+        "quantity": 1,
+        "price": 5.50
+      },
+      {
+        "name": "Eggs 12 pack",
+        "quantity": 1,
+        "price": 4.20
+      }
+    ],
+    "total": 9.70,
+    "status": "out_for_delivery",
+    "deliveryMethod": "Delivery",
+    "slotStart": "2025-10-22T16:00:00Z",
+    "slotEnd": "2025-10-22T18:00:00Z",
+    "createdAt": "2025-10-22T12:00:00Z",
+    "updatedAt": "2025-10-22T15:45:00Z"
+  },
+  {
+    "id": "ORD-20251022-005",
+    "customerName": "David Brown",
+    "email": "david.b@email.com",
+    "phone": "0456789012",
+    "address": "654 Maple Dr, Adelaide SA 5000",
+    "items": [
+      {
+        "name": "Coffee Beans 250g",
+        "quantity": 1,
+        "price": 12.00
+      },
+      {
+        "name": "Yogurt Greek 500g",
+        "quantity": 2,
+        "price": 4.50
+      }
+    ],
+    "total": 21.00,
+    "status": "delivered",
+    "deliveryMethod": "Delivery",
+    "slotStart": "2025-10-22T09:00:00Z",
+    "slotEnd": "2025-10-22T11:00:00Z",
+    "createdAt": "2025-10-22T07:30:00Z",
+    "updatedAt": "2025-10-22T10:30:00Z"
+  }
+]

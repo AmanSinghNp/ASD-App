@@ -91,7 +91,14 @@ class SimpleCache {
 export const cache = new SimpleCache();
 
 // Clean up expired entries every 5 minutes
-setInterval(() => {
+// Use unref() to prevent this timer from keeping the Node.js process alive
+// This allows Jest to exit cleanly after tests complete
+const cleanupInterval = setInterval(() => {
   cache.cleanup();
 }, 5 * 60 * 1000);
+
+// Prevent the interval from keeping the process alive
+if (cleanupInterval.unref) {
+  cleanupInterval.unref();
+}
 

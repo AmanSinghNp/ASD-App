@@ -1,205 +1,229 @@
 /**
- * Product Form Component
+ * Product Form Component - OPTIMIZED VERSION
  * Author: Aman Singh (Student ID: 25104201)
  * Feature: F007 - Admin Dashboard
- * Description: Form component for adding and editing products with validation
+ * Description: Complete product form with validation and database integration
  * Last Updated: 2025-10-22
  */
 
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
-import type { ProductFormProps, ProductFormData } from '../../types/product';
+import { X, Save, AlertCircle, CheckCircle } from 'lucide-react';
+import type { Product } from '../../types/product';
+
+interface ProductFormData {
+  id: string;
+  sku: string;
+  name: string;
+  category: string;
+  priceCents: number;
+  stockQty: number;
+  imageUrl: string;
+  isActive: boolean;
+  description?: string;
+}
+
+interface ProductFormProps {
+  product?: Product;
+  onSave: (productData: ProductFormData) => void;
+  onCancel: () => void;
+  isOpen: boolean;
+}
+
 interface ValidationErrors {
-  name?: string;
   sku?: string;
+  name?: string;
   category?: string;
   priceCents?: string;
   stockQty?: string;
   imageUrl?: string;
 }
 
-
-export const ProductForm: React.FC<ProductFormProps> = ({
-  initialProduct,
-  onSubmit,
-  onCancel
-}) => {
+const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onCancel, isOpen }) => {
   const [formData, setFormData] = useState<ProductFormData>({
-    name: '',
+    id: '',
     sku: '',
+    name: '',
     category: '',
     priceCents: 0,
     stockQty: 0,
     imageUrl: '',
-    isActive: true
+    isActive: true,
+    description: ''
   });
 
   const [errors, setErrors] = useState<ValidationErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
+  // Categories for the dropdown
+  const categories = [
+    'Fruits',
+    'Vegetables',
+    'Dairy',
+    'Meat',
+    'Bakery',
+    'Beverages',
+    'Snacks',
+    'Pantry',
+    'Frozen',
+    'Health'
+  ];
+
+  // Initialize form data when product prop changes
   useEffect(() => {
-    if (initialProduct) {
+    if (product) {
       setFormData({
-        name: initialProduct.name,
-        sku: initialProduct.sku,
-        category: initialProduct.category,
-    priceCents: initialProduct.priceCents,
-    stockQty: initialProduct.stockQty,
-        imageUrl: initialProduct.imageUrl || '',
-        isActive: initialProduct.isActive
+        id: product.id,
+        sku: product.sku,
+        name: product.name,
+        category: product.category,
+        priceCents: product.priceCents,
+        stockQty: product.stockQty,
+        imageUrl: product.imageUrl,
+        isActive: product.isActive,
+        description: product.description || ''
+      });
+    } else {
+      // Reset form for new product
+      setFormData({
+        id: '',
+        sku: '',
+        name: '',
+        category: '',
+        priceCents: 0,
+        stockQty: 0,
+        imageUrl: '',
+        isActive: true,
+        description: ''
       });
     }
-  }, [initialProduct]);
+    setErrors({});
+    setSubmitStatus('idle');
+  }, [product, isOpen]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  // Generate SKU automatically from product name
+  const generateSKU = (name: string, category: string): string => {
+    if (!name || !category) return '';
     
-    // Mark all fields as touched
-    // const allTouched = Object.keys(formData).reduce((acc, field) => {
-    //   acc[field] = true;
-    //   return acc;
-    // }, {} as Record<string, boolean>);
-    // setTouched(allTouched);
+    const categoryPrefix = category.substring(0, 3).toUpperCase();
+    const nameWords = name.split(' ').map(word => word.substring(0, 3).toUpperCase());
+    const namePrefix = nameWords.join('');
+    const randomSuffix = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
     
-    // Validate form
-    if (validateForm()) {
-      onSubmit(formData);
-    }
+    return `${categoryPrefix}-${namePrefix}-${randomSuffix}`;
   };
 
-  // Validation functions
-  const validateField = (field: keyof ProductFormData, value: any): string | undefined => {
-    switch (field) {
-      case 'name':
-        if (!value || value.trim().length === 0) {
-          return 'Product name is required';
-        }
-        if (value.trim().length < 2) {
-          return 'Product name must be at least 2 characters';
-        }
-        if (value.trim().length > 100) {
-          return 'Product name must be less than 100 characters';
-        }
-        break;
-      
-      case 'sku':
-        if (!value || value.trim().length === 0) {
-          return 'SKU is required';
-        }
-        if (value.trim().length < 3) {
-          return 'SKU must be at least 3 characters';
-        }
-        if (value.trim().length > 20) {
-          return 'SKU must be less than 20 characters';
-        }
-        if (!/^[A-Z0-9-_]+$/i.test(value.trim())) {
-          return 'SKU can only contain letters, numbers, hyphens, and underscores';
-        }
-        break;
-      
-      case 'category':
-        if (!value || value.trim().length === 0) {
-          return 'Category is required';
-        }
-        break;
-      
-      case 'priceCents':
-        if (value === null || value === undefined || value === '') {
-          return 'Price is required';
-        }
-        const price = Number(value);
-        if (isNaN(price) || price < 0) {
-          return 'Price must be a positive number';
-        }
-        if (price > 999999) {
-          return 'Price must be less than $9,999.99';
-        }
-        break;
-      
-      case 'stockQty':
-        if (value === null || value === undefined || value === '') {
-          return 'Stock quantity is required';
-        }
-        const stock = Number(value);
-        if (isNaN(stock) || stock < 0) {
-          return 'Stock quantity must be a non-negative number';
-        }
-        if (stock > 99999) {
-          return 'Stock quantity must be less than 100,000';
-        }
-        break;
-      
-      case 'imageUrl':
-        if (value && value.trim().length > 0) {
-          try {
-            new URL(value.trim());
-          } catch {
-            return 'Please enter a valid URL';
-          }
-        }
-        break;
-      
-      default:
-        return undefined;
+  // Auto-generate SKU when name or category changes
+  useEffect(() => {
+    if (formData.name && formData.category && !product) {
+      const generatedSKU = generateSKU(formData.name, formData.category);
+      setFormData(prev => ({ ...prev, sku: generatedSKU }));
     }
-    return undefined;
-  };
+  }, [formData.name, formData.category, product]);
 
+  // Validation function
   const validateForm = (): boolean => {
     const newErrors: ValidationErrors = {};
-    let isValid = true;
 
-    // Validate all fields
-    Object.keys(formData).forEach(field => {
-      const error = validateField(field as keyof ProductFormData, formData[field as keyof ProductFormData]);
-      if (error) {
-        newErrors[field as keyof ValidationErrors] = error;
-        isValid = false;
+    if (!formData.sku.trim()) {
+      newErrors.sku = 'SKU is required';
+    } else if (formData.sku.length < 3) {
+      newErrors.sku = 'SKU must be at least 3 characters';
+    }
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Product name is required';
+    } else if (formData.name.length < 2) {
+      newErrors.name = 'Product name must be at least 2 characters';
+    }
+
+    if (!formData.category) {
+      newErrors.category = 'Category is required';
+    }
+
+    if (formData.priceCents <= 0) {
+      newErrors.priceCents = 'Price must be greater than 0';
+    }
+
+    if (formData.stockQty < 0) {
+      newErrors.stockQty = 'Stock quantity cannot be negative';
+    }
+
+    if (!formData.imageUrl.trim()) {
+      newErrors.imageUrl = 'Image URL is required';
+    } else {
+      // Basic URL validation
+      try {
+        new URL(formData.imageUrl);
+      } catch {
+        newErrors.imageUrl = 'Please enter a valid URL';
       }
-    });
+    }
 
     setErrors(newErrors);
-    return isValid;
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleInputChange = (field: keyof ProductFormData, value: string | number | boolean) => {
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Call the onSave function passed from parent
+      onSave(formData);
+      
+      setSubmitStatus('success');
+      
+      // Close form after successful save
+      setTimeout(() => {
+        onCancel();
+      }, 1500);
+      
+    } catch (error) {
+      console.error('Error saving product:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Handle input changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target;
+    
+    let processedValue: any = value;
+    
+    if (type === 'number') {
+      processedValue = parseFloat(value) || 0;
+    } else if (type === 'checkbox') {
+      processedValue = (e.target as HTMLInputElement).checked;
+    }
+    
     setFormData(prev => ({
       ...prev,
-      [field]: value
+      [name]: processedValue
     }));
 
-    // Clear error when user starts typing
-    if (errors[field as keyof ValidationErrors]) {
+    // Clear error for this field when user starts typing
+    if (errors[name as keyof ValidationErrors]) {
       setErrors(prev => ({
         ...prev,
-        [field]: undefined
+        [name]: undefined
       }));
     }
   };
 
-  const handleBlur = (field: keyof ProductFormData) => {
-    // setTouched(prev => ({
-    //   ...prev,
-    //   [field]: true
-    // }));
-
-    // Validate field on blur
-    const error = validateField(field, formData[field]);
-    setErrors(prev => ({
-      ...prev,
-      [field]: error
-    }));
-  };
-
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onCancel();
-      }
-    };
-
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [onCancel]);
+  if (!isOpen) return null;
 
   return (
     <div style={{
@@ -208,485 +232,497 @@ export const ProductForm: React.FC<ProductFormProps> = ({
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      background: 'rgba(0,0,0,0.5)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      zIndex: 50,
-      padding: 'var(--spacing-md)'
+      zIndex: 1000,
+      padding: '20px'
     }}>
       <div style={{
-        backgroundColor: 'var(--bg-primary)',
-        borderRadius: 'var(--radius-xl)',
-        padding: 'var(--spacing-2xl)',
-        maxWidth: '42rem',
+        background: 'white',
+        borderRadius: '12px',
+        maxWidth: '600px',
         width: '100%',
-        margin: '0 var(--spacing-md)',
         maxHeight: '90vh',
-        overflowY: 'auto',
-        boxShadow: 'var(--shadow-lg)',
-        border: '1px solid var(--border-light)'
+        overflow: 'auto',
+        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
       }}>
+        {/* Header */}
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: 'var(--spacing-2xl)'
+          padding: '24px 24px 0 24px',
+          borderBottom: '1px solid #e5e7eb',
+          marginBottom: '24px'
         }}>
-          <h2 style={{
-            fontSize: '1.875rem',
-            fontWeight: '700',
-            color: 'var(--text-primary)',
-            margin: 0
-          }}>
-            {initialProduct ? 'Edit Product' : 'Add New Product'}
+          <h2 style={{ margin: 0, fontSize: '24px', fontWeight: '600', color: '#111827' }}>
+            {product ? 'Edit Product' : 'Add New Product'}
           </h2>
           <button
             onClick={onCancel}
             style={{
-              color: 'var(--text-muted)',
-              padding: 'var(--spacing-sm)',
-              borderRadius: 'var(--radius-lg)',
+              background: 'none',
               border: 'none',
-              backgroundColor: 'transparent',
               cursor: 'pointer',
-              transition: 'all 0.2s ease',
+              padding: '8px',
+              borderRadius: '6px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'var(--text-secondary)';
-              e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'var(--text-muted)';
-              e.currentTarget.style.backgroundColor = 'transparent';
-            }}
-            aria-label="Close form"
           >
-            <X size={24} />
+            <X size={20} color="#6b7280" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }}>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-            gap: 'var(--spacing-lg)'
-          }}>
+        {/* Form */}
+        <form onSubmit={handleSubmit} style={{ padding: '0 24px 24px 24px' }}>
+          <div style={{ display: 'grid', gap: '20px' }}>
+            {/* Product Name */}
             <div>
-              <label htmlFor="name" style={{
-                display: 'block',
-                fontSize: '0.875rem',
-                fontWeight: '600',
-                color: 'var(--text-primary)',
-                marginBottom: 'var(--spacing-sm)'
+              <label style={{ 
+                display: 'block', 
+                marginBottom: '6px', 
+                fontWeight: '500', 
+                color: '#374151' 
               }}>
                 Product Name *
               </label>
               <input
                 type="text"
-                id="name"
+                name="name"
                 value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
+                onChange={handleChange}
+                placeholder="Enter product name"
                 style={{
                   width: '100%',
-                  padding: 'var(--spacing-md)',
-                  border: `1px solid ${errors.name ? '#ef4444' : 'var(--border-color)'}`,
-                  borderRadius: 'var(--radius-lg)',
-                  backgroundColor: 'var(--bg-primary)',
-                  color: 'var(--text-primary)',
-                  fontSize: '0.875rem',
-                  transition: 'all 0.2s ease'
+                  padding: '12px',
+                  border: `1px solid ${errors.name ? '#ef4444' : '#d1d5db'}`,
+                  borderRadius: '8px',
+                  fontSize: '16px',
+                  boxSizing: 'border-box'
                 }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = errors.name ? '#ef4444' : 'var(--primary-blue)';
-                  e.target.style.boxShadow = `0 0 0 3px ${errors.name ? '#fecaca' : 'var(--primary-blue-light)'}`;
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = errors.name ? '#ef4444' : 'var(--border-color)';
-                  e.target.style.boxShadow = 'none';
-                  handleBlur('name');
-                }}
-                required
               />
               {errors.name && (
-                <div style={{
-                  color: '#ef4444',
-                  fontSize: '0.75rem',
-                  marginTop: 'var(--spacing-xs)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 'var(--spacing-xs)'
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '4px', 
+                  marginTop: '4px', 
+                  color: '#ef4444', 
+                  fontSize: '14px' 
                 }}>
-                  <span>⚠</span>
+                  <AlertCircle size={14} />
                   {errors.name}
                 </div>
               )}
             </div>
 
+            {/* SKU */}
             <div>
-              <label htmlFor="sku" style={{
-                display: 'block',
-                fontSize: '0.875rem',
-                fontWeight: '600',
-                color: 'var(--text-primary)',
-                marginBottom: 'var(--spacing-sm)'
+              <label style={{ 
+                display: 'block', 
+                marginBottom: '6px', 
+                fontWeight: '500', 
+                color: '#374151' 
               }}>
                 SKU *
               </label>
               <input
                 type="text"
-                id="sku"
+                name="sku"
                 value={formData.sku}
-                onChange={(e) => handleInputChange('sku', e.target.value)}
+                onChange={handleChange}
+                placeholder="Product SKU (auto-generated)"
                 style={{
                   width: '100%',
-                  padding: 'var(--spacing-md)',
-                  border: `1px solid ${errors.sku ? '#ef4444' : 'var(--border-color)'}`,
-                  borderRadius: 'var(--radius-lg)',
-                  backgroundColor: 'var(--bg-primary)',
-                  color: 'var(--text-primary)',
-                  fontSize: '0.875rem',
-                  fontFamily: 'monospace',
-                  transition: 'all 0.2s ease'
+                  padding: '12px',
+                  border: `1px solid ${errors.sku ? '#ef4444' : '#d1d5db'}`,
+                  borderRadius: '8px',
+                  fontSize: '16px',
+                  boxSizing: 'border-box',
+                  backgroundColor: product ? 'white' : '#f9fafb'
                 }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = errors.sku ? '#ef4444' : 'var(--primary-blue)';
-                  e.target.style.boxShadow = `0 0 0 3px ${errors.sku ? '#fecaca' : 'var(--primary-blue-light)'}`;
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = errors.sku ? '#ef4444' : 'var(--border-color)';
-                  e.target.style.boxShadow = 'none';
-                  handleBlur('sku');
-                }}
-                required
+                readOnly={!product} // Auto-generated for new products
               />
               {errors.sku && (
-                <div style={{
-                  color: '#ef4444',
-                  fontSize: '0.75rem',
-                  marginTop: 'var(--spacing-xs)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 'var(--spacing-xs)'
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '4px', 
+                  marginTop: '4px', 
+                  color: '#ef4444', 
+                  fontSize: '14px' 
                 }}>
-                  <span>⚠</span>
+                  <AlertCircle size={14} />
                   {errors.sku}
                 </div>
               )}
             </div>
 
-            <div>
-              <label htmlFor="category" style={{
-                display: 'block',
-                fontSize: '0.875rem',
-                fontWeight: '600',
-                color: 'var(--text-primary)',
-                marginBottom: 'var(--spacing-sm)'
-              }}>
-                Category *
-              </label>
-              <select
-                id="category"
-                value={formData.category}
-                onChange={(e) => handleInputChange('category', e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: 'var(--spacing-md)',
-                  border: `1px solid ${errors.category ? '#ef4444' : 'var(--border-color)'}`,
-                  borderRadius: 'var(--radius-lg)',
-                  backgroundColor: 'var(--bg-primary)',
-                  color: 'var(--text-primary)',
-                  fontSize: '0.875rem',
-                  transition: 'all 0.2s ease',
-                  cursor: 'pointer'
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = errors.category ? '#ef4444' : 'var(--primary-blue)';
-                  e.target.style.boxShadow = `0 0 0 3px ${errors.category ? '#fecaca' : 'var(--primary-blue-light)'}`;
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = errors.category ? '#ef4444' : 'var(--border-color)';
-                  e.target.style.boxShadow = 'none';
-                  handleBlur('category');
-                }}
-                required
-              >
-                <option value="">Select Category</option>
-                <option value="Fruits">Fruits</option>
-                <option value="Dairy">Dairy</option>
-                <option value="Pantry">Pantry</option>
-                <option value="Bakery">Bakery</option>
-                <option value="Vegetables">Vegetables</option>
-                <option value="Meat">Meat</option>
-              </select>
-              {errors.category && (
-                <div style={{
-                  color: '#ef4444',
-                  fontSize: '0.75rem',
-                  marginTop: 'var(--spacing-xs)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 'var(--spacing-xs)'
+            {/* Category and Price Row */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+              <div>
+                <label style={{ 
+                  display: 'block', 
+                  marginBottom: '6px', 
+                  fontWeight: '500', 
+                  color: '#374151' 
                 }}>
-                  <span>⚠</span>
-                  {errors.category}
-                </div>
-              )}
+                  Category *
+                </label>
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    border: `1px solid ${errors.category ? '#ef4444' : '#d1d5db'}`,
+                    borderRadius: '8px',
+                    fontSize: '16px',
+                    boxSizing: 'border-box'
+                  }}
+                >
+                  <option value="">Select Category</option>
+                  {categories.map(category => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
+                {errors.category && (
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '4px', 
+                    marginTop: '4px', 
+                    color: '#ef4444', 
+                    fontSize: '14px' 
+                  }}>
+                    <AlertCircle size={14} />
+                    {errors.category}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label style={{ 
+                  display: 'block', 
+                  marginBottom: '6px', 
+                  fontWeight: '500', 
+                  color: '#374151' 
+                }}>
+                  Price ($) *
+                </label>
+                <input
+                  type="number"
+                  name="priceCents"
+                  value={formData.priceCents / 100}
+                  onChange={(e) => {
+                    const dollarValue = parseFloat(e.target.value) || 0;
+                    setFormData(prev => ({ ...prev, priceCents: Math.round(dollarValue * 100) }));
+                  }}
+                  step="0.01"
+                  min="0"
+                  placeholder="0.00"
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    border: `1px solid ${errors.priceCents ? '#ef4444' : '#d1d5db'}`,
+                    borderRadius: '8px',
+                    fontSize: '16px',
+                    boxSizing: 'border-box'
+                  }}
+                />
+                {errors.priceCents && (
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '4px', 
+                    marginTop: '4px', 
+                    color: '#ef4444', 
+                    fontSize: '14px' 
+                  }}>
+                    <AlertCircle size={14} />
+                    {errors.priceCents}
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div>
-              <label htmlFor="priceCents" style={{
-                display: 'block',
-                fontSize: '0.875rem',
-                fontWeight: '600',
-                color: 'var(--text-primary)',
-                marginBottom: 'var(--spacing-sm)'
-              }}>
-                Price (cents) *
-              </label>
-              <input
-                type="number"
-                id="priceCents"
-                value={formData.priceCents}
-                onChange={(e) => handleInputChange('priceCents', parseInt(e.target.value) || 0)}
-                style={{
-                  width: '100%',
-                  padding: 'var(--spacing-md)',
-                  border: `1px solid ${errors.priceCents ? '#ef4444' : 'var(--border-color)'}`,
-                  borderRadius: 'var(--radius-lg)',
-                  backgroundColor: 'var(--bg-primary)',
-                  color: 'var(--text-primary)',
-                  fontSize: '0.875rem',
-                  transition: 'all 0.2s ease'
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = errors.priceCents ? '#ef4444' : 'var(--primary-blue)';
-                  e.target.style.boxShadow = `0 0 0 3px ${errors.priceCents ? '#fecaca' : 'var(--primary-blue-light)'}`;
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = errors.priceCents ? '#ef4444' : 'var(--border-color)';
-                  e.target.style.boxShadow = 'none';
-                  handleBlur('priceCents');
-                }}
-                min="0"
-                required
-              />
-              {errors.priceCents && (
-                <div style={{
-                  color: '#ef4444',
-                  fontSize: '0.75rem',
-                  marginTop: 'var(--spacing-xs)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 'var(--spacing-xs)'
+            {/* Stock Quantity and Active Status Row */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+              <div>
+                <label style={{ 
+                  display: 'block', 
+                  marginBottom: '6px', 
+                  fontWeight: '500', 
+                  color: '#374151' 
                 }}>
-                  <span>⚠</span>
-                  {errors.priceCents}
+                  Stock Quantity *
+                </label>
+                <input
+                  type="number"
+                  name="stockQty"
+                  value={formData.stockQty}
+                  onChange={handleChange}
+                  min="0"
+                  placeholder="0"
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    border: `1px solid ${errors.stockQty ? '#ef4444' : '#d1d5db'}`,
+                    borderRadius: '8px',
+                    fontSize: '16px',
+                    boxSizing: 'border-box'
+                  }}
+                />
+                {errors.stockQty && (
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '4px', 
+                    marginTop: '4px', 
+                    color: '#ef4444', 
+                    fontSize: '14px' 
+                  }}>
+                    <AlertCircle size={14} />
+                    {errors.stockQty}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label style={{ 
+                  display: 'block', 
+                  marginBottom: '6px', 
+                  fontWeight: '500', 
+                  color: '#374151' 
+                }}>
+                  Status
+                </label>
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '8px',
+                  padding: '12px',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '8px',
+                  backgroundColor: '#f9fafb'
+                }}>
+                  <input
+                    type="checkbox"
+                    name="isActive"
+                    checked={formData.isActive}
+                    onChange={handleChange}
+                    style={{ margin: 0 }}
+                  />
+                  <span style={{ fontSize: '16px', color: '#374151' }}>
+                    {formData.isActive ? 'Active' : 'Inactive'}
+                  </span>
                 </div>
-              )}
+              </div>
             </div>
 
+            {/* Image URL */}
             <div>
-              <label htmlFor="stockQty" style={{
-                display: 'block',
-                fontSize: '0.875rem',
-                fontWeight: '600',
-                color: 'var(--text-primary)',
-                marginBottom: 'var(--spacing-sm)'
+              <label style={{ 
+                display: 'block', 
+                marginBottom: '6px', 
+                fontWeight: '500', 
+                color: '#374151' 
               }}>
-                Stock Quantity *
-              </label>
-              <input
-                type="number"
-                id="stockQty"
-                value={formData.stockQty}
-                onChange={(e) => handleInputChange('stockQty', parseInt(e.target.value) || 0)}
-                style={{
-                  width: '100%',
-                  padding: 'var(--spacing-md)',
-                  border: `1px solid ${errors.stockQty ? '#ef4444' : 'var(--border-color)'}`,
-                  borderRadius: 'var(--radius-lg)',
-                  backgroundColor: 'var(--bg-primary)',
-                  color: 'var(--text-primary)',
-                  fontSize: '0.875rem',
-                  transition: 'all 0.2s ease'
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = errors.stockQty ? '#ef4444' : 'var(--primary-blue)';
-                  e.target.style.boxShadow = `0 0 0 3px ${errors.stockQty ? '#fecaca' : 'var(--primary-blue-light)'}`;
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = errors.stockQty ? '#ef4444' : 'var(--border-color)';
-                  e.target.style.boxShadow = 'none';
-                  handleBlur('stockQty');
-                }}
-                min="0"
-                required
-              />
-              {errors.stockQty && (
-                <div style={{
-                  color: '#ef4444',
-                  fontSize: '0.75rem',
-                  marginTop: 'var(--spacing-xs)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 'var(--spacing-xs)'
-                }}>
-                  <span>⚠</span>
-                  {errors.stockQty}
-                </div>
-              )}
-            </div>
-
-            <div style={{ gridColumn: '1 / -1' }}>
-              <label htmlFor="imageUrl" style={{
-                display: 'block',
-                fontSize: '0.875rem',
-                fontWeight: '600',
-                color: 'var(--text-primary)',
-                marginBottom: 'var(--spacing-sm)'
-              }}>
-                Image URL
+                Image URL *
               </label>
               <input
                 type="url"
-                id="imageUrl"
+                name="imageUrl"
                 value={formData.imageUrl}
-                onChange={(e) => handleInputChange('imageUrl', e.target.value)}
+                onChange={handleChange}
+                placeholder="https://example.com/image.jpg"
                 style={{
                   width: '100%',
-                  padding: 'var(--spacing-md)',
-                  border: `1px solid ${errors.imageUrl ? '#ef4444' : 'var(--border-color)'}`,
-                  borderRadius: 'var(--radius-lg)',
-                  backgroundColor: 'var(--bg-primary)',
-                  color: 'var(--text-primary)',
-                  fontSize: '0.875rem',
-                  transition: 'all 0.2s ease'
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = errors.imageUrl ? '#ef4444' : 'var(--primary-blue)';
-                  e.target.style.boxShadow = `0 0 0 3px ${errors.imageUrl ? '#fecaca' : 'var(--primary-blue-light)'}`;
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = errors.imageUrl ? '#ef4444' : 'var(--border-color)';
-                  e.target.style.boxShadow = 'none';
-                  handleBlur('imageUrl');
+                  padding: '12px',
+                  border: `1px solid ${errors.imageUrl ? '#ef4444' : '#d1d5db'}`,
+                  borderRadius: '8px',
+                  fontSize: '16px',
+                  boxSizing: 'border-box'
                 }}
               />
               {errors.imageUrl && (
-                <div style={{
-                  color: '#ef4444',
-                  fontSize: '0.75rem',
-                  marginTop: 'var(--spacing-xs)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 'var(--spacing-xs)'
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '4px', 
+                  marginTop: '4px', 
+                  color: '#ef4444', 
+                  fontSize: '14px' 
                 }}>
-                  <span>⚠</span>
+                  <AlertCircle size={14} />
                   {errors.imageUrl}
                 </div>
               )}
+              {formData.imageUrl && (
+                <div style={{ marginTop: '8px' }}>
+                  <img
+                    src={formData.imageUrl}
+                    alt="Product preview"
+                    style={{
+                      width: '100px',
+                      height: '100px',
+                      objectFit: 'cover',
+                      borderRadius: '8px',
+                      border: '1px solid #d1d5db'
+                    }}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Description */}
+            <div>
+              <label style={{ 
+                display: 'block', 
+                marginBottom: '6px', 
+                fontWeight: '500', 
+                color: '#374151' 
+              }}>
+                Description
+              </label>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="Enter product description (optional)"
+                rows={3}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '8px',
+                  fontSize: '16px',
+                  boxSizing: 'border-box',
+                  resize: 'vertical'
+                }}
+              />
             </div>
           </div>
 
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            padding: 'var(--spacing-md)',
-            backgroundColor: 'var(--bg-tertiary)',
-            borderRadius: 'var(--radius-lg)',
-            border: '1px solid var(--border-light)'
-          }}>
-            <input
-              type="checkbox"
-              id="isActive"
-              checked={formData.isActive}
-              onChange={(e) => handleInputChange('isActive', e.target.checked)}
-              style={{
-                width: '1.25rem',
-                height: '1.25rem',
-                color: 'var(--primary-blue)',
-                border: '1px solid var(--border-color)',
-                borderRadius: 'var(--radius-sm)',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease'
-              }}
-            />
-            <label htmlFor="isActive" style={{
-              marginLeft: 'var(--spacing-md)',
-              display: 'block',
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              color: 'var(--text-primary)',
-              cursor: 'pointer'
+          {/* Submit Status */}
+          {submitStatus === 'success' && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '12px',
+              backgroundColor: '#d1fae5',
+              color: '#065f46',
+              borderRadius: '8px',
+              marginTop: '20px'
             }}>
-              Active Product
-            </label>
-          </div>
+              <CheckCircle size={16} />
+              Product saved successfully!
+            </div>
+          )}
 
+          {submitStatus === 'error' && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '12px',
+              backgroundColor: '#fee2e2',
+              color: '#dc2626',
+              borderRadius: '8px',
+              marginTop: '20px'
+            }}>
+              <AlertCircle size={16} />
+              Error saving product. Please try again.
+            </div>
+          )}
+
+          {/* Form Actions */}
           <div style={{
             display: 'flex',
+            gap: '12px',
             justifyContent: 'flex-end',
-            gap: 'var(--spacing-md)',
-            paddingTop: 'var(--spacing-lg)',
-            borderTop: '1px solid var(--border-light)'
+            marginTop: '24px',
+            paddingTop: '24px',
+            borderTop: '1px solid #e5e7eb'
           }}>
             <button
               type="button"
               onClick={onCancel}
+              disabled={isSubmitting}
               style={{
-                padding: 'var(--spacing-md) var(--spacing-lg)',
-                color: 'var(--text-primary)',
-                border: '1px solid var(--border-color)',
-                borderRadius: 'var(--radius-lg)',
-                backgroundColor: 'var(--bg-primary)',
-                cursor: 'pointer',
-                fontSize: '0.875rem',
+                padding: '12px 24px',
+                border: '1px solid #d1d5db',
+                background: 'white',
+                borderRadius: '8px',
+                cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                fontSize: '16px',
                 fontWeight: '500',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
-                e.currentTarget.style.borderColor = 'var(--border-color)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--bg-primary)';
-                e.currentTarget.style.borderColor = 'var(--border-color)';
+                color: '#374151',
+                opacity: isSubmitting ? 0.5 : 1
               }}
             >
               Cancel
             </button>
             <button
               type="submit"
+              disabled={isSubmitting}
               style={{
-                padding: 'var(--spacing-md) var(--spacing-lg)',
-                backgroundColor: 'var(--primary-blue)',
+                padding: '12px 24px',
+                background: isSubmitting ? '#9ca3af' : '#493aecff',
                 color: 'white',
                 border: 'none',
-                borderRadius: 'var(--radius-lg)',
-                cursor: 'pointer',
-                fontSize: '0.875rem',
-                fontWeight: '600',
-                transition: 'all 0.2s ease',
-                boxShadow: 'var(--shadow-sm)'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--primary-blue-hover)';
-                e.currentTarget.style.boxShadow = 'var(--shadow-md)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--primary-blue)';
-                e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+                borderRadius: '8px',
+                cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                fontSize: '16px',
+                fontWeight: '500',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
               }}
             >
-              {initialProduct ? 'Update Product' : 'Add Product'}
+              {isSubmitting ? (
+                <>
+                  <div style={{
+                    width: '16px',
+                    height: '16px',
+                    border: '2px solid #ffffff',
+                    borderTop: '2px solid transparent',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }} />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save size={16} />
+                  {product ? 'Update Product' : 'Save Product'}
+                </>
+              )}
             </button>
           </div>
         </form>
+
+        {/* CSS for spinner animation */}
+        <style>{`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
       </div>
     </div>
   );
 };
+
+export default ProductForm;
