@@ -41,7 +41,15 @@ router.post("/signup", async (req, res) => {
     // Create JWT
     const token = jwt.sign({ id: user.id, role: user.role }, SECRET, { expiresIn: "1h" });
 
-    res.json({ message: "Signup successful ✅", token });
+    // Return user data and token (client expects these fields)
+    res.json({ 
+      message: "Signup successful ✅", 
+      token,
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role
+    });
   } catch (err) {
     console.error("Signup error:", err);
     res.status(500).json({ message: "Something went wrong, please try again ❌" });
@@ -64,7 +72,15 @@ router.post("/login", async (req, res) => {
     // Create JWT
     const token = jwt.sign({ id: user.id, role: user.role }, SECRET, { expiresIn: "1h" });
 
-    res.json({ message: "Login successful ✅", token });
+    // Return user data and token (client expects these fields)
+    res.json({ 
+      message: "Login successful ✅", 
+      token,
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role
+    });
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ message: "Something went wrong, please try again ❌" });
