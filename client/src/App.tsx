@@ -28,8 +28,8 @@ const Navigation: React.FC = () => {
   const links = [
     { to: '/', label: 'Product Catalogue', icon: Package },
     { to: '/checkout', label: 'Checkout', icon: ShoppingCart },
-    { to: '/admin', label: 'Admin Dashboard (F007)', icon: Settings },
-    { to: '/delivery', label: 'Delivery Interface (F008)', icon: Truck },
+    { to: '/admin', label: 'Admin Dashboard', icon: Settings },
+    { to: '/delivery', label: 'Delivery Interface', icon: Truck },
     { to: '/support', label: 'Support / FAQ', icon: HelpCircle }, // ← 新增：支持中心
   ] as const;
 

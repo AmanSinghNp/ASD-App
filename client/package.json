@@ -9,8 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "outDir": "./dist"
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@types/node": "^24.3.0",

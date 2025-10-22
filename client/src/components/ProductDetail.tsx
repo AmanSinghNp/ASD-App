@@ -51,7 +51,6 @@ const ProductDetail: React.FC = () => {
   }
 
   const addToCart = () => {
-    console.log("Add to cart:", product, quantity);
     // Add your cart logic here
   };
 
