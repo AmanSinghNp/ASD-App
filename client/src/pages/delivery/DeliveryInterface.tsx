@@ -1,3 +1,11 @@
+/**
+ * Delivery Interface Component
+ * Author: Aman Singh (Student ID: 25104201)
+ * Feature: F008 - Delivery
+ * Description: Admin interface for managing orders, delivery slots, and order status updates
+ * Last Updated: 2025-10-22
+ */
+
 import React, { useState, useEffect } from 'react';
 import { Truck, MapPin, Clock, Package, CheckCircle, AlertCircle } from 'lucide-react';
 
@@ -40,15 +48,17 @@ export const DeliveryInterface: React.FC = () => {
       try {
         setLoading(true);
         
-        // Fetch orders
-        const ordersResponse = await fetch('http://localhost:4000/api/orders');
+        // Fetch orders and delivery slots in parallel for faster loading
+        const [ordersResponse, slotsResponse] = await Promise.all([
+          fetch('http://localhost:4000/api/orders'),
+          fetch(`http://localhost:4000/api/delivery/slots?date=${selectedDate}`)
+        ]);
+        
         const ordersData = await ordersResponse.json();
         if (ordersData.data) {
           setOrders(ordersData.data);
         }
         
-        // Fetch delivery slots for selected date
-        const slotsResponse = await fetch(`http://localhost:4000/api/delivery/slots?date=${selectedDate}`);
         const slotsData = await slotsResponse.json();
         if (slotsData.data) {
           setDeliverySlots(slotsData.data);
