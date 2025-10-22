@@ -1,24 +1,43 @@
 import express from "express";
-import {
-  createOrder,
-  updateOrderStatus,
-  getOrders,
-  getOrderStatusHistory,
-} from "../controllers/orderController";
-import { requireAuth, requireAdmin } from "../middleware/auth";
-import type { AuthRequest } from "../middleware/auth";
 import { prisma } from "../index";
+import { requireAuth, requireAdmin } from "../middleware/auth";
 import { authenticate } from "../middleware/authMiddleware";
+import type { AuthRequest } from "../middleware/auth";
+import { v4 as uuidv4 } from "uuid"; // ← Add this
 
 const router = express.Router();
 
-// GET /api/orders - Get all orders (Admin only for delivery interface)
-router.get("/", requireAuth, requireAdmin, getOrders);
+/**
+ * GET /api/orders - Admin only: view all orders
+ */
+router.get("/", requireAuth, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const orders = await prisma.order.findMany({
+      include: {
+        items: {
+          include: { product: true },
+        },
+        user: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    return res.json({ data: orders });
+  } catch (err) {
+    console.error("❌ Error getting all orders:", err);
+    return res.status(500).json({ error: "Failed to fetch orders" });
+  }
+});
 
-// GET /api/orders/my-orders - Get current user's orders
-router.get("/my-orders", requireAuth, async (req: AuthRequest, res) => {
+/**
+ * GET /api/orders/my-orders - Customer: view their own orders
+ */
+router.get("/my-orders", authenticate, async (req: AuthRequest, res) => {
   try {
     const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized: user not found" });
+    }
+
     const orders = await prisma.order.findMany({
       where: { userId },
       include: {
@@ -29,51 +48,23 @@ router.get("/my-orders", requireAuth, async (req: AuthRequest, res) => {
       orderBy: { createdAt: "desc" },
     });
 
-    res.json({ data: orders });
+    return res.json({ data: orders });
   } catch (err) {
-    console.error("❌ Error fetching user orders:", err);
-    res.status(500).json({ error: "Failed to fetch orders" });
+    console.error("❌ Error getting user orders:", err);
+    return res.status(500).json({ error: "Failed to fetch orders" });
   }
 });
 
-
-// POST /api/orders - Create new order (Public - customers can create orders)
-router.post("/", createOrder);
-
-// PATCH /api/orders/:id/status - Update order status
-router.get("/my-orders", authenticate, async (req, res) => {
-  const userId = (req as any).user?.id;
-
+/**
+ * POST /api/orders - Create a new order (Customer)
+ */
+router.post("/", authenticate, async (req: AuthRequest, res) => {
   try {
-    const orders = await prisma.order.findMany({
-      where: { userId },
-      include: {
-        items: {
-          include: {
-            product: true,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized: user not found" });
+    }
 
-    res.json({ data: orders });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to fetch orders" });
-  }
-});
-
-
-// POST /api/orders - Create new order
-router.post("/", createOrder);
-
-router.post("/", authenticate, async (req, res) => {
-  const userId = (req as any).user?.id;
-
-  try {
     const {
       items,
       deliveryMethod,
@@ -83,40 +74,106 @@ router.post("/", authenticate, async (req, res) => {
       slotEnd,
     } = req.body;
 
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ error: "Order must contain at least one item" });
+    }
+    if (typeof deliveryMethod !== "string") {
+      return res.status(400).json({ error: "Invalid deliveryMethod" });
+    }
+    if (!totals || typeof totals.totalCents !== "number") {
+      return res.status(400).json({ error: "Invalid totals" });
+    }
+
+    // Build OrderItem create array
+    const orderItemsData = await Promise.all(
+      items.map(async (item: any) => {
+        if (typeof item.productId !== "string" || typeof item.quantity !== "number") {
+          throw new Error("Invalid item format");
+        }
+        const product = await prisma.product.findUnique({ where: { id: item.productId } });
+        if (!product) {
+          throw new Error(`Product not found: ${item.productId}`);
+        }
+        return {
+          productId: product.id,
+          nameAtPurchase: product.name,
+          priceCents: product.priceCents,
+          quantity: item.quantity,
+        };
+      })
+    );
+
     const order = await prisma.order.create({
       data: {
-        userId, // ✅ Save user ID
+        id: uuidv4(),
+        userId,
         deliveryMethod,
-        addressLine1: address?.addressLine1,
-        suburb: address?.suburb,
-        state: address?.state,
-        postcode: address?.postcode,
-        slotStart: slotStart ? new Date(slotStart) : undefined,
-        slotEnd: slotEnd ? new Date(slotEnd) : undefined,
+        addressLine1: address?.addressLine1 ?? null,
+        suburb: address?.suburb ?? null,
+        state: address?.state ?? null,
+        postcode: address?.postcode ?? null,
+        slotStart: slotStart ? new Date(slotStart) : null,
+        slotEnd: slotEnd ? new Date(slotEnd) : null,
         totalCents: totals.totalCents,
         items: {
-          create: items.map((item: any) => ({
-            productId: item.productId,
-            nameAtPurchase: "Some name", // optionally fetch name here if needed
-            priceCents: 1000, // optionally fetch price from DB
-            quantity: item.quantity,
-          })),
+          create: orderItemsData,
         },
+      },
+      include: {
+        items: true,
       },
     });
 
-    res.status(201).json({ data: { orderId: order.id, status: order.status } });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to create order" });
+    return res.status(201).json({
+      data: {
+        orderId: order.id,
+        status: order.status,
+      },
+    });
+  } catch (err: any) {
+    console.error("❌ Error creating order:", err);
+    return res.status(500).json({ error: err.message || "Failed to create order" });
   }
 });
 
+/**
+ * PATCH /api/orders/:id/status - Admin: update order status
+ */
+router.patch("/:id/status", requireAuth, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    if (typeof status !== "string") {
+      return res.status(400).json({ error: "Invalid status" });
+    }
 
-// PATCH /api/orders/:id/status - Update order status (Admin only)
-router.patch("/:id/status", requireAuth, requireAdmin, updateOrderStatus);
+    const updated = await prisma.order.update({
+      where: { id },
+      data: { status },
+    });
 
-// GET /api/orders/:id/status-history - Get order status history timeline (Admin only)
-router.get("/:id/status-history", requireAuth, requireAdmin, getOrderStatusHistory);
+    return res.json({ data: updated });
+  } catch (err) {
+    console.error("❌ Error updating order status:", err);
+    return res.status(500).json({ error: "Failed to update order status" });
+  }
+});
+
+/**
+ * GET /api/orders/:id/status-history - Admin: get status timeline
+ */
+router.get("/:id/status-history", requireAuth, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const history = await prisma.orderStatusHistory.findMany({
+      where: { orderId: id },
+      orderBy: { createdAt: "asc" },
+    });
+    return res.json({ data: history });
+  } catch (err) {
+    console.error("❌ Error getting status history:", err);
+    return res.status(500).json({ error: "Failed to fetch status history" });
+  }
+});
 
 export default router;
