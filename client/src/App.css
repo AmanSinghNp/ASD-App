@@ -40,3 +40,14 @@
 .read-the-docs {
   color: #888;
 } */
+
+.auth-button {
+  padding: 12px;
+  background-color: #4f46e5; 
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}

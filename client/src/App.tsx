@@ -1,7 +1,7 @@
-// client/src/App.tsx
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';  
 import { CartProvider } from './context/CartContext';
+import { AuthProvider, useAuth } from './context/AuthContext';  
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { DeliveryInterface } from './pages/delivery/DeliveryInterface';
 import ProductCatalogue from './ProductCatalogue';
@@ -9,8 +9,14 @@ import Cart from './components/Cart';
 import Checkout from './Checkout';
 import FAQ from './pages/FAQ'; 
 import LiveChat from './pages/LiveChat';
-import { Settings, Truck, ShoppingCart, Package, HelpCircle } from 'lucide-react';
+import { Settings, Truck, ShoppingCart, Package, User, LogIn, LogOut, HelpCircle } from 'lucide-react';
 import './App.css';
+import Login from './pages/Login';
+import Profile from './pages/Profile';
+import Signup from './pages/Signup';
+import EditProfile from './pages/EditProfile';
+import OrderHistory from './pages/OrderHistory';
+import ProtectedAdminRoute from './context/ProtectAdminRoute';
 
 /**
  * Navigation component for the main application header
@@ -18,22 +24,27 @@ import './App.css';
  */
 const Navigation: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
-  const isActive = (target: string) => {
-    if (target === '/') {
-      return location.pathname === '/';
-    }
-    return location.pathname === target || location.pathname.startsWith(`${target}/`);
+  const handleMouseEnter = (e: React.MouseEvent) => {
+    const target = e.currentTarget as HTMLElement;
+    target.style.backgroundColor = 'var(--bg-tertiary)';
+    target.style.color = 'var(--text-primary)';
   };
 
-  const links = [
-    { to: '/', label: 'Product Catalogue', icon: Package },
-    { to: '/cart', label: 'Cart', icon: ShoppingCart },
-    { to: '/checkout', label: 'Checkout', icon: ShoppingCart },
-    { to: '/admin', label: 'Admin Dashboard', icon: Settings },
-    { to: '/delivery', label: 'Delivery Interface', icon: Truck },
-    { to: '/support', label: 'Support / FAQ', icon: HelpCircle }, // ← 新增：支持中心
-  ] as const;
+  const handleMouseLeave = (e: React.MouseEvent) => {
+    const target = e.currentTarget as HTMLElement;
+    if (location.pathname !== target.getAttribute('href')) {
+      target.style.backgroundColor = 'transparent';
+      target.style.color = 'var(--text-secondary)';
+    }
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <nav style={{
@@ -42,7 +53,7 @@ const Navigation: React.FC = () => {
       borderBottom: '1px solid var(--border-light)',
       position: 'sticky',
       top: 0,
-      zIndex: 50
+      zIndex: 50,
     }}>
       <div className="container">
         <div style={{
@@ -50,22 +61,71 @@ const Navigation: React.FC = () => {
           justifyContent: 'space-between',
           alignItems: 'center',
           height: '4rem',
-          gap: 'var(--spacing-lg)'
+          gap: 'var(--spacing-lg)',
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xl)' }}>
-            {/* Application title */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'var(--spacing-xl)',
+          }}>
             <h1 style={{
               fontSize: '1.5rem',
               fontWeight: 700,
               color: 'var(--text-primary)',
-              margin: 0
+              margin: 0,
             }}>
               ASD App
             </h1>
-            {/* Navigation links */}
+
             <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
-              {links.map(({ to, label, icon: Icon }) => {
-                const active = isActive(to);
+
+              {/* Navigation links */}
+              {[
+                { to: '/', label: 'Product Catalogue', icon: Package },
+                { to: '/cart', label: 'Cart', icon: ShoppingCart },
+                { to: '/checkout', label: 'Checkout', icon: ShoppingCart },
+                { to: '/admin', label: 'Admin Dashboard', icon: Settings },
+                { to: '/delivery', label: 'Delivery Interface', icon: Truck },
+                { to: '/support', label: 'Support / FAQ', icon: HelpCircle },
+                { to: '/auth/profile', label: 'Profile', icon: User },
+              ].map(({ to, label, icon: Icon }) => {
+                // Show admin link ONLY if not logged in OR logged in but NOT customer
+                if (to === '/admin') {
+                  if (!user) {
+                    return (
+                      <Link
+                        key={to}
+                        to={to}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          padding: 'var(--spacing-sm) var(--spacing-md)',
+                          borderRadius: 'var(--radius-md)',
+                          fontSize: '0.875rem',
+                          fontWeight: '500',
+                          textDecoration: 'none',
+                          transition: 'all 0.2s ease',
+                          gap: 'var(--spacing-sm)',
+                          backgroundColor: location.pathname === to ? 'var(--primary-blue-light)' : 'transparent',
+                          color: location.pathname === to ? 'var(--primary-blue-dark)' : 'var(--text-secondary)',
+                        }}
+                        onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}
+                      >
+                        {Icon && <Icon size={16} />}
+                        {label}
+                      </Link>
+                    );
+                  }
+                  return null; // Hide if logged in as customer
+                }
+
+                // Show profile link only if user is logged in
+                if (to === '/auth/profile' && !user) {
+                  return null;
+                }
+
+                // Render other links normally
                 return (
                   <Link
                     key={to}
@@ -76,31 +136,96 @@ const Navigation: React.FC = () => {
                       padding: 'var(--spacing-sm) var(--spacing-md)',
                       borderRadius: 'var(--radius-md)',
                       fontSize: '0.875rem',
-                      fontWeight: 500,
+                      fontWeight: '500',
                       textDecoration: 'none',
                       transition: 'all 0.2s ease',
                       gap: 'var(--spacing-sm)',
-                      backgroundColor: active ? 'var(--primary-blue-light)' : 'transparent',
-                      color: active ? 'var(--primary-blue-dark)' : 'var(--text-secondary)'
+                      backgroundColor: location.pathname === to ? 'var(--primary-blue-light)' : 'transparent',
+                      color: location.pathname === to ? 'var(--primary-blue-dark)' : 'var(--text-secondary)',
                     }}
-                    onMouseEnter={(e) => {
-                      if (!active) {
-                        e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
-                        e.currentTarget.style.color = 'var(--text-primary)';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!active) {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                        e.currentTarget.style.color = 'var(--text-secondary)';
-                      }
-                    }}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
                   >
-                    <Icon size={16} />
+                    {Icon && <Icon size={16} />}
                     {label}
                   </Link>
                 );
               })}
+
+              {/* Login & Signup shown only if NOT logged in */}
+              {!user && (
+                <>
+                  <Link
+                    to="/auth/login"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: 'var(--spacing-sm) var(--spacing-md)',
+                      borderRadius: 'var(--radius-md)',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      textDecoration: 'none',
+                      transition: 'all 0.2s ease',
+                      gap: 'var(--spacing-sm)',
+                      backgroundColor: location.pathname === '/auth/login' ? 'var(--primary-blue-light)' : 'transparent',
+                      color: location.pathname === '/auth/login' ? 'var(--primary-blue-dark)' : 'var(--text-secondary)',
+                    }}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    <LogIn size={16} />
+                    Login
+                  </Link>
+
+                  <Link
+                    to="/auth/signup"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: 'var(--spacing-sm) var(--spacing-md)',
+                      borderRadius: 'var(--radius-md)',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      textDecoration: 'none',
+                      transition: 'all 0.2s ease',
+                      gap: 'var(--spacing-sm)',
+                      backgroundColor: location.pathname === '/auth/signup' ? 'var(--primary-blue-light)' : 'transparent',
+                      color: location.pathname === '/auth/signup' ? 'var(--primary-blue-dark)' : 'var(--text-secondary)',
+                    }}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    <User size={16} />
+                    Signup
+                  </Link>
+                </>
+              )}
+
+              {/* Logout button shown only if logged in */}
+              {user && (
+                <button
+                  onClick={handleLogout}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: 'var(--spacing-sm) var(--spacing-md)',
+                    borderRadius: 'var(--radius-md)',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    textDecoration: 'none',
+                    gap: 'var(--spacing-sm)',
+                    backgroundColor: 'transparent',
+                    color: 'var(--text-secondary)',
+                    cursor: 'pointer',
+                  }}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <LogOut size={16} />
+                  Logout
+                </button>
+              )}
+
             </div>
           </div>
         </div>
@@ -115,24 +240,34 @@ const Navigation: React.FC = () => {
  */
 function App() {
   return (
-    <CartProvider>
-      <Router>
-        <div className="App">
-          {/* Global navigation header */}
-          <Navigation />
-          {/* Application routes */}
-          <Routes>
-            <Route path="/*" element={<ProductCatalogue />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/delivery" element={<DeliveryInterface />} />
-            <Route path="/support" element={<FAQ />} /> {/* ← 新增：FAQ 路由 */}
-            <Route path="/support/chat" element={<LiveChat />} />
-          </Routes>
-        </div>
-      </Router>
-    </CartProvider>
+    <AuthProvider>
+      <CartProvider>
+        <Router>
+          <div className="App">
+            <Navigation />
+            <Routes>
+              <Route path="*" element={<ProductCatalogue />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route
+                path="/admin"
+                element={
+                    <AdminDashboard />
+                }
+              />
+              <Route path="/delivery" element={<DeliveryInterface />} />
+              <Route path="/auth/login" element={<Login />} />
+              <Route path="/auth/profile" element={<Profile />} />
+              <Route path="/auth/signup" element={<Signup />} />
+              <Route path="/edit-profile" element={<EditProfile />} />
+              <Route path="/orders/my-orders" element={<OrderHistory />} />
+              <Route path="/support" element={<FAQ />} />
+              <Route path="/support/chat" element={<LiveChat />} />
+            </Routes>
+          </div>
+        </Router>
+      </CartProvider>
+    </AuthProvider>
   );
 }
 
