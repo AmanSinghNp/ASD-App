@@ -1,14 +1,7 @@
-/**
- * Checkout Component
- * Author: Aman Singh (Student ID: 25104201)
- * Feature: F008 - Delivery
- * Description: Checkout process with delivery method selection, address validation, and time slot booking
- * Last Updated: 2025-10-22
- */
-
 import React, { useMemo, useState, useEffect } from "react";
 import "./Checkout.css";
 import { useCartContext } from "./context/CartContext";
+import { useAuth } from "./context/AuthContext";
 
 interface DeliverySlot {
   slotStart: string;
@@ -17,6 +10,7 @@ interface DeliverySlot {
 }
 
 const Checkout: React.FC = () => {
+  const { user } = useAuth();
   const {
     cartItems,
     removeFromCart,
@@ -28,7 +22,7 @@ const Checkout: React.FC = () => {
     firstName: "",
     lastName: "",
     phone: "",
-    email: "",
+    email: user?.email || "", // Pre-fill from user
     addressLine1: "",
     suburb: "",
     state: "",
@@ -214,6 +208,16 @@ const Checkout: React.FC = () => {
       setLoading(false);
     }
   };
+
+  if (!user) {
+    return (
+      <div className="not-logged-in">
+        <h2>Please log in to proceed with your purchase.</h2>
+        <p>You must be signed in to checkout and place an order.</p>
+        <a href="/auth/login" className="login-link">Go to Login</a>
+      </div>
+    );
+  }
 
   if (orderResult) {
     return (
