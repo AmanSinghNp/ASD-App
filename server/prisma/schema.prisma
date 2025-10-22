@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -21,16 +15,15 @@ model User {
   role         String   @default("CUSTOMER")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-
-  carts Cart[]
-  orders Order[]
+  carts        Cart[]
+  orders       Order[]
   stockHistory StockHistory[]
 
   @@map("users")
 }
 
 model Product {
-  id          String   @id @default(cuid())
+  id          String   @id // Will be set manually using SKU-based format
   sku         String   @unique
   name        String
   category    String
@@ -49,35 +42,33 @@ model Product {
 }
 
 model Cart {
-  id        String   @id @default(cuid())
+  id        String     @id @default(cuid())
   userId    String
-  status    String   @default("OPEN")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items CartItem[]
+  status    String     @default("OPEN")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  items     CartItem[]
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("carts")
 }
 
 model CartItem {
-  id        String @id @default(cuid())
+  id        String   @id @default(cuid())
   cartId    String
   productId String
   quantity  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  cart    Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
 
   @@unique([cartId, productId])
   @@map("cart_items")
 }
 
 model Order {
-  id             String      @id @default(cuid())
+  id             String      @id
   userId         String?
   deliveryMethod String
   addressLine1   String?
@@ -101,14 +92,14 @@ model Order {
 }
 
 model OrderItem {
-  id             String   @id @default(cuid())
+  id             String  @id @default(cuid())
   orderId        String
   productId      String
   nameAtPurchase String
   priceCents     Int
   quantity       Int
-  order          Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product        Product  @relation(fields: [productId], references: [id])
+  product        Product @relation(fields: [productId], references: [id])
+  order          Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@map("order_items")
 }

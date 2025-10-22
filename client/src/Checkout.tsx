@@ -1,3 +1,11 @@
+/**
+ * Checkout Component
+ * Author: Aman Singh (Student ID: 25104201)
+ * Feature: F008 - Delivery
+ * Description: Checkout process with delivery method selection, address validation, and time slot booking
+ * Last Updated: 2025-10-22
+ */
+
 import React, { useMemo, useState, useEffect } from "react";
 import "./Checkout.css";
 import { useCartContext } from "./context/CartContext";

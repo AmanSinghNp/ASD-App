@@ -9,6 +9,7 @@ import ProductCatalogue from './ProductCatalogue';
 import Cart from './components/Cart';
 import Checkout from './Checkout';
 import FAQ from './pages/FAQ'; 
+import LiveChat from './pages/LiveChat';
 import { Settings, Truck, ShoppingCart, Package, User, LogIn, Edit, LogOut, HelpCircle } from 'lucide-react';
 import './App.css';
 import Login from './pages/Login';
@@ -223,6 +224,7 @@ function App() {
               <Route path="/edit-profile" element={<EditProfile />} />
               <Route path="/orders/my-orders" element={<OrderHistory />}></Route>
               <Route path="/support" element={<FAQ />} /> {/* ← 新增：FAQ 路由 */}
+              <Route path="/support/chat" element={<LiveChat />} />
             </Routes>
           </div>
         </Router>

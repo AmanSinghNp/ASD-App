@@ -2,7 +2,6 @@ import React from 'react';
 import { useCartContext } from '../context/CartContext';
 import { useProductCatalogue } from '../hooks/useProductCatalogue';
 import ProductCard from './ProductCard';
-import { useNavigate } from 'react-router-dom';
 
 const ProductList: React.FC = () => {
   const {
@@ -13,50 +12,60 @@ const ProductList: React.FC = () => {
     sortOption,
     setSortOption,
     searchQuery,
-    setSearchQuery
+    setSearchQuery,
   } = useProductCatalogue();
   const { addToCart } = useCartContext();
-  const navigate = useNavigate();
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      
+    <div className="container" style={{ padding: 'var(--spacing-2xl) 0' }}>
+      <h2 style={{ color: 'var(--text-primary)', marginBottom: 'var(--spacing-lg)', fontSize: '1.5rem', fontWeight: 600 }}>
+        Product Catalogue
+      </h2>
+
       {/* Filters Section */}
-      <div style={{ 
-        display: 'flex', 
-        flexWrap: 'wrap', 
-        gap: '15px', 
-        marginBottom: '20px',
-        alignItems: 'center'
-      }}>
+      <div
+        className="filters"
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 'var(--spacing-md)',
+          marginBottom: 'var(--spacing-lg)',
+          alignItems: 'center',
+        }}
+      >
         {/* Category Filter */}
         <div>
-          <label htmlFor="category" style={{ marginRight: '8px' }}>Category: </label>
-          <select 
+          <label htmlFor="category" style={{ marginRight: '8px' }}>
+            Category:
+          </label>
+          <select
             id="category"
-            value={selectedCategory} 
+            value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
+            style={{ padding: '8px', borderRadius: '4px', border: '1px solid var(--border-color)' }}
           >
             <option value="all">All Categories</option>
-            {categories.map(category => (
+            {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
               </option>
             ))}
           </select>
         </div>
+
         {/* Sort Filter */}
         <div>
-          <label htmlFor="sort" style={{ marginRight: '8px' }}>Sort by: </label>
-          <select 
+          <label htmlFor="sort" style={{ marginRight: '8px' }}>
+            Sort by:
+          </label>
+          <select
             id="sort"
             value={`${sortOption.by}-${sortOption.ascending ? 'asc' : 'desc'}`}
             onChange={(e) => {
               const [by, direction] = e.target.value.split('-');
               setSortOption({ by, ascending: direction === 'asc' });
             }}
-            style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
+            style={{ padding: '8px', borderRadius: '4px', border: '1px solid var(--border-color)' }}
           >
             <option value="name-asc">Name (A-Z)</option>
             <option value="name-desc">Name (Z-A)</option>
@@ -64,24 +73,27 @@ const ProductList: React.FC = () => {
             <option value="price-desc">Price (High to Low)</option>
           </select>
         </div>
+
         {/* Search Filter */}
         <div>
-          <label htmlFor="search" style={{ marginRight: '8px' }}>Search: </label>
+          <label htmlFor="search" style={{ marginRight: '8px' }}>
+            Search:
+          </label>
           <input
             id="search"
             type="text"
             placeholder="Search products..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
+            style={{ padding: '8px', borderRadius: '4px', border: '1px solid var(--border-color)' }}
           />
         </div>
       </div>
 
       {/* Results Count */}
-      <p style={{ marginBottom: '15px', color: '#666' }}>
+      <p style={{ marginBottom: 'var(--spacing-md)', color: 'var(--text-secondary)' }}>
         Showing {products.length} product{products.length !== 1 ? 's' : ''}
-        {selectedCategory !== 'all' && ` in ${categories.find(c => c.id === selectedCategory)?.name}`}
+        {selectedCategory !== 'all' && ` in ${categories.find((c) => c.id === selectedCategory)?.name ?? ''}`}
         {searchQuery && ` matching "${searchQuery}"`}
       </p>
 
@@ -89,23 +101,24 @@ const ProductList: React.FC = () => {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: '20px',
-          justifyItems: 'start',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: 'var(--spacing-lg)',
         }}
       >
         {products.length > 0 ? (
-          products.map(product => (
+          products.map((product) => (
             <ProductCard key={product.id} product={product} onAddToCart={addToCart} />
           ))
         ) : (
-          <div style={{
-            gridColumn: '1 / -1',
-            textAlign: 'center',
-            padding: '40px',
-          }}>
+          <div
+            style={{
+              gridColumn: '1 / -1',
+              textAlign: 'center',
+              padding: '40px',
+            }}
+          >
             <h3>No products found</h3>
-            <p>Try adjusting your filters or search term</p>
+            <p>Try adjusting your filters or search term.</p>
           </div>
         )}
       </div>

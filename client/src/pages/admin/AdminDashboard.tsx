@@ -1,3 +1,11 @@
+/**
+ * Admin Dashboard Component
+ * Author: Aman Singh (Student ID: 25104201)
+ * Feature: F007 - Admin Dashboard
+ * Description: Main admin interface for product management, analytics, and admin operations
+ * Last Updated: 2025-10-22
+ */
+
 import React, { useState, useEffect } from 'react';
 import { Plus, Search } from 'lucide-react';
 import { ProductTable } from '../../components/admin/ProductTable';
@@ -20,6 +28,10 @@ export const AdminDashboard: React.FC = () => {
   const [productToRemove, setProductToRemove] = useState<string>('');
   const [analytics, setAnalytics] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [dateRange, setDateRange] = useState({
+    startDate: new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().split('T')[0],
+    endDate: new Date().toISOString().split('T')[0]
+  });
 
   // Load products and analytics on component mount
   useEffect(() => {
@@ -27,15 +39,17 @@ export const AdminDashboard: React.FC = () => {
       try {
         setLoading(true);
         
-        // Fetch products
-        const productsResponse = await fetch('http://localhost:4000/api/products?includeHidden=true');
+        // Fetch products and analytics in parallel for faster loading
+        const [productsResponse, analyticsResponse] = await Promise.all([
+          fetch('http://localhost:4000/api/products?includeHidden=true'),
+          fetch(`http://localhost:4000/api/analytics?from=${dateRange.startDate}&to=${dateRange.endDate}`)
+        ]);
+        
         const productsData = await productsResponse.json();
         if (productsData.data) {
           setProducts(productsData.data);
         }
         
-        // Fetch analytics
-        const analyticsResponse = await fetch('http://localhost:4000/api/analytics');
         const analyticsData = await analyticsResponse.json();
         if (analyticsData.data) {
           setAnalytics(analyticsData.data);
@@ -48,7 +62,20 @@ export const AdminDashboard: React.FC = () => {
     };
     
     fetchData();
-  }, []);
+  }, [dateRange]);
+
+  // Function to refresh analytics with new date range
+  const refreshAnalytics = async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/analytics?from=${dateRange.startDate}&to=${dateRange.endDate}`);
+      const data = await response.json();
+      if (data.data) {
+        setAnalytics(data.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch analytics:', error);
+    }
+  };
 
   // Filter products based on search, category, and status
   useEffect(() => {
@@ -242,15 +269,96 @@ export const AdminDashboard: React.FC = () => {
             border: '1px solid var(--border-light)',
             marginBottom: 'var(--spacing-2xl)'
           }}>
-            <h2 style={{
-              fontSize: '1.5rem',
-              fontWeight: '700',
-              color: 'var(--text-primary)',
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
               marginBottom: 'var(--spacing-lg)',
-              margin: 0
+              flexWrap: 'wrap',
+              gap: 'var(--spacing-md)'
             }}>
-              Analytics (Last 7 Days)
-            </h2>
+              <h2 style={{
+                fontSize: '1.5rem',
+                fontWeight: '700',
+                color: 'var(--text-primary)',
+                margin: 0
+              }}>
+                Sales Analytics
+              </h2>
+              
+              {/* Date Range Selector */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--spacing-md)',
+                flexWrap: 'wrap'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
+                  <label style={{
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    color: 'var(--text-secondary)'
+                  }}>
+                    From:
+                  </label>
+                  <input
+                    type="date"
+                    value={dateRange.startDate}
+                    onChange={(e) => setDateRange({...dateRange, startDate: e.target.value})}
+                    style={{
+                      padding: 'var(--spacing-sm)',
+                      border: '1px solid var(--border-light)',
+                      borderRadius: 'var(--radius-md)',
+                      fontSize: '0.875rem'
+                    }}
+                  />
+                </div>
+                
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
+                  <label style={{
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    color: 'var(--text-secondary)'
+                  }}>
+                    To:
+                  </label>
+                  <input
+                    type="date"
+                    value={dateRange.endDate}
+                    onChange={(e) => setDateRange({...dateRange, endDate: e.target.value})}
+                    style={{
+                      padding: 'var(--spacing-sm)',
+                      border: '1px solid var(--border-light)',
+                      borderRadius: 'var(--radius-md)',
+                      fontSize: '0.875rem'
+                    }}
+                  />
+                </div>
+                
+                <button
+                  onClick={refreshAnalytics}
+                  style={{
+                    padding: 'var(--spacing-sm) var(--spacing-md)',
+                    backgroundColor: 'var(--primary-blue)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: 'var(--radius-md)',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'var(--primary-blue-hover)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'var(--primary-blue)';
+                  }}
+                >
+                  Refresh
+                </button>
+              </div>
+            </div>
             
             {/* KPIs */}
             <div style={{
