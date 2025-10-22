@@ -2,6 +2,17 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+// Function to generate order ID
+let orderCounter = 1;
+function generateOrderId(): string {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const counter = String(orderCounter++).padStart(3, '0');
+  return `ORD-${year}${month}${day}-${counter}`;
+}
+
 async function main() {
   console.log("Starting database seeding...");
 
@@ -37,6 +48,7 @@ async function main() {
 
     const productData = [
       {
+        id: "PROD-APL-001",
         sku: "APL-001",
         name: "Apple Gala 1kg",
         category: "Fruits",
@@ -44,6 +56,7 @@ async function main() {
         stockQty: 120,
       },
       {
+        id: "PROD-MLK-002",
         sku: "MLK-002",
         name: "Milk 2L",
         category: "Dairy",
@@ -51,6 +64,7 @@ async function main() {
         stockQty: 80,
       },
       {
+        id: "PROD-BRC-003",
         sku: "BRC-003",
         name: "Brown Rice 5kg",
         category: "Pantry",
@@ -58,6 +72,7 @@ async function main() {
         stockQty: 40,
       },
       {
+        id: "PROD-BAN-004",
         sku: "BAN-004",
         name: "Banana Bunch",
         category: "Fruits",
@@ -65,6 +80,7 @@ async function main() {
         stockQty: 200,
       },
       {
+        id: "PROD-BREAD-005",
         sku: "BREAD-005",
         name: "Whole Wheat Bread",
         category: "Bakery",
@@ -72,6 +88,7 @@ async function main() {
         stockQty: 60,
       },
       {
+        id: "PROD-EGG-006",
         sku: "EGG-006",
         name: "Free Range Eggs 12pk",
         category: "Dairy",
@@ -79,6 +96,7 @@ async function main() {
         stockQty: 50,
       },
       {
+        id: "PROD-CHK-007",
         sku: "CHK-007",
         name: "Chicken Breast 1kg",
         category: "Meat",
@@ -86,6 +104,7 @@ async function main() {
         stockQty: 30,
       },
       {
+        id: "PROD-CAR-008",
         sku: "CAR-008",
         name: "Carrots 1kg",
         category: "Vegetables",
@@ -93,6 +112,7 @@ async function main() {
         stockQty: 100,
       },
       {
+        id: "PROD-POT-009",
         sku: "POT-009",
         name: "Potatoes 2kg",
         category: "Vegetables",
@@ -100,6 +120,7 @@ async function main() {
         stockQty: 75,
       },
       {
+        id: "PROD-ONI-010",
         sku: "ONI-010",
         name: "Onions 1kg",
         category: "Vegetables",
@@ -213,6 +234,7 @@ async function main() {
       // Create order
       const order = await prisma.order.create({
         data: {
+          id: generateOrderId(),
           userId: customerUser.id,
           deliveryMethod: "Delivery",
           addressLine1: address.line1,
@@ -293,6 +315,7 @@ async function main() {
     // Create order
     const order = await prisma.order.create({
       data: {
+        id: generateOrderId(),
         userId: customerUser.id,
         deliveryMethod: "Delivery",
         addressLine1: address.line1,

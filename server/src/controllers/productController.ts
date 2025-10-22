@@ -1,5 +1,14 @@
+/**
+ * Product Management Controller
+ * Author: Aman Singh (Student ID: 25104201)
+ * Feature: F007 - Admin Dashboard
+ * Description: Handles product CRUD operations, validation, and admin product management
+ * Last Updated: 2025-10-22
+ */
+
 import type { Request, Response } from "express";
 import prisma from "../utils/database";
+import { cache } from "../utils/cache";
 
 /**
  * GET /api/products?includeHidden=false
@@ -68,6 +77,9 @@ export const createProduct = async (req: Request, res: Response) => {
       },
     });
 
+    // Clear analytics cache when products are modified
+    cache.clear();
+
     res.status(201).json({ data: product });
   } catch (error: any) {
     // Handle unique constraint violations (duplicate SKU)
@@ -128,6 +140,9 @@ export const updateProduct = async (req: Request, res: Response) => {
       },
     });
 
+    // Clear analytics cache when products are modified
+    cache.clear();
+
     res.json({ data: product });
   } catch (error: any) {
     // Handle different error types
@@ -156,6 +171,9 @@ export const hideProduct = async (req: Request, res: Response) => {
       where: { id },
       data: { isActive: false },
     });
+
+    // Clear analytics cache when products are modified
+    cache.clear();
 
     res.json({ data: product });
   } catch (error: any) {

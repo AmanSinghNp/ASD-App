@@ -1,3 +1,11 @@
+/**
+ * Checkout Component
+ * Author: Aman Singh (Student ID: 25104201)
+ * Feature: F008 - Delivery
+ * Description: Checkout process with delivery method selection, address validation, and time slot booking
+ * Last Updated: 2025-10-22
+ */
+
 import React, { useMemo, useState, useEffect } from "react";
 import "./Checkout.css";
 import { useCartContext } from "./context/CartContext";
@@ -145,6 +153,11 @@ const Checkout: React.FC = () => {
     setLoading(true);
 
     try {
+      console.log("Submitting items:", cartItems.map((ci: { product: { id: any; }; quantity: any; }) => ({
+        productId: ci.product.id,
+        quantity: ci.quantity
+      })));
+
       const orderData = {
         items: cartItems.map((ci: any) => ({
           productId: ci.product.id,
@@ -168,6 +181,8 @@ const Checkout: React.FC = () => {
         }),
       };
 
+      console.log("Order Payload:", orderData);
+
       const token = localStorage.getItem("token");
 
       const response = await fetch("http://localhost:4000/api/orders", {
@@ -180,6 +195,7 @@ const Checkout: React.FC = () => {
       });
 
       const result = await response.json();
+      console.log("Order API result:", result);
       if (result.data) {
         setOrderResult({
           orderId: result.data.orderId,
@@ -302,7 +318,7 @@ const Checkout: React.FC = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+              pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
             />
             <input
               type="tel"
