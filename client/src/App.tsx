@@ -213,7 +213,7 @@ function App() {
             <Navigation />
             {/* Application routes */}
             <Routes>
-              <Route path="/" element={<ProductCatalogue />} />
+              <Route path="*" element={<ProductCatalogue />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/admin" element={<AdminDashboard />} />
