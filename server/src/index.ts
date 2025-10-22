@@ -14,6 +14,7 @@ import cartRoutes from "./routes/cartRoutes";
 import stockRoutes from "./routes/stockRoutes";
 import faqRoutes from "./routes/faqRoutes";
 import chatRoutes from "./routes/chatRoutes";
+import authRouter from "./routes/authRouter";
 
 // Load environment variables
 dotenv.config();
@@ -25,15 +26,26 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // --- Middleware Setup ---
-app.use(cors());
+// app.use(cors());
+
+app.use(cors({
+  origin: 'http://localhost:5173',  // Allow only your frontend domain
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],  // Specify allowed HTTP methods
+  allowedHeaders:["Content-Type", "Authorization"], 
+  credentials: true,  // Allow cookies to be sent with requests (if needed)
+}));
+
+// Handle all OPTIONS requests
+app.options('*', cors({
+  origin: 'http://localhost:5173',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
+
 app.use(express.json());
 
 // --- Routes Setup ---
-
-// Health check route
-app.get("/", (_, res) => {
-  res.send("Welcome to the Supermarket API!");
-});
 
 // API Routes
 app.use("/api/products", productRoutes);
@@ -45,6 +57,12 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/stock", stockRoutes);
 app.use("/api/faqs", faqRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/auth", authRouter);
+
+// Health check route
+app.get("/", (_, res) => {
+  res.send("Welcome to the Supermarket API!");
+});
 
 // --- Server Start ---
 app.listen(PORT, () => {

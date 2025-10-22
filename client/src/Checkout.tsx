@@ -1,14 +1,7 @@
-/**
- * Checkout Component
- * Author: Aman Singh (Student ID: 25104201)
- * Feature: F008 - Delivery
- * Description: Checkout process with delivery method selection, address validation, and time slot booking
- * Last Updated: 2025-10-22
- */
-
 import React, { useMemo, useState, useEffect } from "react";
 import "./Checkout.css";
 import { useCartContext } from "./context/CartContext";
+import { useAuth } from "./context/AuthContext";
 
 interface DeliverySlot {
   slotStart: string;
@@ -17,13 +10,19 @@ interface DeliverySlot {
 }
 
 const Checkout: React.FC = () => {
-  const { cartItems, removeFromCart, totalPrice: ctxTotalPrice } = useCartContext();
+  const { user } = useAuth();
+  const {
+    cartItems,
+    removeFromCart,
+    updateQuantity,
+    totalPrice: ctxTotalPrice,
+  } = useCartContext();
 
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     phone: "",
-    email: "",
+    email: user?.email || "", // Pre-fill from user
     addressLine1: "",
     suburb: "",
     state: "",
@@ -40,7 +39,10 @@ const Checkout: React.FC = () => {
 
   const getPriceCents = (product: any): number => {
     if (!product) return 0;
-    if (typeof product.priceCents !== "undefined" && product.priceCents !== null) {
+    if (
+      typeof product.priceCents !== "undefined" &&
+      product.priceCents !== null
+    ) {
       const n = Number(product.priceCents);
       if (!Number.isNaN(n)) return Math.round(n);
     }
@@ -52,28 +54,39 @@ const Checkout: React.FC = () => {
   };
 
   const subtotalCents = useMemo(() => {
-    return cartItems.reduce((sum, item) => {
-      const priceCents = getPriceCents(item.product);
-      const qty = Number(item.quantity) || 0;
-      return sum + priceCents * qty;
-    }, 0);
+    return cartItems.reduce(
+      (sum: number, item: { product: any; quantity: any }) => {
+        const priceCents = getPriceCents(item.product);
+        const qty = Number(item.quantity) || 0;
+        return sum + priceCents * qty;
+      },
+      0
+    );
   }, [cartItems]);
 
-  const [deliveryMethod, setDeliveryMethod] = useState<"Delivery" | "Pickup">("Delivery");
+  const [deliveryMethod, setDeliveryMethod] = useState<"Delivery" | "Pickup">(
+    "Delivery"
+  );
   const [deliverySlots, setDeliverySlots] = useState<DeliverySlot[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<DeliverySlot | null>(null);
 
   const [addressError, setAddressError] = useState("");
-  const [orderResult, setOrderResult] = useState<{ orderId: string; status: string } | null>(null);
+  const [orderResult, setOrderResult] = useState<{
+    orderId: string;
+    status: string;
+  } | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const totalCents = subtotalCents + (deliveryMethod === "Delivery" ? shippingPriceCents : 0);
+  const totalCents =
+    subtotalCents + (deliveryMethod === "Delivery" ? shippingPriceCents : 0);
 
   useEffect(() => {
     const fetchDeliverySlots = async () => {
       try {
         const today = new Date().toISOString().split("T")[0];
-        const response = await fetch(`http://localhost:4000/api/delivery/slots?date=${today}`);
+        const response = await fetch(
+          `http://localhost:4000/api/delivery/slots?date=${today}`
+        );
         const data = await response.json();
         if (data.data) {
           setDeliverySlots(data.data);
@@ -97,16 +110,19 @@ const Checkout: React.FC = () => {
     if (deliveryMethod !== "Delivery") return true;
 
     try {
-      const response = await fetch("http://localhost:4000/api/delivery/validate-address", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          addressLine1: formData.addressLine1,
-          suburb: formData.suburb,
-          state: formData.state,
-          postcode: formData.postcode,
-        }),
-      });
+      const response = await fetch(
+        "http://localhost:4000/api/delivery/validate-address",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            addressLine1: formData.addressLine1,
+            suburb: formData.suburb,
+            state: formData.state,
+            postcode: formData.postcode,
+          }),
+        }
+      );
 
       const result = await response.json();
       if (!result.valid) {
@@ -134,9 +150,14 @@ const Checkout: React.FC = () => {
     setLoading(true);
 
     try {
+      console.log("Submitting items:", cartItems.map((ci: { product: { id: any; }; quantity: any; }) => ({
+        productId: ci.product.id,
+        quantity: ci.quantity
+      })));
+
       const orderData = {
         items: cartItems.map((ci: any) => ({
-          productId: ci.product.id,
+          productId: String(ci.product.id),
           quantity: Number(ci.quantity) || 0,
         })),
         deliveryMethod,
@@ -157,15 +178,26 @@ const Checkout: React.FC = () => {
         }),
       };
 
+      console.log("Order Payload:", orderData);
+
+      const token = localStorage.getItem("token");
+
       const response = await fetch("http://localhost:4000/api/orders", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(orderData),
       });
 
       const result = await response.json();
+      console.log("Order API result:", result);
       if (result.data) {
-        setOrderResult({ orderId: result.data.orderId, status: result.data.status });
+        setOrderResult({
+          orderId: result.data.orderId,
+          status: result.data.status,
+        });
       } else {
         alert("Failed to create order: " + (result.error || "Unknown error"));
       }
@@ -177,17 +209,36 @@ const Checkout: React.FC = () => {
     }
   };
 
+  if (!user) {
+    return (
+      <div className="not-logged-in">
+        <h2>Please log in to proceed with your purchase.</h2>
+        <p>You must be signed in to checkout and place an order.</p>
+        <a href="/auth/login" className="login-link">Go to Login</a>
+      </div>
+    );
+  }
+
   if (orderResult) {
     return (
       <div className="checkout-page">
         <div className="order-success">
           <h2>Order Placed Successfully!</h2>
           <div className="order-details">
-            <p><strong>Order ID:</strong> {orderResult.orderId}</p>
-            <p><strong>Status:</strong> {orderResult.status}</p>
-            <p><strong>Delivery Method:</strong> {deliveryMethod}</p>
+            <p>
+              <strong>Order ID:</strong> {orderResult.orderId}
+            </p>
+            <p>
+              <strong>Status:</strong> {orderResult.status}
+            </p>
+            <p>
+              <strong>Delivery Method:</strong> {deliveryMethod}
+            </p>
             {deliveryMethod === "Delivery" && selectedSlot && (
-              <p><strong>Delivery Slot:</strong> {new Date(selectedSlot.slotStart).toLocaleString()}</p>
+              <p>
+                <strong>Delivery Slot:</strong>{" "}
+                {new Date(selectedSlot.slotStart).toLocaleString()}
+              </p>
             )}
           </div>
           <button
@@ -219,7 +270,9 @@ const Checkout: React.FC = () => {
                 name="deliveryMethod"
                 value="Delivery"
                 checked={deliveryMethod === "Delivery"}
-                onChange={(e) => setDeliveryMethod(e.target.value as "Delivery" | "Pickup")}
+                onChange={(e) =>
+                  setDeliveryMethod(e.target.value as "Delivery" | "Pickup")
+                }
               />
               <span>Delivery</span>
             </label>
@@ -229,7 +282,9 @@ const Checkout: React.FC = () => {
                 name="deliveryMethod"
                 value="Pickup"
                 checked={deliveryMethod === "Pickup"}
-                onChange={(e) => setDeliveryMethod(e.target.value as "Delivery" | "Pickup")}
+                onChange={(e) =>
+                  setDeliveryMethod(e.target.value as "Delivery" | "Pickup")
+                }
               />
               <span>Pickup</span>
             </label>
@@ -244,7 +299,10 @@ const Checkout: React.FC = () => {
               name="firstName"
               placeholder="First Name"
               value={formData.firstName}
-              onChange={handleChange}
+              onChange={(e) => {
+                const val = e.target.value.replace(/[^a-zA-Z]/g, "");
+                setFormData({ ...formData, firstName: val });
+              }}
               required
             />
 
@@ -252,7 +310,10 @@ const Checkout: React.FC = () => {
               name="lastName"
               placeholder="Last Name"
               value={formData.lastName}
-              onChange={handleChange}
+              onChange={(e) => {
+                const val = e.target.value.replace(/[^a-zA-Z]/g, "");
+                setFormData({ ...formData, lastName: val });
+              }}
               required
             />
           </div>
@@ -264,13 +325,19 @@ const Checkout: React.FC = () => {
               value={formData.email}
               onChange={handleChange}
               required
+              pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$"
             />
             <input
               type="tel"
               name="phone"
               placeholder="Phone Number"
+              maxLength={10}
               value={formData.phone}
-              onChange={handleChange}
+              onChange={(e) => {
+                let val = e.target.value.replace(/\D/g, "");
+                val = val.substring(0, 10);
+                setFormData({ ...formData, phone: val });
+              }}
               required
             />
           </div>
@@ -326,7 +393,10 @@ const Checkout: React.FC = () => {
               />
             </div>
             {addressError && (
-              <div className="error-message" style={{ color: "red", fontSize: "14px", marginTop: "8px" }}>
+              <div
+                className="error-message"
+                style={{ color: "red", fontSize: "14px", marginTop: "8px" }}
+              >
                 {addressError}
               </div>
             )}
@@ -348,9 +418,18 @@ const Checkout: React.FC = () => {
                     disabled={slot.remaining === 0}
                   />
                   <span>
-                    {new Date(slot.slotStart).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} -
-                    {new Date(slot.slotEnd).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                    {slot.remaining === 0 ? " (Full)" : ` (${slot.remaining} available)`}
+                    {new Date(slot.slotStart).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}{" "}
+                    -
+                    {new Date(slot.slotEnd).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                    {slot.remaining === 0
+                      ? " (Full)"
+                      : ` (${slot.remaining} available)`}
                   </span>
                 </label>
               ))}
@@ -469,38 +548,155 @@ const Checkout: React.FC = () => {
         {cartItems.length === 0 ? (
           <p>Your cart is empty</p>
         ) : (
-          cartItems.map((item) => {
-            const priceCents = getPriceCents(item.product);
-            const lineTotal = (priceCents * (Number(item.quantity) || 0)) / 100;
-            return (
-              <div className="order-item" key={item.product.id}>
-                <div>
-                  <p>
-                    {item.product.name} x {item.quantity}
-                  </p>
-                  <span>${lineTotal.toFixed(2)}</span>
-                </div>
-                <button
-                  style={{ marginLeft: "10px" }}
-                  onClick={() => removeFromCart(item.product.id)}
-                >
-                  x
-                </button>
-              </div>
-            );
-          })
+          <>
+            {cartItems.map(
+              (item: {
+                product: {
+                  id: React.Key | null | undefined;
+                  name:
+                    | string
+                    | number
+                    | bigint
+                    | boolean
+                    | React.ReactElement<
+                        unknown,
+                        string | React.JSXElementConstructor<any>
+                      >
+                    | Iterable<React.ReactNode>
+                    | React.ReactPortal
+                    | Promise<
+                        | string
+                        | number
+                        | bigint
+                        | boolean
+                        | React.ReactPortal
+                        | React.ReactElement<
+                            unknown,
+                            string | React.JSXElementConstructor<any>
+                          >
+                        | Iterable<React.ReactNode>
+                        | null
+                        | undefined
+                      >
+                    | null
+                    | undefined;
+                };
+                quantity: any;
+              }) => {
+                const priceCents = getPriceCents(item.product);
+                const unitPrice = priceCents / 100;
+                const qty = Number(item.quantity) || 0;
+
+                const handleIncrease = () => {
+                  const newQty = qty + 1;
+                  updateQuantity(item.product.id, newQty);
+                };
+
+                const handleDecrease = () => {
+                  if (qty > 1) {
+                    updateQuantity(item.product.id, qty - 1);
+                  } else {
+                    removeFromCart(item.product.id);
+                  }
+                };
+
+                return (
+                  <div
+                    className="order-item"
+                    key={item.product.id}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    <div>
+                      <p style={{ margin: "0", fontWeight: "bold" }}>
+                        {item.product.name}
+                      </p>
+                      <p style={{ margin: "4px 0" }}>${unitPrice.toFixed(2)}</p>
+                    </div>
+
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <button
+                        onClick={handleDecrease}
+                        style={{
+                          border: "none",
+                          background: "#eee",
+                          padding: "4px 8px",
+                          cursor: "pointer",
+                          borderRadius: "4px",
+                          marginRight: "6px",
+                        }}
+                      >
+                        -
+                      </button>
+                      {qty}
+                      <button
+                        onClick={handleIncrease}
+                        style={{
+                          border: "none",
+                          background: "#eee",
+                          padding: "4px 8px",
+                          cursor: "pointer",
+                          borderRadius: "4px",
+                          marginLeft: "6px",
+                        }}
+                      >
+                        +
+                      </button>
+                      <button
+                        onClick={() => removeFromCart(item.product.id)}
+                        style={{
+                          marginLeft: "10px",
+                          background: "none",
+                          border: "none",
+                          color: "red",
+                          cursor: "pointer",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        x
+                      </button>
+                    </div>
+                  </div>
+                );
+              }
+            )}
+
+            {/* Summary Section */}
+            <div className="summary-details" style={{ marginTop: "20px" }}>
+              {(() => {
+                const subtotal = cartItems.reduce(
+                  (sum: number, item: { product: any; quantity: any }) => {
+                    const priceCents = getPriceCents(item.product);
+                    return sum + priceCents * (Number(item.quantity) || 0);
+                  },
+                  0
+                );
+
+                const shipping =
+                  deliveryMethod === "Delivery" ? shippingPriceCents : 0;
+                const total = subtotal + shipping;
+
+                return (
+                  <>
+                    <p>
+                      Subtotal: <span>${(subtotal / 100).toFixed(2)}</span>
+                    </p>
+                    <p>
+                      Shipping: <span>${(shipping / 100).toFixed(2)}</span>
+                    </p>
+                    <h4 style={{ color: "Black" }}>
+                      Total: <span>${(total / 100).toFixed(2)}</span>
+                    </h4>
+                  </>
+                );
+              })()}
+            </div>
+          </>
         )}
-        <div className="summary-details">
-          <p>
-            Subtotal: <span>${(subtotalCents / 100).toFixed(2)}</span>
-          </p>
-          <p>
-            Shipping: <span>${(deliveryMethod === "Delivery" ? shippingPriceCents / 100 : 0).toFixed(2)}</span>
-          </p>
-          <h4>
-            Total: <span>${(totalCents / 100).toFixed(2)}</span>
-          </h4>
-        </div>
       </div>
     </div>
   );
