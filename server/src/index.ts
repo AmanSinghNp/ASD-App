@@ -26,22 +26,33 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 // --- Middleware Setup ---
-// app.use(cors());
+const allowedOriginsFromEnv = process.env.ALLOWED_ORIGINS?.split(",").map(s => s.trim()).filter(Boolean) || [];
+const defaultAllowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:5175",
+  "http://127.0.0.1:5173",
+  "http://127.0.0.1:5174",
+  "http://127.0.0.1:5175",
+];
+const allowedOrigins = [...new Set([...defaultAllowedOrigins, ...allowedOriginsFromEnv])];
 
-app.use(cors({
-  origin: 'http://localhost:5173',  // Allow only your frontend domain
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],  // Specify allowed HTTP methods
-  allowedHeaders:["Content-Type", "Authorization"], 
-  credentials: true,  // Allow cookies to be sent with requests (if needed)
-}));
-
-// Handle all OPTIONS requests
-app.options('*', cors({
-  origin: 'http://localhost:5173',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+const corsOptions = {
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
-}));
+};
+
+app.use(cors(corsOptions));
+
+app.options("*", cors(corsOptions));
 
 app.use(express.json());
 
