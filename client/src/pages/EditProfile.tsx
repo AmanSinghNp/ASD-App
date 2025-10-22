@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../Auth.css";
+import { apiFetch } from "../utils/api";
 
 interface Customer {
   id: number;
@@ -28,7 +29,7 @@ function EditProfile() {
       }
 
       try {
-        const response = await fetch("http://localhost:4000/api/auth/profile", {
+        const response = await apiFetch("/api/auth/profile", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -60,7 +61,7 @@ function EditProfile() {
     if (!token) return;
 
     try {
-      const response = await fetch("http://localhost:4000/api/auth/profile", {
+      const response = await apiFetch("/api/auth/profile", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

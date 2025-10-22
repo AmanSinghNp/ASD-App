@@ -1,5 +1,5 @@
 import express from "express";
-import { prisma } from "../index";
+import prisma from "../utils/database";
 import { requireAuth, requireAdmin } from "../middleware/auth";
 import { authenticate } from "../middleware/authMiddleware";
 import type { AuthRequest } from "../middleware/auth";
@@ -87,12 +87,22 @@ router.post("/", authenticate, async (req: AuthRequest, res) => {
     // Build OrderItem create array
     const orderItemsData = await Promise.all(
       items.map(async (item: any) => {
-        if (typeof item.productId !== "string" || typeof item.quantity !== "number") {
+        if ((typeof item.productId !== "string" && typeof item.productId !== "number") || typeof item.quantity !== "number") {
           throw new Error("Invalid item format");
         }
-        const product = await prisma.product.findUnique({ where: { id: item.productId } });
+
+        const rawId = String(item.productId);
+
+        // Try resolving by primary id first; if not found, try by SKU; as a last resort, try with 'PROD-' prefix
+        let product = await prisma.product.findUnique({ where: { id: rawId } });
         if (!product) {
-          throw new Error(`Product not found: ${item.productId}`);
+          product = await prisma.product.findUnique({ where: { sku: rawId } });
+        }
+        if (!product && !rawId.startsWith("PROD-")) {
+          product = await prisma.product.findUnique({ where: { id: `PROD-${rawId}` } });
+        }
+        if (!product) {
+          throw new Error(`Product not found: ${rawId}`);
         }
         return {
           productId: product.id,

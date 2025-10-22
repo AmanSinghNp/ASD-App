@@ -8,7 +8,7 @@ dotenv.config(); // load .env
 
 const router = express.Router();
 const prisma = new PrismaClient();
-const SECRET = process.env.JWT_SECRET!; // required
+const SECRET = process.env.JWT_SECRET || 'dev-secret'; // dev fallback
 
 // ===== SIGNUP ROUTE =====
 router.post("/signup", async (req, res) => {

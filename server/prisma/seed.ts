@@ -147,6 +147,49 @@ async function main() {
     console.log("Found existing products:", products.length);
   }
 
+  // Ensure additional catalogue items (to align with frontend mock data) exist
+  const additionalProducts = [
+    { sku: 'TEST-OUT-001', name: 'Dragon Fruit (Out of Stock)', category: 'Fruits', priceCents: 999, stockQty: 0 },
+    { sku: 'TEST-OUT-002', name: 'Seaweed Snack (Out of Stock)', category: 'Snacks', priceCents: 299, stockQty: 0 },
+    { sku: 'TOM-007', name: 'Tomatoes 1kg', category: 'Vegetables', priceCents: 340, stockQty: 110 },
+    { sku: 'CHS-008', name: 'Cheddar Cheese 500g', category: 'Dairy', priceCents: 850, stockQty: 50 },
+    { sku: 'CAR-009', name: 'Carrots 1kg', category: 'Vegetables', priceCents: 210, stockQty: 130 },
+    { sku: 'SNK-011', name: 'Potato Chips 200g', category: 'Snacks', priceCents: 350, stockQty: 150 },
+    { sku: 'DRK-012', name: 'Orange Juice 1L', category: 'Drinks', priceCents: 420, stockQty: 100 },
+    { sku: 'CLN-013', name: 'Laundry Detergent 2L', category: 'Cleaning', priceCents: 990, stockQty: 60 },
+    { sku: 'FRZ-014', name: 'Frozen Peas 500g', category: 'Frozen', priceCents: 270, stockQty: 80 },
+    { sku: 'BVG-015', name: 'Coffee Beans 1kg', category: 'Beverages', priceCents: 1590, stockQty: 40 },
+    { sku: 'YOG-016', name: 'Greek Yogurt 1kg', category: 'Dairy', priceCents: 690, stockQty: 70 },
+    { sku: 'AVO-017', name: 'Avocado 2 pack', category: 'Fruits', priceCents: 480, stockQty: 90 },
+    { sku: 'PAST-018', name: 'Pasta Penne 500g', category: 'Pantry', priceCents: 220, stockQty: 120 },
+    { sku: 'TUNA-019', name: 'Canned Tuna 185g', category: 'Pantry', priceCents: 180, stockQty: 200 },
+    { sku: 'ICE-020', name: 'Ice Cream Vanilla 1L', category: 'Frozen', priceCents: 650, stockQty: 60 },
+    { sku: 'BIS-021', name: 'Chocolate Biscuits 250g', category: 'Snacks', priceCents: 320, stockQty: 110 },
+    { sku: 'SPIN-022', name: 'Baby Spinach 120g', category: 'Vegetables', priceCents: 350, stockQty: 80 },
+    { sku: 'SALM-023', name: 'Salmon Fillet 250g', category: 'Meat', priceCents: 990, stockQty: 50 },
+    { sku: 'WATR-024', name: 'Spring Water 1.5L', category: 'Drinks', priceCents: 160, stockQty: 180 },
+    { sku: 'SOAP-025', name: 'Hand Soap 250ml', category: 'Cleaning', priceCents: 210, stockQty: 140 },
+  ];
+
+  console.log('Upserting additional products to match frontend catalogue...');
+  for (const p of additionalProducts) {
+    await prisma.product.upsert({
+      where: { sku: p.sku },
+      update: {},
+      create: {
+        id: `PROD-${p.sku}`,
+        sku: p.sku,
+        name: p.name,
+        category: p.category,
+        priceCents: p.priceCents,
+        stockQty: p.stockQty,
+        imageUrl: '',
+        isActive: true,
+      },
+    });
+  }
+  console.log('Additional products ensured.');
+
   // Create realistic delivery orders with varied statuses
   const today = new Date();
   const customerNames = [

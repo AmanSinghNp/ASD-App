@@ -6,7 +6,7 @@ import prisma from "../utils/database";
 
 dotenv.config();
 
-const SECRET = process.env.JWT_SECRET!;
+const SECRET = process.env.JWT_SECRET || 'dev-secret';
 
 /**
  * POST /api/users/signup

@@ -1,77 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="31" failures="0" errors="0" time="4.083">
-  <testsuite name="Delivery Controller" errors="0" failures="0" skipped="0" timestamp="2025-10-22T21:45:25" time="0.615" tests="2">
-    <testcase classname="Delivery Controller" name="should calculate delivery slots correctly" time="0.008">
-    </testcase>
-    <testcase classname="Delivery Controller" name="should validate address format correctly" time="0">
-    </testcase>
-  </testsuite>
-  <testsuite name="Auth Controller" errors="0" failures="0" skipped="0" timestamp="2025-10-22T21:45:26" time="0.07" tests="2">
-    <testcase classname="Auth Controller" name="should validate user credentials" time="0.002">
+<testsuites name="jest tests" tests="31" failures="0" errors="0" time="2.026">
+  <testsuite name="Auth Controller" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:49:49" time="0.19" tests="2">
+    <testcase classname="Auth Controller" name="should validate user credentials" time="0.003">
     </testcase>
     <testcase classname="Auth Controller" name="should create new user account" time="0.001">
     </testcase>
   </testsuite>
-  <testsuite name="Utility Functions" errors="0" failures="0" skipped="0" timestamp="2025-10-22T21:45:25" time="0.729" tests="5">
-    <testcase classname="Utility Functions › calculateTotal" name="calculates total for single item" time="0.025">
+  <testsuite name="Delivery Controller" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:49:49" time="0.192" tests="2">
+    <testcase classname="Delivery Controller" name="should calculate delivery slots correctly" time="0.005">
     </testcase>
-    <testcase classname="Utility Functions › calculateTotal" name="calculates total for multiple items" time="0.001">
+    <testcase classname="Delivery Controller" name="should validate address format correctly" time="0.001">
     </testcase>
-    <testcase classname="Utility Functions › calculateTotal" name="returns 0 for empty array" time="0.001">
+  </testsuite>
+  <testsuite name="Product Controller" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:49:49" time="0.185" tests="2">
+    <testcase classname="Product Controller" name="should return products list" time="0.003">
+    </testcase>
+    <testcase classname="Product Controller" name="should create a new product" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Utility Functions" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:49:49" time="0.187" tests="5">
+    <testcase classname="Utility Functions › calculateTotal" name="calculates total for single item" time="0.003">
+    </testcase>
+    <testcase classname="Utility Functions › calculateTotal" name="calculates total for multiple items" time="0">
+    </testcase>
+    <testcase classname="Utility Functions › calculateTotal" name="returns 0 for empty array" time="0">
     </testcase>
     <testcase classname="Utility Functions › validateEmail" name="validates correct email addresses" time="0.001">
     </testcase>
     <testcase classname="Utility Functions › validateEmail" name="rejects invalid email addresses" time="0.001">
     </testcase>
   </testsuite>
-  <testsuite name="Product Controller" errors="0" failures="0" skipped="0" timestamp="2025-10-22T21:45:26" time="0.925" tests="2">
-    <testcase classname="Product Controller" name="should return products list" time="0.015">
+  <testsuite name="Analytics Controller - F007 Admin Dashboard" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:49:49" time="1.624" tests="8">
+    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should calculate total revenue correctly" time="0.013">
     </testcase>
-    <testcase classname="Product Controller" name="should create a new product" time="0.001">
+    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should calculate order count" time="0.001">
     </testcase>
-  </testsuite>
-  <testsuite name="Analytics Controller - F007 Admin Dashboard" errors="0" failures="0" skipped="0" timestamp="2025-10-22T21:45:25" time="3.035" tests="8">
-    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should calculate total revenue correctly" time="0.027">
+    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should calculate average order value correctly" time="0.001">
     </testcase>
-    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should calculate order count" time="0.002">
-    </testcase>
-    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should calculate average order value correctly" time="0.003">
-    </testcase>
-    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should handle zero orders gracefully" time="0.001">
+    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should handle zero orders gracefully" time="0">
     </testcase>
     <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should return top products by quantity" time="0.001">
     </testcase>
     <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should return revenue by day" time="0">
     </testcase>
-    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should use default date range when no dates provided" time="0.001">
+    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should use default date range when no dates provided" time="0">
     </testcase>
     <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should handle database errors gracefully" time="0.001">
     </testcase>
   </testsuite>
-  <testsuite name="Product Controller - F007 Admin Dashboard" errors="0" failures="0" skipped="0" timestamp="2025-10-22T21:45:25" time="3.121" tests="12">
-    <testcase classname="Product Controller - F007 Admin Dashboard › createProduct" name="should create product with valid data" time="0.009">
+  <testsuite name="Product Controller - F007 Admin Dashboard" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:49:49" time="1.621" tests="12">
+    <testcase classname="Product Controller - F007 Admin Dashboard › createProduct" name="should create product with valid data" time="0.003">
     </testcase>
     <testcase classname="Product Controller - F007 Admin Dashboard › createProduct" name="should reject duplicate SKU" time="0.001">
     </testcase>
-    <testcase classname="Product Controller - F007 Admin Dashboard › createProduct" name="should reject negative price" time="0.001">
+    <testcase classname="Product Controller - F007 Admin Dashboard › createProduct" name="should reject negative price" time="0">
     </testcase>
     <testcase classname="Product Controller - F007 Admin Dashboard › createProduct" name="should reject invalid name length" time="0.001">
     </testcase>
-    <testcase classname="Product Controller - F007 Admin Dashboard › createProduct" name="should reject negative stock quantity" time="0.002">
+    <testcase classname="Product Controller - F007 Admin Dashboard › createProduct" name="should reject negative stock quantity" time="0">
     </testcase>
     <testcase classname="Product Controller - F007 Admin Dashboard › updateProduct" name="should update price and stock successfully" time="0.001">
     </testcase>
     <testcase classname="Product Controller - F007 Admin Dashboard › updateProduct" name="should return error for non-existent product" time="0.001">
     </testcase>
-    <testcase classname="Product Controller - F007 Admin Dashboard › updateProduct" name="should validate price on update" time="0.001">
+    <testcase classname="Product Controller - F007 Admin Dashboard › updateProduct" name="should validate price on update" time="0">
     </testcase>
-    <testcase classname="Product Controller - F007 Admin Dashboard › hideProduct" name="should soft delete product (isActive = false)" time="0.001">
+    <testcase classname="Product Controller - F007 Admin Dashboard › hideProduct" name="should soft delete product (isActive = false)" time="0">
     </testcase>
     <testcase classname="Product Controller - F007 Admin Dashboard › hideProduct" name="should return error for non-existent product" time="0.001">
     </testcase>
-    <testcase classname="Product Controller - F007 Admin Dashboard › getProducts" name="should return all products when includeHidden=true" time="0.001">
+    <testcase classname="Product Controller - F007 Admin Dashboard › getProducts" name="should return all products when includeHidden=true" time="0">
     </testcase>
-    <testcase classname="Product Controller - F007 Admin Dashboard › getProducts" name="should return only active products when includeHidden=false" time="0.001">
+    <testcase classname="Product Controller - F007 Admin Dashboard › getProducts" name="should return only active products when includeHidden=false" time="0">
     </testcase>
   </testsuite>
 </testsuites>

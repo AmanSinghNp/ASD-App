@@ -10,6 +10,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
 dotenv.config();
+const SECRET = process.env.JWT_SECRET || 'dev-secret';
 
 export interface AuthRequest extends Request {
   user?: {
@@ -34,7 +35,7 @@ export const requireAuth = (req: AuthRequest, res: Response, next: NextFunction)
     }
 
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    const decoded = jwt.verify(token, SECRET) as any;
     
     req.user = {
       id: decoded.id,
@@ -86,5 +87,4 @@ export const requireRole = (roles: string[]) => {
     next();
   };
 };
-
 

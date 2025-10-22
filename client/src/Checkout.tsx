@@ -2,6 +2,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import "./Checkout.css";
 import { useCartContext } from "./context/CartContext";
 import { useAuth } from "./context/AuthContext";
+import { apiFetch } from "./utils/api";
 
 interface DeliverySlot {
   slotStart: string;
@@ -84,8 +85,8 @@ const Checkout: React.FC = () => {
     const fetchDeliverySlots = async () => {
       try {
         const today = new Date().toISOString().split("T")[0];
-        const response = await fetch(
-          `http://localhost:4000/api/delivery/slots?date=${today}`
+        const response = await apiFetch(
+          `/api/delivery/slots?date=${today}`
         );
         const data = await response.json();
         if (data.data) {
@@ -110,8 +111,8 @@ const Checkout: React.FC = () => {
     if (deliveryMethod !== "Delivery") return true;
 
     try {
-      const response = await fetch(
-        "http://localhost:4000/api/delivery/validate-address",
+      const response = await apiFetch(
+        "/api/delivery/validate-address",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -155,11 +156,18 @@ const Checkout: React.FC = () => {
         quantity: ci.quantity
       })));
 
+      // Prefer canonical server IDs that start with 'PROD-'; otherwise fall back to SKU, then local id
       const orderData = {
-        items: cartItems.map((ci: any) => ({
-          productId: String(ci.product.id),
-          quantity: Number(ci.quantity) || 0,
-        })),
+        items: cartItems.map((ci: any) => {
+          const p = ci.product || {};
+          const canonicalId = typeof p.id === 'string' && p.id.startsWith('PROD-')
+            ? p.id
+            : (typeof p.sku === 'string' ? p.sku : String(p.id));
+          return {
+            productId: canonicalId,
+            quantity: Number(ci.quantity) || 0,
+          };
+        }),
         deliveryMethod,
         totals: {
           subtotalCents,
@@ -182,7 +190,7 @@ const Checkout: React.FC = () => {
 
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:4000/api/orders", {
+      const response = await apiFetch("/api/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

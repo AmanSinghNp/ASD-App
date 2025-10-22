@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext"; // Import useAuth to call logout
 import "../Auth.css";
+import { apiFetch } from "../utils/api";
 
 interface Customer {
   id: number;
@@ -31,7 +32,7 @@ function Profile() {
       }
 
       try {
-        const response = await fetch("http://localhost:4000/api/auth/profile", {
+        const response = await apiFetch("/api/auth/profile", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -61,7 +62,7 @@ function Profile() {
     if (!window.confirm("Are you sure you want to delete your account?")) return;
 
     try {
-      const response = await fetch("http://localhost:4000/api/auth/delete", {
+      const response = await apiFetch("/api/auth/delete", {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

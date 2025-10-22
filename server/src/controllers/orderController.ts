@@ -14,7 +14,7 @@ import { cache } from "../utils/cache";
 
 dotenv.config();
 
-const SECRET = process.env.JWT_SECRET!;
+const SECRET = process.env.JWT_SECRET || 'dev-secret';
 
 /**
  * Helper function to verify JWT token and get user ID

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext"; // Import useAuth to access the login function
+import { apiFetch } from "../utils/api";
 import "../Auth.css";
 
 function Signup() {
@@ -15,7 +16,7 @@ function Signup() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:4000/api/auth/signup", {
+      const response = await apiFetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password, role: "CUSTOMER" }),
@@ -27,7 +28,7 @@ function Signup() {
         return;
       }
 
-      // Expect backend to return { token, user, message }
+      // Expect backend to return { token, message }
       const data = await response.json();
 
       // Check if the token is returned from the backend
@@ -36,19 +37,18 @@ function Signup() {
         return;
       }
 
-      // Create the user object based on the response
-      const user = { 
-        id: data.id, 
-        name: data.name, 
-        email: data.email, 
-        role: data.role 
-      };
-
+      // Store the token and fetch profile to populate user
+      localStorage.setItem("token", data.token);
+      const profileResp = await apiFetch('/api/auth/profile', {
+        headers: { Authorization: `Bearer ${data.token}` }
+      });
+      if (!profileResp.ok) {
+        setMessage("Failed to fetch profile after signup ❌");
+        return;
+      }
+      const user = await profileResp.json();
       // Log the user in immediately after signup
       login(user, data.token);
-
-      // Store the token for persistence
-      localStorage.setItem("token", data.token);
 
       setMessage(data.message || "Signup successful ✅");
 

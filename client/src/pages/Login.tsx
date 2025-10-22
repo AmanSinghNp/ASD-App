@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";  // Import useAuth to use login
+import { apiFetch } from "../utils/api";
 import "../Auth.css";
 
 function Login() {
@@ -14,7 +15,7 @@ function Login() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:4000/api/auth/login", {
+      const response = await apiFetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -27,25 +28,24 @@ function Login() {
         return;
       }
 
-      const data = await response.json();  // This contains the token and potentially user data
+      const data = await response.json();  // Expect { token }
       if (!data.token) {
         setMessage("No token received. Login failed ❌");
         return;
       }
 
-      // Assuming your response contains the user object and the token
-      const user = { 
-        id: data.id, 
-        name: data.name, 
-        email: data.email, 
-        role: data.role 
-      };  // Adjust based on response structure
-
+      // After login, fetch profile to get user details
+      localStorage.setItem("token", data.token);
+      const profileResp = await apiFetch('/api/auth/profile', {
+        headers: { Authorization: `Bearer ${data.token}` }
+      });
+      if (!profileResp.ok) {
+        setMessage("Failed to fetch profile after login ❌");
+        return;
+      }
+      const user = await profileResp.json();
       // Pass both user and token to login function
       login(user, data.token);
-
-      // Optionally store the token in localStorage for persistence
-      localStorage.setItem("token", data.token);
 
       setMessage("Login successful ✅");
 
