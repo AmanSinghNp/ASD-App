@@ -1,3 +1,11 @@
+/**
+ * Product Form Component
+ * Author: Aman Singh (Student ID: 25104201)
+ * Feature: F007 - Admin Dashboard
+ * Description: Form component for adding and editing products with validation
+ * Last Updated: 2025-10-22
+ */
+
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import type { ProductFormProps, ProductFormData } from '../../types/product';

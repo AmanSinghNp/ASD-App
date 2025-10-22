@@ -1,7 +1,7 @@
 {
   "name": "asd-app",
   "version": "1.0.0",
-  "description": "```bash\r # Fork this repository on GitHub first, then clone your fork\r git clone [https://github.com/YOUR_USERNAME/ASD-App.git](https://github.com/YOUR_USERNAME/ASD-App.git)\r cd ASD-App\r ```",
+  "description": "ASD-App - Full-stack e-commerce application with React frontend and Express backend",
   "main": "index.js",
   "scripts": {
     "dev": "concurrently -k \"npm:dev:client\" \"npm:dev:server\"",
@@ -11,7 +11,11 @@
     "start": "npm --prefix server run start",
     "test": "npm --prefix client run test && npm --prefix server run test",
     "test:client": "npm --prefix client run test",
-    "test:server": "npm --prefix server run test"
+    "test:server": "npm --prefix server run test",
+    "prisma:studio": "npm --prefix server run prisma:studio",
+    "prisma:migrate": "npm --prefix server run prisma:migrate",
+    "prisma:seed": "npm --prefix server run prisma:seed",
+    "prisma:generate": "npm --prefix server run prisma:generate"
   },
   "repository": {
     "type": "git",
@@ -44,9 +48,11 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
+    "@prisma/client": "^6.16.3",
     "@vitejs/plugin-react-swc": "^3.7.0",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "react": "^19.1.1",

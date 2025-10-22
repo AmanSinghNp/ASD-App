@@ -1,3 +1,11 @@
+/**
+ * Delivery Controller
+ * Author: Aman Singh (Student ID: 25104201)
+ * Feature: F008 - Delivery
+ * Description: Handles delivery slot management, address validation, and delivery operations
+ * Last Updated: 2025-10-22
+ */
+
 import type { Request, Response } from "express";
 import prisma from "../utils/database";
 

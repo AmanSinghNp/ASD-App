@@ -5,8 +5,10 @@ import { CartProvider } from './context/CartContext';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { DeliveryInterface } from './pages/delivery/DeliveryInterface';
 import ProductCatalogue from './ProductCatalogue';
+import Cart from './components/Cart';
 import Checkout from './Checkout';
 import FAQ from './pages/FAQ'; 
+import LiveChat from './pages/LiveChat';
 import { Settings, Truck, ShoppingCart, Package, HelpCircle } from 'lucide-react';
 import './App.css';
 
@@ -17,11 +19,19 @@ import './App.css';
 const Navigation: React.FC = () => {
   const location = useLocation();
 
+  const isActive = (target: string) => {
+    if (target === '/') {
+      return location.pathname === '/';
+    }
+    return location.pathname === target || location.pathname.startsWith(`${target}/`);
+  };
+
   const links = [
     { to: '/', label: 'Product Catalogue', icon: Package },
+    { to: '/cart', label: 'Cart', icon: ShoppingCart },
     { to: '/checkout', label: 'Checkout', icon: ShoppingCart },
-    { to: '/admin', label: 'Admin Dashboard (F007)', icon: Settings },
-    { to: '/delivery', label: 'Delivery Interface (F008)', icon: Truck },
+    { to: '/admin', label: 'Admin Dashboard', icon: Settings },
+    { to: '/delivery', label: 'Delivery Interface', icon: Truck },
     { to: '/support', label: 'Support / FAQ', icon: HelpCircle }, // ← 新增：支持中心
   ] as const;
 
@@ -55,7 +65,7 @@ const Navigation: React.FC = () => {
             {/* Navigation links */}
             <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
               {links.map(({ to, label, icon: Icon }) => {
-                const active = location.pathname === to;
+                const active = isActive(to);
                 return (
                   <Link
                     key={to}
@@ -112,11 +122,13 @@ function App() {
           <Navigation />
           {/* Application routes */}
           <Routes>
-            <Route path="/" element={<ProductCatalogue />} />
+            <Route path="/*" element={<ProductCatalogue />} />
+            <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/delivery" element={<DeliveryInterface />} />
             <Route path="/support" element={<FAQ />} /> {/* ← 新增：FAQ 路由 */}
+            <Route path="/support/chat" element={<LiveChat />} />
           </Routes>
         </div>
       </Router>
