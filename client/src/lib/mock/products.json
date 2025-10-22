@@ -26,7 +26,7 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-    "id": "1",
+    "id": "PROD-APL-001",
     "description": "Crisp, sweet Gala apples. Perfect for snacking or baking. 1kg pack.",
     "sku": "APL-001",
     "name": "Apple Gala 1kg",
@@ -39,7 +39,7 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-    "id": "2",
+    "id": "PROD-MLK-002",
     "description": "Fresh 2L bottle of creamy milk, ideal for drinking or cooking.",
     "sku": "MLK-002",
     "name": "Milk 2L",
@@ -52,7 +52,7 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-    "id": "3",
+    "id": "PROD-BRC-003",
     "description": "Nutritious 5kg bag of whole grain brown rice. Great for healthy meals.",
     "sku": "BRC-003",
     "name": "Brown Rice 5kg",
@@ -65,7 +65,7 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-    "id": "4",
+    "id": "PROD-BAN-004",
     "description": "A bunch of ripe bananas, perfect for breakfast or smoothies.",
     "sku": "BAN-004",
     "name": "Banana Bunch",
@@ -78,7 +78,7 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-    "id": "5",
+    "id": "PROD-BREAD-005",
     "description": "Soft whole wheat bread, freshly baked. Great for sandwiches and toast.",
     "sku": "BREAD-005",
     "name": "Whole Wheat Bread",
@@ -91,7 +91,7 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-    "id": "6",
+    "id": "PROD-EGG-006",
     "description": "12-pack of free range eggs, rich in flavor and nutrients.",
     "sku": "EGG-006",
     "name": "Free Range Eggs (12 pack)",
@@ -117,7 +117,7 @@
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   {
-    "id": "8",
+    "id": "PROD-CAR-008",
     "description": "500g block of classic cheddar cheese. Perfect for snacking or cooking.",
     "sku": "CHS-008",
     "name": "Cheddar Cheese 500g",
