@@ -1,503 +1,425 @@
 /**
- * Delivery Interface Component
+ * Delivery Interface Component - OPTIMIZED VERSION
  * Author: Aman Singh (Student ID: 25104201)
  * Feature: F008 - Delivery
- * Description: Admin interface for managing orders, delivery slots, and order status updates
+ * Description: Fast, simplified delivery interface using local data (no API calls)
  * Last Updated: 2025-10-22
  */
 
-import React, { useState, useEffect } from 'react';
-import { Truck, MapPin, Clock, Package, CheckCircle, AlertCircle } from 'lucide-react';
-
-interface Order {
-  id: string;
-  customerName: string;
-  email: string;
-  phone: string;
-  address: string;
-  items: Array<{
-    name: string;
-    quantity: number;
-    price: number;
-  }>;
-  total: number;
-  status: 'pending' | 'confirmed' | 'preparing' | 'out_for_delivery' | 'delivered' | 'cancelled';
-  deliveryMethod: 'Delivery' | 'Pickup';
-  slotStart?: string;
-  slotEnd?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface DeliverySlot {
-  slotStart: string;
-  slotEnd: string;
-  remaining: number;
-}
+import React, { useState } from 'react';
+import { Truck, MapPin, Clock, Package, CheckCircle, AlertCircle, Calendar } from 'lucide-react';
+import { useDelivery } from '../../hooks/useDelivery';
 
 export const DeliveryInterface: React.FC = () => {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [deliverySlots, setDeliverySlots] = useState<DeliverySlot[]>([]);
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-  const [loading, setLoading] = useState(true);
-  const [filterStatus, setFilterStatus] = useState<string>('');
+  const [activeView, setActiveView] = useState<'orders' | 'slots'>('orders');
+  
+  const {
+    orders,
+    deliverySlots,
+    searchQuery,
+    setSearchQuery,
+    selectedStatus,
+    setSelectedStatus,
+    selectedDate,
+    setSelectedDate,
+    statusOptions,
+    updateOrderStatus,
+    getDeliveryStats
+  } = useDelivery();
 
-  // Load orders and delivery slots
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        
-        // Fetch orders and delivery slots in parallel for faster loading
-        const [ordersResponse, slotsResponse] = await Promise.all([
-          fetch('http://localhost:4000/api/orders'),
-          fetch(`http://localhost:4000/api/delivery/slots?date=${selectedDate}`)
-        ]);
-        
-        const ordersData = await ordersResponse.json();
-        if (ordersData.data) {
-          setOrders(ordersData.data);
-        }
-        
-        const slotsData = await slotsResponse.json();
-        if (slotsData.data) {
-          setDeliverySlots(slotsData.data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchData();
-  }, [selectedDate]);
+  const stats = getDeliveryStats();
 
-  const updateOrderStatus = async (orderId: string, newStatus: Order['status']) => {
-    try {
-      const response = await fetch(`http://localhost:4000/api/orders/${orderId}/status`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
-      });
-      
-      if (response.ok) {
-        setOrders(prev => prev.map(order => 
-          order.id === orderId ? { ...order, status: newStatus, updatedAt: new Date().toISOString() } : order
-        ));
-      }
-    } catch (error) {
-      console.error('Failed to update order status:', error);
+  const handleStatusUpdate = (orderId: string, newStatus: string) => {
+    updateOrderStatus(orderId, newStatus as any);
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'pending': return <AlertCircle size={16} color="#f59e0b" />;
+      case 'confirmed': return <CheckCircle size={16} color="#3b82f6" />;
+      case 'preparing': return <Package size={16} color="#f97316" />;
+      case 'out_for_delivery': return <Truck size={16} color="#8b5cf6" />;
+      case 'delivered': return <CheckCircle size={16} color="#10b981" />;
+      case 'cancelled': return <AlertCircle size={16} color="#ef4444" />;
+      default: return <Clock size={16} color="#6b7280" />;
     }
   };
 
-  const getStatusColor = (status: Order['status']) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return { backgroundColor: '#fef3c7', color: '#92400e' };
-      case 'confirmed': return { backgroundColor: 'var(--primary-blue-light)', color: 'var(--primary-blue-dark)' };
+      case 'confirmed': return { backgroundColor: '#dbeafe', color: '#1e40af' };
       case 'preparing': return { backgroundColor: '#fed7aa', color: '#c2410c' };
       case 'out_for_delivery': return { backgroundColor: '#e9d5ff', color: '#7c3aed' };
       case 'delivered': return { backgroundColor: '#d1fae5', color: '#065f46' };
-      case 'cancelled': return { backgroundColor: '#fee2e2', color: '#991b1b' };
-      default: return { backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-secondary)' };
+      case 'cancelled': return { backgroundColor: '#fee2e2', color: '#dc2626' };
+      default: return { backgroundColor: '#f3f4f6', color: '#374151' };
     }
   };
-
-  const getStatusIcon = (status: Order['status']) => {
-    switch (status) {
-      case 'delivered': return <CheckCircle className="h-4 w-4" />;
-      case 'cancelled': return <AlertCircle className="h-4 w-4" />;
-      default: return <Clock className="h-4 w-4" />;
-    }
-  };
-
-  const formatPrice = (priceCents: number) => {
-    return `$${(priceCents / 100).toFixed(2)}`;
-  };
-
-  const filteredOrders = filterStatus 
-    ? orders.filter(order => order.status === filterStatus)
-    : orders;
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-lg text-gray-600">Loading...</div>
-      </div>
-    );
-  }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      backgroundColor: 'var(--bg-secondary)',
-      padding: 'var(--spacing-2xl) 0'
-    }}>
-      <div className="container">
-        {/* Header */}
-        <div style={{ marginBottom: 'var(--spacing-2xl)' }}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: 'var(--spacing-lg)'
+    <div className="delivery-interface" style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+      <div style={{ marginBottom: '30px' }}>
+        <h1 style={{ color: '#333', marginBottom: '10px' }}>Delivery Management</h1>
+        <p style={{ color: '#666' }}>Manage orders and delivery slots efficiently</p>
+      </div>
+
+      {/* Stats Cards */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: '16px',
+        marginBottom: '30px'
+      }}>
+        <div style={{
+          background: 'white',
+          padding: '20px',
+          borderRadius: '8px',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          border: '1px solid #e0e0e0'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+            <Package size={20} color="#3b82f6" />
+            <h3 style={{ margin: '0 0 0 8px', fontSize: '16px' }}>Total Orders</h3>
+          </div>
+          <p style={{ fontSize: '24px', fontWeight: 'bold', margin: '0', color: '#333' }}>
+            {stats.totalOrders}
+          </p>
+        </div>
+
+        <div style={{
+          background: 'white',
+          padding: '20px',
+          borderRadius: '8px',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          border: '1px solid #e0e0e0'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+            <AlertCircle size={20} color="#f59e0b" />
+            <h3 style={{ margin: '0 0 0 8px', fontSize: '16px' }}>Pending</h3>
+          </div>
+          <p style={{ fontSize: '24px', fontWeight: 'bold', margin: '0', color: '#333' }}>
+            {stats.pendingOrders}
+          </p>
+        </div>
+
+        <div style={{
+          background: 'white',
+          padding: '20px',
+          borderRadius: '8px',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          border: '1px solid #e0e0e0'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+            <Truck size={20} color="#8b5cf6" />
+            <h3 style={{ margin: '0 0 0 8px', fontSize: '16px' }}>Out for Delivery</h3>
+          </div>
+          <p style={{ fontSize: '24px', fontWeight: 'bold', margin: '0', color: '#333' }}>
+            {stats.outForDeliveryOrders}
+          </p>
+        </div>
+
+        <div style={{
+          background: 'white',
+          padding: '20px',
+          borderRadius: '8px',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          border: '1px solid #e0e0e0'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+            <CheckCircle size={20} color="#10b981" />
+            <h3 style={{ margin: '0 0 0 8px', fontSize: '16px' }}>Delivered</h3>
+          </div>
+          <p style={{ fontSize: '24px', fontWeight: 'bold', margin: '0', color: '#333' }}>
+            {stats.deliveredOrders}
+          </p>
+        </div>
+      </div>
+
+      {/* View Toggle */}
+      <div style={{ 
+        display: 'flex', 
+        gap: '10px', 
+        marginBottom: '30px',
+        borderBottom: '1px solid #e0e0e0'
+      }}>
+        <button
+          onClick={() => setActiveView('orders')}
+          style={{
+            padding: '10px 20px',
+            border: 'none',
+            background: activeView === 'orders' ? '#493aecff' : 'transparent',
+            color: activeView === 'orders' ? 'white' : '#333',
+            cursor: 'pointer',
+            borderRadius: '4px 4px 0 0'
+          }}
+        >
+          <Package style={{ marginRight: '8px', display: 'inline' }} />
+          Orders
+        </button>
+        <button
+          onClick={() => setActiveView('slots')}
+          style={{
+            padding: '10px 20px',
+            border: 'none',
+            background: activeView === 'slots' ? '#493aecff' : 'transparent',
+            color: activeView === 'slots' ? 'white' : '#333',
+            cursor: 'pointer',
+            borderRadius: '4px 4px 0 0'
+          }}
+        >
+          <Calendar style={{ marginRight: '8px', display: 'inline' }} />
+          Delivery Slots
+        </button>
+      </div>
+
+      {/* Orders View */}
+      {activeView === 'orders' && (
+        <div>
+          <div style={{ 
+            display: 'flex', 
+            gap: '15px', 
+            marginBottom: '20px',
+            flexWrap: 'wrap',
+            alignItems: 'center'
           }}>
-            <h1 style={{
-              fontSize: '2.25rem',
-              fontWeight: '700',
-              color: 'var(--text-primary)',
-              margin: 0
-            }}>
-              Delivery Interface
-            </h1>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 'var(--spacing-md)'
-            }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Package size={16} />
               <input
-                type="date"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
+                type="text"
+                placeholder="Search orders..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 style={{
-                  padding: 'var(--spacing-md)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: 'var(--radius-lg)',
-                  backgroundColor: 'var(--bg-primary)',
-                  color: 'var(--text-primary)',
-                  fontSize: '0.875rem',
-                  transition: 'all 0.2s ease'
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = 'var(--primary-blue)';
-                  e.target.style.boxShadow = '0 0 0 3px var(--primary-blue-light)';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = 'var(--border-color)';
-                  e.target.style.boxShadow = 'none';
+                  padding: '8px 12px',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  minWidth: '200px'
                 }}
               />
             </div>
+            <select
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+              style={{
+                padding: '8px 12px',
+                border: '1px solid #ddd',
+                borderRadius: '4px'
+              }}
+            >
+              {statusOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </div>
-        </div>
 
-        {/* Delivery Slots Overview */}
-        <div style={{
-          backgroundColor: 'var(--bg-primary)',
-          padding: 'var(--spacing-lg)',
-          borderRadius: 'var(--radius-xl)',
-          boxShadow: 'var(--shadow-sm)',
-          border: '1px solid var(--border-light)',
-          marginBottom: 'var(--spacing-2xl)'
-        }}>
-          <h2 style={{
-            fontSize: '1.5rem',
-            fontWeight: '700',
-            color: 'var(--text-primary)',
-            marginBottom: 'var(--spacing-md)',
-            margin: 0
-          }}>
-            Delivery Slots - {selectedDate}
-          </h2>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: 'var(--spacing-md)'
-          }}>
-            {deliverySlots.map((slot, index) => (
-              <div key={index} style={{
-                backgroundColor: 'var(--bg-tertiary)',
-                padding: 'var(--spacing-md)',
-                borderRadius: 'var(--radius-lg)',
-                border: '1px solid var(--border-light)',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--primary-blue-light)';
-                e.currentTarget.style.borderColor = 'var(--primary-blue-light)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
-                e.currentTarget.style.borderColor = 'var(--border-light)';
-              }}>
-                <div style={{
-                  fontSize: '0.875rem',
-                  fontWeight: '600',
-                  color: 'var(--text-primary)',
-                  marginBottom: 'var(--spacing-xs)'
+          {/* Orders List */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {orders.map(order => (
+              <div
+                key={order.id}
+                style={{
+                  border: '1px solid #e0e0e0',
+                  borderRadius: '8px',
+                  padding: '20px',
+                  background: 'white',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                }}
+              >
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'flex-start',
+                  marginBottom: '16px'
                 }}>
-                  {new Date(slot.slotStart).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - 
-                  {new Date(slot.slotEnd).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+                      {getStatusIcon(order.status)}
+                      <h3 style={{ margin: '0 0 0 8px', fontSize: '18px' }}>
+                        {order.customerName}
+                      </h3>
+                      <span
+                        style={{
+                          marginLeft: '12px',
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                          fontSize: '12px',
+                          fontWeight: 'bold',
+                          ...getStatusColor(order.status)
+                        }}
+                      >
+                        {order.status.replace('_', ' ').toUpperCase()}
+                      </span>
+                    </div>
+                    <p style={{ margin: '0 0 4px 0', color: '#666', fontSize: '14px' }}>
+                      Order ID: {order.id}
+                    </p>
+                    <p style={{ margin: '0 0 4px 0', color: '#666', fontSize: '14px' }}>
+                      {order.deliveryMethod} • ${order.total.toFixed(2)}
+                    </p>
+                    <p style={{ margin: '0', color: '#666', fontSize: '14px' }}>
+                      {order.email} • {order.phone}
+                    </p>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <select
+                      value={order.status}
+                      onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
+                      style={{
+                        padding: '6px 12px',
+                        border: '1px solid #ddd',
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        marginBottom: '8px'
+                      }}
+                    >
+                      {statusOptions.map(option => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    <p style={{ margin: '0', fontSize: '12px', color: '#666' }}>
+                      {new Date(order.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
                 </div>
-                <div style={{
-                  fontSize: '0.75rem',
-                  color: 'var(--text-secondary)'
+
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '8px',
+                  marginBottom: '12px'
                 }}>
-                  {slot.remaining} slots remaining
+                  <MapPin size={16} color="#666" />
+                  <span style={{ fontSize: '14px', color: '#666' }}>
+                    {order.address}
+                  </span>
+                </div>
+
+                {order.slotStart && order.slotEnd && (
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '8px'
+                  }}>
+                    <Clock size={16} color="#666" />
+                    <span style={{ fontSize: '14px', color: '#666' }}>
+                      Delivery Slot: {new Date(order.slotStart).toLocaleTimeString([], { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                      })} - {new Date(order.slotEnd).toLocaleTimeString([], { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                      })}
+                    </span>
+                  </div>
+                )}
+
+                {/* Order Items */}
+                <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid #f0f0f0' }}>
+                  <h4 style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#333' }}>Items:</h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    {order.items.map((item, index) => (
+                      <div key={index} style={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between',
+                        fontSize: '14px',
+                        color: '#666'
+                      }}>
+                        <span>{item.name} x {item.quantity}</span>
+                        <span>${item.price.toFixed(2)}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
+      )}
 
-        {/* Filters */}
-        <div style={{
-          backgroundColor: 'var(--bg-primary)',
-          padding: 'var(--spacing-lg)',
-          borderRadius: 'var(--radius-xl)',
-          boxShadow: 'var(--shadow-sm)',
-          border: '1px solid var(--border-light)',
-          marginBottom: 'var(--spacing-2xl)'
-        }}>
-          <div style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: 'var(--spacing-md)'
+      {/* Delivery Slots View */}
+      {activeView === 'slots' && (
+        <div>
+          <div style={{ 
+            display: 'flex', 
+            gap: '15px', 
+            marginBottom: '20px',
+            alignItems: 'center'
           }}>
-            <button
-              onClick={() => setFilterStatus('')}
-              style={{
-                padding: 'var(--spacing-sm) var(--spacing-md)',
-                borderRadius: 'var(--radius-lg)',
-                fontSize: '0.875rem',
-                fontWeight: '500',
-                transition: 'all 0.2s ease',
-                backgroundColor: filterStatus === '' ? 'var(--primary-blue)' : 'var(--bg-tertiary)',
-                color: filterStatus === '' ? 'white' : 'var(--text-primary)',
-                border: 'none',
-                cursor: 'pointer'
-              }}
-              onMouseEnter={(e) => {
-                if (filterStatus !== '') {
-                  e.currentTarget.style.backgroundColor = 'var(--border-color)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (filterStatus !== '') {
-                  e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
-                }
-              }}
-            >
-              All Orders ({orders.length})
-            </button>
-            {['pending', 'confirmed', 'preparing', 'out_for_delivery', 'delivered', 'cancelled'].map(status => {
-              const count = orders.filter(order => order.status === status).length;
-              return (
-                <button
-                  key={status}
-                  onClick={() => setFilterStatus(status)}
-                  style={{
-                    padding: 'var(--spacing-sm) var(--spacing-md)',
-                    borderRadius: 'var(--radius-lg)',
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                    transition: 'all 0.2s ease',
-                    backgroundColor: filterStatus === status ? 'var(--primary-blue)' : 'var(--bg-tertiary)',
-                    color: filterStatus === status ? 'white' : 'var(--text-primary)',
-                    border: 'none',
-                    cursor: 'pointer',
-                    textTransform: 'capitalize'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (filterStatus !== status) {
-                      e.currentTarget.style.backgroundColor = 'var(--border-color)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (filterStatus !== status) {
-                      e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
-                    }
-                  }}
-                >
-                  {status.replace('_', ' ')} ({count})
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Orders List */}
-        <div style={{
-          backgroundColor: 'var(--bg-primary)',
-          borderRadius: 'var(--radius-xl)',
-          boxShadow: 'var(--shadow-sm)',
-          border: '1px solid var(--border-light)',
-          overflow: 'hidden'
-        }}>
-          <div style={{
-            padding: 'var(--spacing-md) var(--spacing-lg)',
-            borderBottom: '1px solid var(--border-light)',
-            backgroundColor: 'var(--bg-tertiary)'
-          }}>
-            <h2 style={{
-              fontSize: '1.125rem',
-              fontWeight: '600',
-              color: 'var(--text-primary)',
-              margin: 0
-            }}>
-              Orders
-            </h2>
-          </div>
-          
-          {filteredOrders.length === 0 ? (
-            <div style={{
-              padding: 'var(--spacing-2xl)',
-              textAlign: 'center',
-              color: 'var(--text-muted)'
-            }}>
-              <Package style={{
-                width: '3rem',
-                height: '3rem',
-                margin: '0 auto var(--spacing-md)',
-                color: 'var(--border-color)'
-              }} />
-              <p style={{ margin: 0, fontSize: '0.875rem' }}>No orders found</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Calendar size={16} />
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                style={{
+                  padding: '8px 12px',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px'
+                }}
+              />
             </div>
-          ) : (
-            <div style={{ borderTop: '1px solid var(--border-light)' }}>
-              {filteredOrders.map((order, index) => (
-                <div key={order.id} style={{
-                  padding: 'var(--spacing-lg)',
-                  borderBottom: index < filteredOrders.length - 1 ? '1px solid var(--border-light)' : 'none',
-                  transition: 'background-color 0.2s ease'
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '16px'
+          }}>
+            {deliverySlots.map((slot, index) => (
+              <div
+                key={index}
+                style={{
+                  border: '1px solid #e0e0e0',
+                  borderRadius: '8px',
+                  padding: '20px',
+                  background: 'white',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                }}>
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-start',
-                    gap: 'var(--spacing-lg)'
-                  }}>
-                    <div style={{ flex: 1 }}>
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 'var(--spacing-md)',
-                        marginBottom: 'var(--spacing-sm)'
-                      }}>
-                        <h3 style={{
-                          fontSize: '1.125rem',
-                          fontWeight: '600',
-                          color: 'var(--text-primary)',
-                          margin: 0
-                        }}>
-                          Order #{order.id}
-                        </h3>
-                        <span style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          padding: 'var(--spacing-xs) var(--spacing-sm)',
-                          borderRadius: 'var(--radius-lg)',
-                          fontSize: '0.75rem',
-                          fontWeight: '500',
-                          ...getStatusColor(order.status)
-                        }}>
-                          {getStatusIcon(order.status)}
-                          <span style={{ marginLeft: 'var(--spacing-xs)', textTransform: 'capitalize' }}>
-                            {order.status.replace('_', ' ')}
-                          </span>
-                        </span>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                          <div className="text-sm text-gray-600 mb-1">Customer</div>
-                          <div className="font-medium">{order.customerName}</div>
-                          <div className="text-sm text-gray-500">{order.email}</div>
-                          <div className="text-sm text-gray-500">{order.phone}</div>
-                        </div>
-                        
-                        <div>
-                          <div className="text-sm text-gray-600 mb-1">Delivery Details</div>
-                          <div className="flex items-center text-sm text-gray-700 mb-1">
-                            <MapPin className="h-4 w-4 mr-1" />
-                            {order.deliveryMethod}
-                          </div>
-                          {order.deliveryMethod === 'Delivery' && order.slotStart && (
-                            <div className="flex items-center text-sm text-gray-700">
-                              <Clock className="h-4 w-4 mr-1" />
-                              {new Date(order.slotStart).toLocaleString()}
-                            </div>
-                          )}
-                          <div className="text-sm text-gray-700 mt-1">{order.address}</div>
-                        </div>
-                      </div>
-                      
-                      <div className="mb-4">
-                        <div className="text-sm text-gray-600 mb-2">Items</div>
-                        <div className="space-y-1">
-                          {order.items.map((item, index) => (
-                            <div key={index} className="flex justify-between text-sm">
-                              <span>{item.name} x{item.quantity}</span>
-                              <span>{formatPrice(item.price * item.quantity)}</span>
-                            </div>
-                          ))}
-                        </div>
-                        <div className="flex justify-between font-semibold mt-2 pt-2 border-t border-gray-200">
-                          <span>Total</span>
-                          <span>{formatPrice(order.total)}</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="ml-6">
-                      <div className="text-sm text-gray-600 mb-2">Status Actions</div>
-                      <div className="space-y-2">
-                        {order.status === 'pending' && (
-                          <button
-                            onClick={() => updateOrderStatus(order.id, 'confirmed')}
-                            className="w-full px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-                          >
-                            Confirm
-                          </button>
-                        )}
-                        {order.status === 'confirmed' && (
-                          <button
-                            onClick={() => updateOrderStatus(order.id, 'preparing')}
-                            className="w-full px-3 py-1 text-xs bg-orange-600 text-white rounded hover:bg-orange-700 transition-colors"
-                          >
-                            Start Preparing
-                          </button>
-                        )}
-                        {order.status === 'preparing' && (
-                          <button
-                            onClick={() => updateOrderStatus(order.id, 'out_for_delivery')}
-                            className="w-full px-3 py-1 text-xs bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
-                          >
-                            <Truck className="h-3 w-3 inline mr-1" />
-                            Out for Delivery
-                          </button>
-                        )}
-                        {order.status === 'out_for_delivery' && (
-                          <button
-                            onClick={() => updateOrderStatus(order.id, 'delivered')}
-                            className="w-full px-3 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
-                          >
-                            Mark Delivered
-                          </button>
-                        )}
-                        {order.status !== 'delivered' && order.status !== 'cancelled' && (
-                          <button
-                            onClick={() => updateOrderStatus(order.id, 'cancelled')}
-                            className="w-full px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
-                          >
-                            Cancel
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+              >
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
+                  <Clock size={20} color="#493aecff" />
+                  <h3 style={{ margin: '0 0 0 8px', fontSize: '16px' }}>
+                    {new Date(slot.slotStart).toLocaleTimeString([], { 
+                      hour: '2-digit', 
+                      minute: '2-digit' 
+                    })} - {new Date(slot.slotEnd).toLocaleTimeString([], { 
+                      hour: '2-digit', 
+                      minute: '2-digit' 
+                    })}
+                  </h3>
                 </div>
-              ))}
-            </div>
-          )}
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '8px',
+                  marginBottom: '12px'
+                }}>
+                  <Package size={16} color="#666" />
+                  <span style={{ fontSize: '14px', color: '#666' }}>
+                    {slot.remaining} slots remaining
+                  </span>
+                </div>
+                <div style={{
+                  padding: '8px 12px',
+                  background: slot.remaining > 0 ? '#d1fae5' : '#fee2e2',
+                  color: slot.remaining > 0 ? '#065f46' : '#dc2626',
+                  borderRadius: '4px',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  textAlign: 'center'
+                }}>
+                  {slot.remaining > 0 ? 'Available' : 'Full'}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

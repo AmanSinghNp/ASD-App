@@ -1,115 +1,47 @@
 /**
- * Admin Dashboard Component
+ * Admin Dashboard Component - OPTIMIZED VERSION
  * Author: Aman Singh (Student ID: 25104201)
  * Feature: F007 - Admin Dashboard
- * Description: Main admin interface for product management, analytics, and admin operations
+ * Description: Fast, simplified admin interface using local data (no API calls)
  * Last Updated: 2025-10-22
  */
 
-import React, { useState, useEffect } from 'react';
-import { Plus, Search } from 'lucide-react';
-import { ProductTable } from '../../components/admin/ProductTable';
-import { ProductForm } from '../../components/admin/ProductForm';
-import { ConfirmDialog } from '../../components/admin/ConfirmDialog';
-import type { Product, ProductFormData } from '../../types/product';
-
+import React, { useState } from 'react';
+import { Plus, Search, BarChart3, Package, Users, DollarSign } from 'lucide-react';
+import { useAdmin } from '../../hooks/useAdmin';
+import { useAdminProducts } from '../../hooks/useAdminProducts';
+import ProductForm from '../../components/admin/ProductForm';
+import type { Product } from '../../types/product';
 
 export const AdminDashboard: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(25);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('');
+  const [activeTab, setActiveTab] = useState<'products' | 'orders' | 'analytics'>('products');
   const [showProductForm, setShowProductForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | undefined>();
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [productToRemove, setProductToRemove] = useState<string>('');
-  const [analytics, setAnalytics] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [dateRange, setDateRange] = useState({
-    startDate: new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().split('T')[0],
-    endDate: new Date().toISOString().split('T')[0]
-  });
+  // Use optimized hooks for data management
+  const { 
+    products, 
+    categories, 
+    selectedCategory, 
+    setSelectedCategory, 
+    searchQuery, 
+    setSearchQuery,
+    createProduct,
+    updateProduct,
+    deleteProduct
+  } = useAdminProducts();
+  
+  const { 
+    orders, 
+    analytics, 
+    searchQuery: orderSearchQuery, 
+    setSearchQuery: setOrderSearchQuery,
+    selectedStatus,
+    setSelectedStatus,
+    statusOptions,
+    updateOrderStatus
+  } = useAdmin();
 
-  // Load products and analytics on component mount
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        
-        // Fetch products and analytics in parallel for faster loading
-        const [productsResponse, analyticsResponse] = await Promise.all([
-          fetch('http://localhost:4000/api/products?includeHidden=true'),
-          fetch(`http://localhost:4000/api/analytics?from=${dateRange.startDate}&to=${dateRange.endDate}`)
-        ]);
-        
-        const productsData = await productsResponse.json();
-        if (productsData.data) {
-          setProducts(productsData.data);
-        }
-        
-        const analyticsData = await analyticsResponse.json();
-        if (analyticsData.data) {
-          setAnalytics(analyticsData.data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchData();
-  }, [dateRange]);
-
-  // Function to refresh analytics with new date range
-  const refreshAnalytics = async () => {
-    try {
-      const response = await fetch(`http://localhost:4000/api/analytics?from=${dateRange.startDate}&to=${dateRange.endDate}`);
-      const data = await response.json();
-      if (data.data) {
-        setAnalytics(data.data);
-      }
-    } catch (error) {
-      console.error('Failed to fetch analytics:', error);
-    }
-  };
-
-  // Filter products based on search, category, and status
-  useEffect(() => {
-    let filtered = products;
-
-    if (searchTerm) {
-      filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.sku.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    if (selectedCategory) {
-      filtered = filtered.filter(product => product.category === selectedCategory);
-    }
-
-    if (selectedStatus !== '') {
-      const isActive = selectedStatus === 'active';
-      filtered = filtered.filter(product => product.isActive === isActive);
-    }
-
-    setFilteredProducts(filtered);
-    setCurrentPage(1); // Reset to first page when filters change
-  }, [products, searchTerm, selectedCategory, selectedStatus]);
-
-  // Get current page products
-  const getCurrentPageProducts = () => {
-    const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    return filteredProducts.slice(startIndex, endIndex);
-  };
-
-  const totalPages = Math.ceil(filteredProducts.length / pageSize);
-
+  // Product management functions
   const handleAddProduct = () => {
     setEditingProduct(undefined);
     setShowProductForm(true);
@@ -120,668 +52,499 @@ export const AdminDashboard: React.FC = () => {
     setShowProductForm(true);
   };
 
-  const handleSubmitProduct = async (formData: ProductFormData) => {
+  const handleCloseForm = () => {
+    setShowProductForm(false);
+    setEditingProduct(undefined);
+  };
+
+  const handleSaveProduct = (productData: any) => {
     try {
       if (editingProduct) {
         // Update existing product
-        const response = await fetch(`http://localhost:4000/api/products/${editingProduct.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
-        });
-        const result = await response.json();
-        if (result.data) {
-          setProducts(prev => prev.map(product =>
-            product.id === editingProduct.id ? result.data : product
-          ));
+        const updatedProduct = updateProduct(editingProduct.id, productData);
+        if (updatedProduct) {
+          console.log('Product updated successfully:', updatedProduct);
         }
       } else {
-        // Add new product
-        const response = await fetch('http://localhost:4000/api/products', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
-        });
-        const result = await response.json();
-        if (result.data) {
-          setProducts(prev => [...prev, result.data]);
-        }
+        // Create new product
+        const newProduct = createProduct(productData);
+        console.log('Product created successfully:', newProduct);
       }
-      setShowProductForm(false);
-      setEditingProduct(undefined);
     } catch (error) {
-      console.error('Failed to save product:', error);
+      console.error('Error saving product:', error);
+      throw error; // Re-throw to let ProductForm handle the error display
     }
   };
 
-  const handleToggleActive = async (productId: string) => {
-    try {
-      const response = await fetch(`http://localhost:4000/api/products/${productId}/hide`, {
-        method: 'PATCH'
-      });
-      const result = await response.json();
-      if (result.data) {
-        setProducts(prev => prev.map(product =>
-          product.id === productId ? result.data : product
-        ));
-      }
-    } catch (error) {
-      console.error('Failed to toggle product:', error);
-    }
-  };
-
+  // Product management functions
   const handleRemoveProduct = (productId: string) => {
-    setProductToRemove(productId);
-    setShowConfirmDialog(true);
-  };
-
-  const confirmRemove = async () => {
-    try {
-      const response = await fetch(`http://localhost:4000/api/products/${productToRemove}`, {
-        method: 'DELETE'
-      });
-      if (response.ok) {
-        setProducts(prev => prev.filter(product => product.id !== productToRemove));
+    if (window.confirm('Are you sure you want to remove this product? This action cannot be undone.')) {
+      const success = deleteProduct(productId);
+      if (success) {
+        console.log('Product removed successfully');
+      } else {
+        console.error('Failed to remove product');
       }
-    } catch (error) {
-      console.error('Failed to remove product:', error);
     }
-    setShowConfirmDialog(false);
-    setProductToRemove('');
   };
 
-  const categories = Array.from(new Set(products.map(p => p.category)));
-
-  const formatPrice = (priceCents: number) => {
-    return `$${(priceCents / 100).toFixed(2)}`;
+  const handleToggleProductStatus = (productId: string) => {
+    const product = products.find(p => p.id === productId);
+    if (product) {
+      const updatedProduct = updateProduct(productId, { isActive: !product.isActive });
+      if (updatedProduct) {
+        console.log(`Product ${updatedProduct.isActive ? 'activated' : 'deactivated'} successfully`);
+      }
+    }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-lg text-gray-600">Loading...</div>
-      </div>
-    );
-  }
+  // Order status update
+  const handleStatusUpdate = (orderId: string, newStatus: string) => {
+    updateOrderStatus(orderId, newStatus as any);
+  };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      backgroundColor: 'var(--bg-secondary)',
-      padding: 'var(--spacing-2xl) 0'
-    }}>
-      <div className="container">
-        {/* Header */}
-        <div style={{ marginBottom: 'var(--spacing-2xl)' }}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
+    <div className="admin-dashboard" style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+      <div style={{ marginBottom: '30px' }}>
+        <h1 style={{ color: '#333', marginBottom: '10px' }}>Admin Dashboard</h1>
+        <p style={{ color: '#666' }}>Manage products, orders, and view analytics</p>
+      </div>
+
+      {/* Tab Navigation */}
+      <div style={{ 
+        display: 'flex', 
+        gap: '10px', 
+        marginBottom: '30px',
+        borderBottom: '1px solid #e0e0e0'
+      }}>
+        <button
+          onClick={() => setActiveTab('products')}
+          style={{
+            padding: '10px 20px',
+            border: 'none',
+            background: activeTab === 'products' ? '#493aecff' : 'transparent',
+            color: activeTab === 'products' ? 'white' : '#333',
+            cursor: 'pointer',
+            borderRadius: '4px 4px 0 0'
+          }}
+        >
+          <Package style={{ marginRight: '8px', display: 'inline' }} />
+          Products
+        </button>
+        <button
+          onClick={() => setActiveTab('orders')}
+          style={{
+            padding: '10px 20px',
+            border: 'none',
+            background: activeTab === 'orders' ? '#493aecff' : 'transparent',
+            color: activeTab === 'orders' ? 'white' : '#333',
+            cursor: 'pointer',
+            borderRadius: '4px 4px 0 0'
+          }}
+        >
+          <Users style={{ marginRight: '8px', display: 'inline' }} />
+          Orders
+        </button>
+        <button
+          onClick={() => setActiveTab('analytics')}
+          style={{
+            padding: '10px 20px',
+            border: 'none',
+            background: activeTab === 'analytics' ? '#493aecff' : 'transparent',
+            color: activeTab === 'analytics' ? 'white' : '#333',
+            cursor: 'pointer',
+            borderRadius: '4px 4px 0 0'
+          }}
+        >
+          <BarChart3 style={{ marginRight: '8px', display: 'inline' }} />
+          Analytics
+        </button>
+      </div>
+
+      {/* Products Tab */}
+      {activeTab === 'products' && (
+        <div>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
             alignItems: 'center',
-            gap: 'var(--spacing-lg)'
+            marginBottom: '20px'
           }}>
-            <h1 style={{
-              fontSize: '2.25rem',
-              fontWeight: '700',
-              color: 'var(--text-primary)',
-              margin: 0
-            }}>
-              Product Management
-            </h1>
+            <h2>Product Management</h2>
             <button
               onClick={handleAddProduct}
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                padding: 'var(--spacing-md) var(--spacing-lg)',
-                backgroundColor: 'var(--primary-blue)',
+                padding: '10px 20px',
+                backgroundColor: '#493aecff',
                 color: 'white',
                 border: 'none',
-                borderRadius: 'var(--radius-lg)',
-                fontSize: '0.875rem',
-                fontWeight: '600',
+                borderRadius: '4px',
                 cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                gap: 'var(--spacing-sm)',
-                boxShadow: 'var(--shadow-sm)'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--primary-blue-hover)';
-                e.currentTarget.style.boxShadow = 'var(--shadow-md)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--primary-blue)';
-                e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
               }}
             >
-              <Plus size={20} />
+              <Plus size={16} />
               Add Product
             </button>
           </div>
-        </div>
 
-        {/* Analytics Panel */}
-        {analytics && (
-          <div style={{
-            backgroundColor: 'var(--bg-primary)',
-            padding: 'var(--spacing-2xl)',
-            borderRadius: 'var(--radius-xl)',
-            boxShadow: 'var(--shadow-sm)',
-            border: '1px solid var(--border-light)',
-            marginBottom: 'var(--spacing-2xl)'
+          {/* Product Filters */}
+          <div style={{ 
+            display: 'flex', 
+            gap: '15px', 
+            marginBottom: '20px',
+            flexWrap: 'wrap'
           }}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: 'var(--spacing-lg)',
-              flexWrap: 'wrap',
-              gap: 'var(--spacing-md)'
-            }}>
-              <h2 style={{
-                fontSize: '1.5rem',
-                fontWeight: '700',
-                color: 'var(--text-primary)',
-                margin: 0
-              }}>
-                Sales Analytics
-              </h2>
-              
-              {/* Date Range Selector */}
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 'var(--spacing-md)',
-                flexWrap: 'wrap'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
-                  <label style={{
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                    color: 'var(--text-secondary)'
-                  }}>
-                    From:
-                  </label>
-                  <input
-                    type="date"
-                    value={dateRange.startDate}
-                    onChange={(e) => setDateRange({...dateRange, startDate: e.target.value})}
-                    style={{
-                      padding: 'var(--spacing-sm)',
-                      border: '1px solid var(--border-light)',
-                      borderRadius: 'var(--radius-md)',
-                      fontSize: '0.875rem'
-                    }}
-                  />
-                </div>
-                
-                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
-                  <label style={{
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                    color: 'var(--text-secondary)'
-                  }}>
-                    To:
-                  </label>
-                  <input
-                    type="date"
-                    value={dateRange.endDate}
-                    onChange={(e) => setDateRange({...dateRange, endDate: e.target.value})}
-                    style={{
-                      padding: 'var(--spacing-sm)',
-                      border: '1px solid var(--border-light)',
-                      borderRadius: 'var(--radius-md)',
-                      fontSize: '0.875rem'
-                    }}
-                  />
-                </div>
-                
-                <button
-                  onClick={refreshAnalytics}
-                  style={{
-                    padding: 'var(--spacing-sm) var(--spacing-md)',
-                    backgroundColor: 'var(--primary-blue)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: 'var(--radius-md)',
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'var(--primary-blue-hover)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'var(--primary-blue)';
-                  }}
-                >
-                  Refresh
-                </button>
-              </div>
-            </div>
-            
-            {/* KPIs */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-              gap: 'var(--spacing-lg)',
-              marginBottom: 'var(--spacing-2xl)'
-            }}>
-              <div style={{
-                backgroundColor: 'var(--primary-blue-light)',
-                padding: 'var(--spacing-lg)',
-                borderRadius: 'var(--radius-lg)',
-                border: '1px solid var(--primary-blue-light)'
-              }}>
-                <div style={{
-                  fontSize: '1.875rem',
-                  fontWeight: '700',
-                  color: 'var(--primary-blue-dark)',
-                  marginBottom: 'var(--spacing-xs)'
-                }}>
-                  {formatPrice(analytics.kpis.revenueTotalCents)}
-                </div>
-                <div style={{
-                  fontSize: '0.875rem',
-                  color: 'var(--primary-blue-dark)',
-                  fontWeight: '500'
-                }}>
-                  Total Revenue
-                </div>
-              </div>
-              <div style={{
-                backgroundColor: '#f0fdf4',
-                padding: 'var(--spacing-lg)',
-                borderRadius: 'var(--radius-lg)',
-                border: '1px solid #bbf7d0'
-              }}>
-                <div style={{
-                  fontSize: '1.875rem',
-                  fontWeight: '700',
-                  color: '#166534',
-                  marginBottom: 'var(--spacing-xs)'
-                }}>
-                  {analytics.kpis.ordersCount}
-                </div>
-                <div style={{
-                  fontSize: '0.875rem',
-                  color: '#166534',
-                  fontWeight: '500'
-                }}>
-                  Total Orders
-                </div>
-              </div>
-              <div style={{
-                backgroundColor: '#faf5ff',
-                padding: 'var(--spacing-lg)',
-                borderRadius: 'var(--radius-lg)',
-                border: '1px solid #e9d5ff'
-              }}>
-                <div style={{
-                  fontSize: '1.875rem',
-                  fontWeight: '700',
-                  color: '#7c3aed',
-                  marginBottom: 'var(--spacing-xs)'
-                }}>
-                  {formatPrice(analytics.kpis.avgOrderValueCents)}
-                </div>
-                <div style={{
-                  fontSize: '0.875rem',
-                  color: '#7c3aed',
-                  fontWeight: '500'
-                }}>
-                  Avg Order Value
-                </div>
-              </div>
-            </div>
-
-            {/* Revenue by Day Table */}
-            <div>
-              <h3 style={{
-                fontSize: '1.125rem',
-                fontWeight: '600',
-                color: 'var(--text-primary)',
-                marginBottom: 'var(--spacing-md)',
-                margin: 0
-              }}>
-                Revenue by Day
-              </h3>
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{
-                  width: '100%',
-                  backgroundColor: 'var(--bg-primary)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: 'var(--radius-lg)',
-                  borderCollapse: 'separate',
-                  borderSpacing: 0
-                }}>
-                  <thead style={{ backgroundColor: 'var(--bg-tertiary)' }}>
-                    <tr>
-                      <th style={{
-                        padding: 'var(--spacing-md)',
-                        textAlign: 'left',
-                        fontSize: '0.75rem',
-                        fontWeight: '600',
-                        color: 'var(--text-secondary)',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.05em',
-                        borderBottom: '1px solid var(--border-color)'
-                      }}>
-                        Date
-                      </th>
-                      <th style={{
-                        padding: 'var(--spacing-md)',
-                        textAlign: 'left',
-                        fontSize: '0.75rem',
-                        fontWeight: '600',
-                        color: 'var(--text-secondary)',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.05em',
-                        borderBottom: '1px solid var(--border-color)'
-                      }}>
-                        Revenue
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {analytics.revenueByDay.map((day: any, index: number) => (
-                      <tr key={index} style={{
-                        transition: 'background-color 0.2s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                      }}>
-                        <td style={{
-                          padding: 'var(--spacing-md)',
-                          fontSize: '0.875rem',
-                          color: 'var(--text-primary)',
-                          borderBottom: index < analytics.revenueByDay.length - 1 ? '1px solid var(--border-light)' : 'none'
-                        }}>
-                          {day.date}
-                        </td>
-                        <td style={{
-                          padding: 'var(--spacing-md)',
-                          fontSize: '0.875rem',
-                          fontWeight: '600',
-                          color: 'var(--text-primary)',
-                          borderBottom: index < analytics.revenueByDay.length - 1 ? '1px solid var(--border-light)' : 'none'
-                        }}>
-                          {formatPrice(day.revenueCents)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Filters */}
-        <div style={{
-          backgroundColor: 'var(--bg-primary)',
-          padding: 'var(--spacing-2xl)',
-          borderRadius: 'var(--radius-xl)',
-          boxShadow: 'var(--shadow-sm)',
-          border: '1px solid var(--border-light)',
-          marginBottom: 'var(--spacing-2xl)'
-        }}>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: 'var(--spacing-lg)',
-            alignItems: 'end'
-          }}>
-            <div style={{ position: 'relative' }}>
-              <Search style={{
-                position: 'absolute',
-                left: 'var(--spacing-md)',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: 'var(--text-muted)',
-                width: '20px',
-                height: '20px',
-                pointerEvents: 'none'
-              }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Search size={16} />
               <input
                 type="text"
-                placeholder="Search by name or SKU..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 style={{
-                  width: '100%',
-                  padding: 'var(--spacing-md) var(--spacing-md) var(--spacing-md) 3rem',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: 'var(--radius-lg)',
-                  backgroundColor: 'var(--bg-primary)',
-                  color: 'var(--text-primary)',
-                  fontSize: '0.875rem',
-                  transition: 'all 0.2s ease'
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = 'var(--primary-blue)';
-                  e.target.style.boxShadow = '0 0 0 3px var(--primary-blue-light)';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = 'var(--border-color)';
-                  e.target.style.boxShadow = 'none';
+                  padding: '8px 12px',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  minWidth: '200px'
                 }}
               />
             </div>
-
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
               style={{
-                padding: 'var(--spacing-md)',
-                border: '1px solid var(--border-color)',
-                borderRadius: 'var(--radius-lg)',
-                backgroundColor: 'var(--bg-primary)',
-                color: 'var(--text-primary)',
-                fontSize: '0.875rem',
-                transition: 'all 0.2s ease',
-                cursor: 'pointer'
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = 'var(--primary-blue)';
-                e.target.style.boxShadow = '0 0 0 3px var(--primary-blue-light)';
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = 'var(--border-color)';
-                e.target.style.boxShadow = 'none';
+                padding: '8px 12px',
+                border: '1px solid #ddd',
+                borderRadius: '4px'
               }}
             >
-              <option value="">All Categories</option>
               {categories.map(category => (
-                <option key={category} value={category}>{category}</option>
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
               ))}
             </select>
+          </div>
 
+          {/* Products Grid */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+            gap: '20px'
+          }}>
+            {products.map(product => (
+              <div
+                key={product.id}
+                style={{
+                  border: '1px solid #e0e0e0',
+                  borderRadius: '8px',
+                  padding: '16px',
+                  background: 'white',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                }}
+              >
+                <img
+                  src={product.imageUrl}
+                  alt={product.name}
+                  style={{
+                    width: '100%',
+                    height: '150px',
+                    objectFit: 'cover',
+                    borderRadius: '4px',
+                    marginBottom: '12px'
+                  }}
+                />
+                <h3 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>{product.name}</h3>
+                <p style={{ color: '#666', margin: '0 0 8px 0', fontSize: '14px' }}>
+                  {product.category}
+                </p>
+                <p style={{ 
+                  fontWeight: 'bold', 
+                  color: '#493aecff', 
+                  margin: '0 0 8px 0' 
+                }}>
+                  ${(product.priceCents / 100).toFixed(2)}
+                </p>
+                <p style={{ 
+                  color: product.stockQty > 0 ? 'green' : 'red',
+                  margin: '0 0 12px 0',
+                  fontSize: '14px'
+                }}>
+                  Stock: {product.stockQty}
+                </p>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  <button
+                    onClick={() => handleEditProduct(product)}
+                    style={{
+                      padding: '6px 12px',
+                      backgroundColor: '#f0f0f0',
+                      border: '1px solid #ddd',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '14px'
+                    }}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleToggleProductStatus(product.id)}
+                    style={{
+                      padding: '6px 12px',
+                      backgroundColor: product.isActive ? '#fef3c7' : '#d1fae5',
+                      border: '1px solid #ddd',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      color: product.isActive ? '#92400e' : '#065f46'
+                    }}
+                  >
+                    {product.isActive ? 'Hide' : 'Show'}
+                  </button>
+                  <button
+                    onClick={() => handleRemoveProduct(product.id)}
+                    style={{
+                      padding: '6px 12px',
+                      backgroundColor: '#fee2e2',
+                      border: '1px solid #ddd',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      color: '#dc2626'
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Orders Tab */}
+      {activeTab === 'orders' && (
+        <div>
+          <h2 style={{ marginBottom: '20px' }}>Order Management</h2>
+          
+          {/* Order Filters */}
+          <div style={{ 
+            display: 'flex', 
+            gap: '15px', 
+            marginBottom: '20px',
+            flexWrap: 'wrap'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Search size={16} />
+              <input
+                type="text"
+                placeholder="Search orders..."
+                value={orderSearchQuery}
+                onChange={(e) => setOrderSearchQuery(e.target.value)}
+                style={{
+                  padding: '8px 12px',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  minWidth: '200px'
+                }}
+              />
+            </div>
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
               style={{
-                padding: 'var(--spacing-md)',
-                border: '1px solid var(--border-color)',
-                borderRadius: 'var(--radius-lg)',
-                backgroundColor: 'var(--bg-primary)',
-                color: 'var(--text-primary)',
-                fontSize: '0.875rem',
-                transition: 'all 0.2s ease',
-                cursor: 'pointer'
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = 'var(--primary-blue)';
-                e.target.style.boxShadow = '0 0 0 3px var(--primary-blue-light)';
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = 'var(--border-color)';
-                e.target.style.boxShadow = 'none';
+                padding: '8px 12px',
+                border: '1px solid #ddd',
+                borderRadius: '4px'
               }}
             >
-              <option value="">All Status</option>
-              <option value="active">Active</option>
-              <option value="hidden">Hidden</option>
+              {statusOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
             </select>
+          </div>
+
+          {/* Orders List */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {orders.map(order => (
+              <div
+                key={order.id}
+                style={{
+                  border: '1px solid #e0e0e0',
+                  borderRadius: '8px',
+                  padding: '16px',
+                  background: 'white',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                }}
+              >
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'flex-start',
+                  marginBottom: '12px'
+                }}>
+                  <div>
+                    <h3 style={{ margin: '0 0 4px 0', fontSize: '16px' }}>
+                      {order.customerName}
+                    </h3>
+                    <p style={{ margin: '0', color: '#666', fontSize: '14px' }}>
+                      {order.id} • {order.deliveryMethod}
+                    </p>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <p style={{ 
+                      margin: '0 0 4px 0', 
+                      fontWeight: 'bold',
+                      fontSize: '16px'
+                    }}>
+                      ${order.total.toFixed(2)}
+                    </p>
+                    <select
+                      value={order.status}
+                      onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
+                      style={{
+                        padding: '4px 8px',
+                        border: '1px solid #ddd',
+                        borderRadius: '4px',
+                        fontSize: '12px'
+                      }}
+                    >
+                      {statusOptions.map(option => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div style={{ fontSize: '14px', color: '#666' }}>
+                  <p style={{ margin: '0 0 4px 0' }}>{order.email}</p>
+                  <p style={{ margin: '0' }}>{order.address}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Analytics Tab */}
+      {activeTab === 'analytics' && (
+        <div>
+          <h2 style={{ marginBottom: '20px' }}>Analytics Dashboard</h2>
+          
+          {/* Analytics Cards */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gap: '20px',
+            marginBottom: '30px'
+          }}>
+            <div style={{
+              background: 'white',
+              padding: '20px',
+              borderRadius: '8px',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              border: '1px solid #e0e0e0'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
+                <DollarSign size={24} color="#493aecff" />
+                <h3 style={{ margin: '0 0 0 12px', fontSize: '18px' }}>Total Revenue</h3>
+              </div>
+              <p style={{ fontSize: '24px', fontWeight: 'bold', margin: '0', color: '#333' }}>
+                ${analytics.sales.totalRevenue.toFixed(2)}
+              </p>
+              <p style={{ fontSize: '14px', color: '#666', margin: '4px 0 0 0' }}>
+                +{analytics.sales.growthRate}% from last period
+              </p>
+            </div>
 
             <div style={{
-              fontSize: '0.875rem',
-              color: 'var(--text-secondary)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'var(--bg-tertiary)',
-              padding: 'var(--spacing-md)',
-              borderRadius: 'var(--radius-lg)',
-              fontWeight: '500'
+              background: 'white',
+              padding: '20px',
+              borderRadius: '8px',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              border: '1px solid #e0e0e0'
             }}>
-              Showing {getCurrentPageProducts().length} of {filteredProducts.length} products
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
+                <Package size={24} color="#493aecff" />
+                <h3 style={{ margin: '0 0 0 12px', fontSize: '18px' }}>Total Orders</h3>
+              </div>
+              <p style={{ fontSize: '24px', fontWeight: 'bold', margin: '0', color: '#333' }}>
+                {analytics.sales.totalOrders}
+              </p>
+              <p style={{ fontSize: '14px', color: '#666', margin: '4px 0 0 0' }}>
+                Avg: ${analytics.sales.averageOrderValue.toFixed(2)}
+              </p>
+            </div>
+
+            <div style={{
+              background: 'white',
+              padding: '20px',
+              borderRadius: '8px',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              border: '1px solid #e0e0e0'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
+                <BarChart3 size={24} color="#493aecff" />
+                <h3 style={{ margin: '0 0 0 12px', fontSize: '18px' }}>Active Products</h3>
+              </div>
+              <p style={{ fontSize: '24px', fontWeight: 'bold', margin: '0', color: '#333' }}>
+                {analytics.products.activeProducts}
+              </p>
+              <p style={{ fontSize: '14px', color: '#666', margin: '4px 0 0 0' }}>
+                {analytics.products.lowStockProducts} low stock
+              </p>
+            </div>
+          </div>
+
+          {/* Top Selling Products */}
+          <div style={{
+            background: 'white',
+            padding: '20px',
+            borderRadius: '8px',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+            border: '1px solid #e0e0e0'
+          }}>
+            <h3 style={{ margin: '0 0 20px 0' }}>Top Selling Products</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {analytics.products.topSelling.map((product: any, index: number) => (
+                <div key={product.id} style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '12px',
+                  background: '#f8f9fa',
+                  borderRadius: '4px'
+                }}>
+                  <div>
+                    <p style={{ margin: '0 0 4px 0', fontWeight: 'bold' }}>
+                      #{index + 1} {product.name}
+                    </p>
+                    <p style={{ margin: '0', fontSize: '14px', color: '#666' }}>
+                      {product.sales} sales
+                    </p>
+                  </div>
+                  <p style={{ margin: '0', fontWeight: 'bold', color: '#493aecff' }}>
+                    ${product.revenue.toFixed(2)}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
+      )}
 
-        {/* Product Table */}
-        <div style={{
-          backgroundColor: 'var(--bg-primary)',
-          borderRadius: 'var(--radius-xl)',
-          boxShadow: 'var(--shadow-sm)',
-          border: '1px solid var(--border-light)',
-          overflow: 'hidden'
-        }}>
-          <ProductTable
-            products={getCurrentPageProducts()}
-            onEdit={handleEditProduct}
-            onToggleActive={handleToggleActive}
-            onRemove={handleRemoveProduct}
-          />
-        </div>
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div style={{
-            marginTop: 'var(--spacing-2xl)',
-            display: 'flex',
-            justifyContent: 'center'
-          }}>
-            <nav style={{
-              display: 'flex',
-              gap: 'var(--spacing-sm)'
-            }}>
-              <button
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                style={{
-                  padding: 'var(--spacing-sm) var(--spacing-md)',
-                  fontSize: '0.875rem',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: 'var(--radius-lg)',
-                  backgroundColor: 'var(--bg-primary)',
-                  color: 'var(--text-primary)',
-                  cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-                  opacity: currentPage === 1 ? 0.5 : 1,
-                  transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={(e) => {
-                  if (currentPage !== 1) {
-                    e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (currentPage !== 1) {
-                    e.currentTarget.style.backgroundColor = 'var(--bg-primary)';
-                  }
-                }}
-              >
-                Previous
-              </button>
-              
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  style={{
-                    padding: 'var(--spacing-sm) var(--spacing-md)',
-                    fontSize: '0.875rem',
-                    border: '1px solid var(--border-color)',
-                    borderRadius: 'var(--radius-lg)',
-                    backgroundColor: currentPage === page ? 'var(--primary-blue)' : 'var(--bg-primary)',
-                    color: currentPage === page ? 'white' : 'var(--text-primary)',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (currentPage !== page) {
-                      e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (currentPage !== page) {
-                      e.currentTarget.style.backgroundColor = 'var(--bg-primary)';
-                    }
-                  }}
-                >
-                  {page}
-                </button>
-              ))}
-              
-              <button
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-                style={{
-                  padding: 'var(--spacing-sm) var(--spacing-md)',
-                  fontSize: '0.875rem',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: 'var(--radius-lg)',
-                  backgroundColor: 'var(--bg-primary)',
-                  color: 'var(--text-primary)',
-                  cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-                  opacity: currentPage === totalPages ? 0.5 : 1,
-                  transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={(e) => {
-                  if (currentPage !== totalPages) {
-                    e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (currentPage !== totalPages) {
-                    e.currentTarget.style.backgroundColor = 'var(--bg-primary)';
-                  }
-                }}
-              >
-                Next
-              </button>
-            </nav>
-          </div>
-        )}
-
-        {/* Modals */}
-        {showProductForm && (
-          <ProductForm
-            initialProduct={editingProduct}
-            onSubmit={handleSubmitProduct}
-            onCancel={() => {
-              setShowProductForm(false);
-              setEditingProduct(undefined);
-            }}
-          />
-        )}
-
-        {showConfirmDialog && (
-          <ConfirmDialog
-            title="Remove Product"
-            message="Are you sure you want to remove this product? This action cannot be undone."
-            onConfirm={confirmRemove}
-            onCancel={() => {
-              setShowConfirmDialog(false);
-              setProductToRemove('');
-            }}
-          />
-        )}
-      </div>
+      {/* Product Form Modal */}
+      <ProductForm
+        product={editingProduct}
+        onSave={handleSaveProduct}
+        onCancel={handleCloseForm}
+        isOpen={showProductForm}
+      />
     </div>
   );
 };
