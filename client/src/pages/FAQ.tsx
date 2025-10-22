@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import LiveChat from './LiveChat';
 import { Search, MessageCircle, HelpCircle } from 'lucide-react';
 
 interface Topic {
@@ -18,6 +19,7 @@ const FAQ: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'faq' | 'chat'>('faq');
   const [selectedTopic, setSelectedTopic] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [chatStarted, setChatStarted] = useState(false);
 
   // Sample data 
   
@@ -111,6 +113,57 @@ const FAQ: React.FC = () => {
     question: 'How do I filter products?',
     answer: 'The product catalogue includes filtering options, allowing you to sort and find products based on specific criteria.',
     topicId: 'products'
+  }
+  ,
+  // Additional Payment & Price FAQs
+  {
+    id: '16',
+    question: 'Do you store my card details?',
+    answer: 'No. Payments are processed securely by our payment provider and we do not store full card details on our servers.',
+    topicId: 'payment'
+  },
+  {
+    id: '17',
+    question: 'Why was my card declined?',
+    answer: 'Common reasons include insufficient funds, incorrect CVC/ZIP, or a bank security block. Try another card or contact your bank.',
+    topicId: 'payment'
+  },
+  {
+    id: '18',
+    question: 'Can I get a tax invoice/receipt?',
+    answer: 'Yes. After payment, a tax invoice is emailed to you and also available in your Order History.',
+    topicId: 'payment'
+  },
+  {
+    id: '19',
+    question: 'Do you support promo codes or discounts?',
+    answer: 'Yes. Enter valid promo codes on the checkout page under the “Apply discount” section to see updated pricing.',
+    topicId: 'payment'
+  },
+  // Additional Cart & Checkout FAQs
+  {
+    id: '20',
+    question: 'How do I edit quantities in my cart?',
+    answer: 'Open your cart and use the +/− buttons beside each item to adjust quantities, then review the updated total.',
+    topicId: 'cart'
+  },
+  {
+    id: '21',
+    question: 'Why can’t I proceed to checkout?',
+    answer: 'Make sure you are logged in, your cart is not empty, and all required address and contact fields are completed.',
+    topicId: 'cart'
+  },
+  {
+    id: '22',
+    question: 'Can I save items for later?',
+    answer: 'Yes. Use “Save for later” in the cart to keep items without purchasing them now. They stay available under your account.',
+    topicId: 'cart'
+  },
+  {
+    id: '23',
+    question: 'How are shipping fees calculated at checkout?',
+    answer: 'Shipping is based on your address, item weight, and current promotions. The exact fee is shown before you confirm payment.',
+    topicId: 'cart'
   }
   ];
 
@@ -418,61 +471,68 @@ const topics: Topic[] = [
             </div>
           </div>
         ) : (
-          // Live Chat Placeholder
-          <div style={{
-            backgroundColor: 'var(--bg-primary)',
-            borderRadius: 'var(--radius-xl)',
-            padding: 'var(--spacing-2xl)',
-            textAlign: 'center',
-            boxShadow: 'var(--shadow-sm)',
-            border: '1px solid var(--border-light)'
-          }}>
-            <MessageCircle style={{
-              width: '64px',
-              height: '64px',
-              color: 'var(--primary-blue)',
-              margin: '0 auto var(--spacing-lg)'
-            }} />
-            <h2 style={{
-              fontSize: '1.875rem',
-              fontWeight: '700',
-              color: 'var(--text-primary)',
-              marginBottom: 'var(--spacing-md)',
-              margin: '0 0 var(--spacing-md) 0'
+          chatStarted ? (
+            <LiveChat embedded />
+          ) : (
+            // Live Chat Placeholder
+            <div style={{
+              backgroundColor: 'var(--bg-primary)',
+              borderRadius: 'var(--radius-xl)',
+              padding: 'var(--spacing-2xl)',
+              textAlign: 'center',
+              boxShadow: 'var(--shadow-sm)',
+              border: '1px solid var(--border-light)'
             }}>
-              Live Chat Support
-            </h2>
-            <p style={{
-              fontSize: '1rem',
-              color: 'var(--text-secondary)',
-              marginBottom: 'var(--spacing-lg)',
-              margin: '0 0 var(--spacing-lg) 0'
-            }}>
-              Connect with our support team for real-time assistance.
-            </p>
-            <button style={{
-              padding: 'var(--spacing-md) var(--spacing-xl)',
-              backgroundColor: 'var(--primary-blue)',
-              color: 'white',
-              border: 'none',
-              borderRadius: 'var(--radius-lg)',
-              fontSize: '1rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              boxShadow: 'var(--shadow-sm)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--primary-blue-hover)';
-              e.currentTarget.style.boxShadow = 'var(--shadow-md)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--primary-blue)';
-              e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
-            }}>
-              Start Chat
-            </button>
-          </div>
+              <MessageCircle style={{
+                width: '64px',
+                height: '64px',
+                color: 'var(--primary-blue)',
+                margin: '0 auto var(--spacing-lg)'
+              }} />
+              <h2 style={{
+                fontSize: '1.875rem',
+                fontWeight: '700',
+                color: 'var(--text-primary)',
+                marginBottom: 'var(--spacing-md)',
+                margin: '0 0 var(--spacing-md) 0'
+              }}>
+                Live Chat Support
+              </h2>
+              <p style={{
+                fontSize: '1rem',
+                color: 'var(--text-secondary)',
+                marginBottom: 'var(--spacing-lg)',
+                margin: '0 0 var(--spacing-lg) 0'
+              }}>
+                Connect with our support team for real-time assistance.
+              </p>
+              <button
+                onClick={() => setChatStarted(true)}
+                style={{
+                  padding: 'var(--spacing-md) var(--spacing-xl)',
+                  backgroundColor: 'var(--primary-blue)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: 'var(--radius-lg)',
+                  fontSize: '1rem',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  boxShadow: 'var(--shadow-sm)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--primary-blue-hover)';
+                  e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--primary-blue)';
+                  e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+                }}
+              >
+                Start Chat
+              </button>
+            </div>
+          )
         )}
       </div>
     </div>

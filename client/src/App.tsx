@@ -7,6 +7,7 @@ import { DeliveryInterface } from './pages/delivery/DeliveryInterface';
 import ProductCatalogue from './ProductCatalogue';
 import Checkout from './Checkout';
 import FAQ from './pages/FAQ'; 
+import LiveChat from './pages/LiveChat';
 import { Settings, Truck, ShoppingCart, Package, HelpCircle } from 'lucide-react';
 import './App.css';
 
@@ -16,6 +17,13 @@ import './App.css';
  */
 const Navigation: React.FC = () => {
   const location = useLocation();
+
+  const isActive = (target: string) => {
+    if (target === '/') {
+      return location.pathname === '/';
+    }
+    return location.pathname === target || location.pathname.startsWith(`${target}/`);
+  };
 
   const links = [
     { to: '/', label: 'Product Catalogue', icon: Package },
@@ -55,7 +63,7 @@ const Navigation: React.FC = () => {
             {/* Navigation links */}
             <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
               {links.map(({ to, label, icon: Icon }) => {
-                const active = location.pathname === to;
+                const active = isActive(to);
                 return (
                   <Link
                     key={to}
@@ -117,6 +125,7 @@ function App() {
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/delivery" element={<DeliveryInterface />} />
             <Route path="/support" element={<FAQ />} /> {/* ← 新增：FAQ 路由 */}
+            <Route path="/support/chat" element={<LiveChat />} />
           </Routes>
         </div>
       </Router>
