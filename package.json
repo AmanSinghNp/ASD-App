@@ -1,21 +1,14 @@
 {
   "name": "asd-app",
   "version": "1.0.0",
-  "description": "ASD-App - Full-stack e-commerce application with React frontend and Express backend",
+  "description": "```bash\r # Fork this repository on GitHub first, then clone your fork\r git clone https://github.com/YOUR_USERNAME/ASD-App.git\r cd ASD-App\r ```",
   "main": "index.js",
   "scripts": {
     "dev": "concurrently -k \"npm:dev:client\" \"npm:dev:server\"",
     "dev:client": "npm --prefix client run dev",
     "dev:server": "npm --prefix server run dev",
     "build": "npm --prefix client run build && npm --prefix server run build",
-    "start": "npm --prefix server run start",
-    "test": "npm --prefix client run test && npm --prefix server run test",
-    "test:client": "npm --prefix client run test",
-    "test:server": "npm --prefix server run test",
-    "prisma:studio": "npm --prefix server run prisma:studio",
-    "prisma:migrate": "npm --prefix server run prisma:migrate",
-    "prisma:seed": "npm --prefix server run prisma:seed",
-    "prisma:generate": "npm --prefix server run prisma:generate"
+    "start": "npm --prefix server run start"
   },
   "repository": {
     "type": "git",
@@ -29,18 +22,15 @@
   },
   "homepage": "https://github.com/AmanSinghNp/ASD-App#readme",
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.9.0",
-    "@testing-library/react": "^16.3.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
-    "@types/jest": "^30.0.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.3.0",
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
     "autoprefixer": "^10.4.21",
-    "concurrently": "^9.2.1",
+    "concurrently": "^9.2.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
     "ts-node-dev": "^2.0.0",
@@ -48,17 +38,14 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
-    "@prisma/client": "^6.16.3",
-    "@vitejs/plugin-react-swc": "^3.7.0",
+    "@vitejs/plugin-react-swc": "^4.0.1",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.3",
-    "server": "^1.0.42",
     "vite": "^7.1.4"
   },
   "type": "commonjs"

@@ -1,6 +1,6 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import type { ConfirmDialogProps } from '../../types/product';
+import { ConfirmDialogProps } from '../../types/product';
 
 export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   title,

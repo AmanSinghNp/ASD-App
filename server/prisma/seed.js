@@ -1,15 +1,15 @@
-import { PrismaClient } from '@prisma/client';
+const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('Starting database seeding...');
+
   // Create users
   const staffUser = await prisma.user.upsert({
     where: { email: 'staff@example.com' },
     update: {},
     create: {
-      name: 'Unknown',
       email: 'staff@example.com',
       passwordHash: 'placeholder_hash_for_staff',
       role: 'STAFF',
@@ -20,7 +20,6 @@ async function main() {
     where: { email: 'alice@example.com' },
     update: {},
     create: {
-      name: 'Unknown',
       email: 'alice@example.com',
       passwordHash: 'placeholder_hash_for_customer',
       role: 'CUSTOMER',
