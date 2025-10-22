@@ -1,283 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="31" failures="13" errors="0" time="4.628">
-  <testsuite name="Auth Controller" errors="0" failures="0" skipped="0" timestamp="2025-10-22T21:35:31" time="0.603" tests="2">
-    <testcase classname="Auth Controller" name="should validate user credentials" time="0.007">
+<testsuites name="jest tests" tests="31" failures="0" errors="0" time="4.083">
+  <testsuite name="Delivery Controller" errors="0" failures="0" skipped="0" timestamp="2025-10-22T21:45:25" time="0.615" tests="2">
+    <testcase classname="Delivery Controller" name="should calculate delivery slots correctly" time="0.008">
     </testcase>
-    <testcase classname="Auth Controller" name="should create new user account" time="0">
-    </testcase>
-  </testsuite>
-  <testsuite name="Product Controller" errors="0" failures="0" skipped="0" timestamp="2025-10-22T21:35:31" time="0.694" tests="2">
-    <testcase classname="Product Controller" name="should return products list" time="0.027">
-    </testcase>
-    <testcase classname="Product Controller" name="should create a new product" time="0">
+    <testcase classname="Delivery Controller" name="should validate address format correctly" time="0">
     </testcase>
   </testsuite>
-  <testsuite name="Delivery Controller" errors="0" failures="0" skipped="0" timestamp="2025-10-22T21:35:32" time="0.073" tests="2">
-    <testcase classname="Delivery Controller" name="should calculate delivery slots correctly" time="0.001">
+  <testsuite name="Auth Controller" errors="0" failures="0" skipped="0" timestamp="2025-10-22T21:45:26" time="0.07" tests="2">
+    <testcase classname="Auth Controller" name="should validate user credentials" time="0.002">
     </testcase>
-    <testcase classname="Delivery Controller" name="should validate address format correctly" time="0.002">
+    <testcase classname="Auth Controller" name="should create new user account" time="0.001">
     </testcase>
   </testsuite>
-  <testsuite name="Utility Functions" errors="0" failures="0" skipped="0" timestamp="2025-10-22T21:35:31" time="0.822" tests="5">
-    <testcase classname="Utility Functions › calculateTotal" name="calculates total for single item" time="0.008">
+  <testsuite name="Utility Functions" errors="0" failures="0" skipped="0" timestamp="2025-10-22T21:45:25" time="0.729" tests="5">
+    <testcase classname="Utility Functions › calculateTotal" name="calculates total for single item" time="0.025">
     </testcase>
     <testcase classname="Utility Functions › calculateTotal" name="calculates total for multiple items" time="0.001">
     </testcase>
-    <testcase classname="Utility Functions › calculateTotal" name="returns 0 for empty array" time="0">
+    <testcase classname="Utility Functions › calculateTotal" name="returns 0 for empty array" time="0.001">
     </testcase>
     <testcase classname="Utility Functions › validateEmail" name="validates correct email addresses" time="0.001">
     </testcase>
     <testcase classname="Utility Functions › validateEmail" name="rejects invalid email addresses" time="0.001">
     </testcase>
   </testsuite>
-  <testsuite name="Analytics Controller - F007 Admin Dashboard" errors="0" failures="8" skipped="0" timestamp="2025-10-22T21:35:31" time="3.032" tests="8">
-    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should calculate total revenue correctly" time="0.022">
-      <failure>Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
-
-- Expected
-+ Received
-
-  Object {
--   &quot;data&quot;: ObjectContaining {
--     &quot;kpis&quot;: ObjectContaining {
--       &quot;avgOrderValueCents&quot;: 1500,
--       &quot;ordersCount&quot;: 3,
--       &quot;revenueTotalCents&quot;: 4500,
-+   &quot;data&quot;: Object {
-+     &quot;kpis&quot;: Object {
-+       &quot;avgOrderValueCents&quot;: 0,
-+       &quot;ordersCount&quot;: 0,
-+       &quot;revenueTotalCents&quot;: 0,
-      },
-+     &quot;revenueByDay&quot;: Array [],
-+     &quot;topProducts&quot;: Array [],
-    },
-  },
-
-Number of calls: 1
-    at Object.&lt;anonymous&gt; (C:\Users\amans\Desktop\ASD_Project\ASD-App\server\src\__tests__\admin.disabled\analyticsController.test.js:46:45)</failure>
+  <testsuite name="Product Controller" errors="0" failures="0" skipped="0" timestamp="2025-10-22T21:45:26" time="0.925" tests="2">
+    <testcase classname="Product Controller" name="should return products list" time="0.015">
     </testcase>
-    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should calculate order count" time="0.002">
-      <failure>Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
-
-- Expected
-+ Received
-
-  Object {
--   &quot;data&quot;: ObjectContaining {
--     &quot;kpis&quot;: ObjectContaining {
--       &quot;ordersCount&quot;: 2,
-+   &quot;cacheTimestamp&quot;: &quot;2025-10-22T21:35:34.795Z&quot;,
-+   &quot;cached&quot;: true,
-+   &quot;data&quot;: Object {
-+     &quot;kpis&quot;: Object {
-+       &quot;avgOrderValueCents&quot;: 0,
-+       &quot;ordersCount&quot;: 0,
-+       &quot;revenueTotalCents&quot;: 0,
-      },
-+     &quot;revenueByDay&quot;: Array [],
-+     &quot;topProducts&quot;: Array [],
-    },
-  },
-
-Number of calls: 1
-    at Object.&lt;anonymous&gt; (C:\Users\amans\Desktop\ASD_Project\ASD-App\server\src\__tests__\admin.disabled\analyticsController.test.js:64:45)</failure>
-    </testcase>
-    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should calculate average order value correctly" time="0.003">
-      <failure>Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
-
-- Expected
-+ Received
-
-  Object {
--   &quot;data&quot;: ObjectContaining {
--     &quot;kpis&quot;: ObjectContaining {
--       &quot;avgOrderValueCents&quot;: 2000,
-+   &quot;cacheTimestamp&quot;: &quot;2025-10-22T21:35:34.797Z&quot;,
-+   &quot;cached&quot;: true,
-+   &quot;data&quot;: Object {
-+     &quot;kpis&quot;: Object {
-+       &quot;avgOrderValueCents&quot;: 0,
-+       &quot;ordersCount&quot;: 0,
-+       &quot;revenueTotalCents&quot;: 0,
-      },
-+     &quot;revenueByDay&quot;: Array [],
-+     &quot;topProducts&quot;: Array [],
-    },
-  },
-
-Number of calls: 1
-    at Object.&lt;anonymous&gt; (C:\Users\amans\Desktop\ASD_Project\ASD-App\server\src\__tests__\admin.disabled\analyticsController.test.js:80:45)</failure>
-    </testcase>
-    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should handle zero orders gracefully" time="0.002">
-      <failure>Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
-
-- Expected
-+ Received
-
-  Object {
--   &quot;data&quot;: ObjectContaining {
--     &quot;kpis&quot;: ObjectContaining {
-+   &quot;cacheTimestamp&quot;: &quot;2025-10-22T21:35:34.800Z&quot;,
-+   &quot;cached&quot;: true,
-+   &quot;data&quot;: Object {
-+     &quot;kpis&quot;: Object {
-        &quot;avgOrderValueCents&quot;: 0,
-        &quot;ordersCount&quot;: 0,
-        &quot;revenueTotalCents&quot;: 0,
-      },
-+     &quot;revenueByDay&quot;: Array [],
-+     &quot;topProducts&quot;: Array [],
-    },
-  },
-
-Number of calls: 1
-    at Object.&lt;anonymous&gt; (C:\Users\amans\Desktop\ASD_Project\ASD-App\server\src\__tests__\admin.disabled\analyticsController.test.js:92:45)</failure>
-    </testcase>
-    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should return top products by quantity" time="0.003">
-      <failure>Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
-
-- Expected
-+ Received
-
-  Object {
--   &quot;data&quot;: ObjectContaining {
--     &quot;topProducts&quot;: ArrayContaining [
--       ObjectContaining {
--         &quot;name&quot;: &quot;Apple&quot;,
--         &quot;productId&quot;: &quot;1&quot;,
--         &quot;qty&quot;: 7,
--       },
--       ObjectContaining {
--         &quot;name&quot;: &quot;Orange&quot;,
--         &quot;productId&quot;: &quot;3&quot;,
--         &quot;qty&quot;: 4,
-+   &quot;cacheTimestamp&quot;: &quot;2025-10-22T21:35:34.802Z&quot;,
-+   &quot;cached&quot;: true,
-+   &quot;data&quot;: Object {
-+     &quot;kpis&quot;: Object {
-+       &quot;avgOrderValueCents&quot;: 0,
-+       &quot;ordersCount&quot;: 0,
-+       &quot;revenueTotalCents&quot;: 0,
-      },
--       ObjectContaining {
--         &quot;name&quot;: &quot;Banana&quot;,
--         &quot;productId&quot;: &quot;2&quot;,
--         &quot;qty&quot;: 3,
--       },
--     ],
-+     &quot;revenueByDay&quot;: Array [],
-+     &quot;topProducts&quot;: Array [],
-    },
-  },
-
-Number of calls: 1
-    at Object.&lt;anonymous&gt; (C:\Users\amans\Desktop\ASD_Project\ASD-App\server\src\__tests__\admin.disabled\analyticsController.test.js:124:45)</failure>
-    </testcase>
-    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should return revenue by day" time="0.002">
-      <failure>Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
-
-- Expected
-+ Received
-
-  Object {
--   &quot;data&quot;: ObjectContaining {
--     &quot;revenueByDay&quot;: ArrayContaining [
--       Object {
--         &quot;date&quot;: &quot;2025-01-15&quot;,
--         &quot;revenueCents&quot;: 3000,
--       },
--       Object {
--         &quot;date&quot;: &quot;2025-01-16&quot;,
--         &quot;revenueCents&quot;: 1500,
-+   &quot;cacheTimestamp&quot;: &quot;2025-10-22T21:35:34.804Z&quot;,
-+   &quot;cached&quot;: true,
-+   &quot;data&quot;: Object {
-+     &quot;kpis&quot;: Object {
-+       &quot;avgOrderValueCents&quot;: 0,
-+       &quot;ordersCount&quot;: 0,
-+       &quot;revenueTotalCents&quot;: 0,
-      },
--     ],
-+     &quot;revenueByDay&quot;: Array [],
-+     &quot;topProducts&quot;: Array [],
-    },
-  },
-
-Number of calls: 1
-    at Object.&lt;anonymous&gt; (C:\Users\amans\Desktop\ASD_Project\ASD-App\server\src\__tests__\admin.disabled\analyticsController.test.js:155:45)</failure>
-    </testcase>
-    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should use default date range when no dates provided" time="0.021">
-      <failure>Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
-
-Expected: {&quot;include&quot;: Any&lt;Object&gt;, &quot;where&quot;: ObjectContaining {&quot;createdAt&quot;: ObjectContaining {&quot;gte&quot;: Any&lt;Date&gt;, &quot;lte&quot;: Any&lt;Date&gt;}}}
-
-Number of calls: 0
-    at Object.&lt;anonymous&gt; (C:\Users\amans\Desktop\ASD_Project\ASD-App\server\src\__tests__\admin.disabled\analyticsController.test.js:168:62)</failure>
-    </testcase>
-    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should handle database errors gracefully" time="0.001">
-      <failure>Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
-
-Expected: 500
-
-Number of calls: 0
-    at Object.&lt;anonymous&gt; (C:\Users\amans\Desktop\ASD_Project\ASD-App\server\src\__tests__\admin.disabled\analyticsController.test.js:182:47)</failure>
+    <testcase classname="Product Controller" name="should create a new product" time="0.001">
     </testcase>
   </testsuite>
-  <testsuite name="Product Controller - F007 Admin Dashboard" errors="0" failures="5" skipped="0" timestamp="2025-10-22T21:35:31" time="3.231" tests="12">
-    <testcase classname="Product Controller - F007 Admin Dashboard › createProduct" name="should create product with valid data" time="0.143">
-      <failure>Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
-
-Expected: {&quot;data&quot;: {&quot;category&quot;: &quot;Fruits&quot;, &quot;imageUrl&quot;: &quot;https://example.com/apple.jpg&quot;, &quot;name&quot;: &quot;Test Apple&quot;, &quot;priceCents&quot;: 299, &quot;sku&quot;: &quot;TEST001&quot;, &quot;stockQty&quot;: 100}}
-
-Number of calls: 0
-    at Object.&lt;anonymous&gt; (C:\Users\amans\Desktop\ASD_Project\ASD-App\server\src\__tests__\admin.disabled\productController.test.js:53:62)</failure>
+  <testsuite name="Analytics Controller - F007 Admin Dashboard" errors="0" failures="0" skipped="0" timestamp="2025-10-22T21:45:25" time="3.035" tests="8">
+    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should calculate total revenue correctly" time="0.027">
     </testcase>
-    <testcase classname="Product Controller - F007 Admin Dashboard › createProduct" name="should reject duplicate SKU" time="0.005">
+    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should calculate order count" time="0.002">
+    </testcase>
+    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should calculate average order value correctly" time="0.003">
+    </testcase>
+    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should handle zero orders gracefully" time="0.001">
+    </testcase>
+    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should return top products by quantity" time="0.001">
+    </testcase>
+    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should return revenue by day" time="0">
+    </testcase>
+    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should use default date range when no dates provided" time="0.001">
+    </testcase>
+    <testcase classname="Analytics Controller - F007 Admin Dashboard › getAnalytics" name="should handle database errors gracefully" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Product Controller - F007 Admin Dashboard" errors="0" failures="0" skipped="0" timestamp="2025-10-22T21:45:25" time="3.121" tests="12">
+    <testcase classname="Product Controller - F007 Admin Dashboard › createProduct" name="should create product with valid data" time="0.009">
+    </testcase>
+    <testcase classname="Product Controller - F007 Admin Dashboard › createProduct" name="should reject duplicate SKU" time="0.001">
     </testcase>
     <testcase classname="Product Controller - F007 Admin Dashboard › createProduct" name="should reject negative price" time="0.001">
     </testcase>
     <testcase classname="Product Controller - F007 Admin Dashboard › createProduct" name="should reject invalid name length" time="0.001">
     </testcase>
-    <testcase classname="Product Controller - F007 Admin Dashboard › createProduct" name="should reject negative stock quantity" time="0.001">
+    <testcase classname="Product Controller - F007 Admin Dashboard › createProduct" name="should reject negative stock quantity" time="0.002">
     </testcase>
-    <testcase classname="Product Controller - F007 Admin Dashboard › updateProduct" name="should update price and stock successfully" time="0.011">
-      <failure>Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
-
-Expected: {&quot;data&quot;: {&quot;priceCents&quot;: 399, &quot;stockQty&quot;: 75}, &quot;where&quot;: {&quot;id&quot;: &quot;1&quot;}}
-
-Number of calls: 0
-    at Object.&lt;anonymous&gt; (C:\Users\amans\Desktop\ASD_Project\ASD-App\server\src\__tests__\admin.disabled\productController.test.js:133:62)</failure>
+    <testcase classname="Product Controller - F007 Admin Dashboard › updateProduct" name="should update price and stock successfully" time="0.001">
     </testcase>
-    <testcase classname="Product Controller - F007 Admin Dashboard › updateProduct" name="should return error for non-existent product" time="0.003">
+    <testcase classname="Product Controller - F007 Admin Dashboard › updateProduct" name="should return error for non-existent product" time="0.001">
     </testcase>
     <testcase classname="Product Controller - F007 Admin Dashboard › updateProduct" name="should validate price on update" time="0.001">
     </testcase>
-    <testcase classname="Product Controller - F007 Admin Dashboard › hideProduct" name="should soft delete product (isActive = false)" time="0.004">
-      <failure>Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
-
-Expected: {&quot;data&quot;: {&quot;isActive&quot;: false}, &quot;where&quot;: {&quot;id&quot;: &quot;1&quot;}}
-
-Number of calls: 0
-    at Object.&lt;anonymous&gt; (C:\Users\amans\Desktop\ASD_Project\ASD-App\server\src\__tests__\admin.disabled\productController.test.js:172:62)</failure>
+    <testcase classname="Product Controller - F007 Admin Dashboard › hideProduct" name="should soft delete product (isActive = false)" time="0.001">
     </testcase>
-    <testcase classname="Product Controller - F007 Admin Dashboard › hideProduct" name="should return error for non-existent product" time="0.004">
+    <testcase classname="Product Controller - F007 Admin Dashboard › hideProduct" name="should return error for non-existent product" time="0.001">
     </testcase>
-    <testcase classname="Product Controller - F007 Admin Dashboard › getProducts" name="should return all products when includeHidden=true" time="0.004">
-      <failure>Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
-
-Expected: {&quot;orderBy&quot;: {&quot;createdAt&quot;: &quot;desc&quot;}, &quot;where&quot;: {}}
-
-Number of calls: 0
-    at Object.&lt;anonymous&gt; (C:\Users\amans\Desktop\ASD_Project\ASD-App\server\src\__tests__\admin.disabled\productController.test.js:196:64)</failure>
+    <testcase classname="Product Controller - F007 Admin Dashboard › getProducts" name="should return all products when includeHidden=true" time="0.001">
     </testcase>
-    <testcase classname="Product Controller - F007 Admin Dashboard › getProducts" name="should return only active products when includeHidden=false" time="0.002">
-      <failure>Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
-
-Expected: {&quot;orderBy&quot;: {&quot;createdAt&quot;: &quot;desc&quot;}, &quot;where&quot;: {&quot;isActive&quot;: true}}
-
-Number of calls: 0
-    at Object.&lt;anonymous&gt; (C:\Users\amans\Desktop\ASD_Project\ASD-App\server\src\__tests__\admin.disabled\productController.test.js:209:64)</failure>
+    <testcase classname="Product Controller - F007 Admin Dashboard › getProducts" name="should return only active products when includeHidden=false" time="0.001">
     </testcase>
   </testsuite>
 </testsuites>
