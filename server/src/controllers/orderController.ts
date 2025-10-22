@@ -1,7 +1,16 @@
+/**
+ * Order Management Controller
+ * Author: Aman Singh (Student ID: 25104201)
+ * Feature: F008 - Delivery
+ * Description: Handles order creation, status updates, and order management for delivery system
+ * Last Updated: 2025-10-22
+ */
+
 import type { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import prisma from "../utils/database";
+import { cache } from "../utils/cache";
 
 dotenv.config();
 
@@ -155,6 +164,9 @@ export const createOrder = async (req: Request, res: Response) => {
 
       return order;
     });
+
+    // Clear analytics cache when orders are created
+    cache.clear();
 
     res.status(201).json({
       data: {
