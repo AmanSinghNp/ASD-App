@@ -2,9 +2,11 @@ import React from "react";
 import { useCartContext } from "../context/CartContext";
 import { type CartItem as CartItemType } from "../models/CartModel";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Cart: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const {
     cartItems,
     totalPrice,
@@ -13,6 +15,16 @@ const Cart: React.FC = () => {
     removeFromCart,
     clearCart,
   } = useCartContext();
+
+  if (!user) {
+    return (
+      <div className="not-logged-in">
+        <h2>Please log in to proceed with your purchase.</h2>
+        <p>You must be signed in to checkout and place an order.</p>
+        <a href="/auth/login" className="login-link">Go to Login</a>
+      </div>
+    );
+  }
 
   const handleRemoveItem = (productId: string) => {
     removeFromCart(productId);
