@@ -7,7 +7,9 @@
     "dev": "concurrently -k \"npm:dev:client\" \"npm:dev:server\"",
     "dev:client": "npm --prefix client run dev",
     "dev:server": "npm --prefix server run dev",
-    "build": "npm --prefix client run build && npm --prefix server run build",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "npm --prefix client run build",
+    "build:server": "npm --prefix server run build",
     "start": "npm --prefix server run start",
     "test": "npm --prefix client run test && npm --prefix server run test",
     "test:client": "npm --prefix client run test",
@@ -15,7 +17,8 @@
     "prisma:studio": "npm --prefix server run prisma:studio",
     "prisma:migrate": "npm --prefix server run prisma:migrate",
     "prisma:seed": "npm --prefix server run prisma:seed",
-    "prisma:generate": "npm --prefix server run prisma:generate"
+    "prisma:generate": "npm --prefix server run prisma:generate",
+    "postinstall": "npm --prefix server run prisma:generate"
   },
   "repository": {
     "type": "git",

@@ -35,6 +35,16 @@ app.get("/", (_, res) => {
   res.send("Welcome to the Supermarket API!");
 });
 
+// Health check endpoint for production monitoring
+app.get("/health", (req, res) => {
+  res.status(200).json({ 
+    status: 'healthy', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
 // API Routes
 app.use("/api/products", productRoutes);
 app.use("/api/analytics", analyticsRoutes);

@@ -1,7 +1,7 @@
 // server/src/app.ts
 import express from "express";
 import cors from "cors";
-import authRouter from "../routes/authRouter.ts"; // your auth routes
+import authRouter from "../routes/authRouter"; // your auth routes
 
 const app = express();
 

@@ -68,6 +68,7 @@ export const createProduct = async (req: Request, res: Response) => {
     // Create product in database
     const product = await prisma.product.create({
       data: {
+        id: sku, // Use SKU as ID for consistency
         sku,
         name,
         category,

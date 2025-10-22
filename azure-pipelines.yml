@@ -1,18 +1,15 @@
-
 trigger:
   branches:
     include:
       - main
       - dev
-
+      - aman-r2.4_Prod
 
 pool:
   vmImage: "ubuntu-latest"
 
-
 variables:
   nodeVersion: "18.x"
-
 
 stages:
   
@@ -21,7 +18,7 @@ stages:
     jobs:
       
       - job: FrontendTests
-        displayName: 'Run Client (Frontend) Tests'
+        displayName: 'Run Frontend Tests'
         steps:
           
           - task: NodeTool@0
@@ -29,19 +26,19 @@ stages:
               versionSpec: $(nodeVersion)
             displayName: 'Install Node.js'
 
-       
+          - script: npm install
+            displayName: 'Install root dependencies'
+
           - script: npm install
             displayName: 'Install client dependencies'
             workingDirectory: 'client' 
 
-        
           - script: npm test
-            displayName: 'Run client unit tests'
+            displayName: 'Run client tests'
             workingDirectory: 'client'
 
-      
       - job: BackendTests
-        displayName: 'Run Server (Backend) Tests'
+        displayName: 'Run Backend Tests'
         steps:
           
           - task: NodeTool@0
@@ -49,24 +46,24 @@ stages:
               versionSpec: $(nodeVersion)
             displayName: 'Install Node.js'
 
-         
+          - script: npm install
+            displayName: 'Install root dependencies'
+
           - script: npm install
             displayName: 'Install server dependencies'
             workingDirectory: 'server'
             
-         
           - script: npm test
-            displayName: 'Run server unit tests'
+            displayName: 'Run server tests'
             workingDirectory: 'server'
 
- 
   - stage: Build
     displayName: 'Build Stage'
     dependsOn: Test 
     jobs:
       
-      - job: BuildClient
-        displayName: 'Build Client (Frontend)'
+      - job: BuildApplication
+        displayName: 'Build Application'
         steps:
           
           - task: NodeTool@0
@@ -74,50 +71,50 @@ stages:
               versionSpec: $(nodeVersion)
             displayName: 'Install Node.js'
 
+          - script: npm install
+            displayName: 'Install root dependencies'
           
           - script: |
               npm install
               npm run build
-            displayName: 'Install dependencies and build client'
+            displayName: 'Build client'
             workingDirectory: 'client'
-            
-          
-          - task: PublishBuildArtifacts@1
-            inputs:
-              PathtoPublish: 'client/dist'
-              ArtifactName: 'client'
-              publishLocation: 'Container'
-            displayName: 'Publish client artifact'
 
-     
-      - job: BuildServer
-        displayName: 'Build Server (Backend)'
-        steps:
-          
-          - task: NodeTool@0
-            inputs:
-              versionSpec: $(nodeVersion)
-            displayName: 'Install Node.js'
-
-          
-          - script: npm install
-            displayName: 'Install server dependencies'
-            workingDirectory: 'server'
-            
-          
-          - script: npx prisma generate
-            displayName: 'Run Prisma Generate'
-            workingDirectory: 'server'
-
-          
-          - script: npm run build
+          - script: |
+              npm install
+              npx prisma generate
+              npm run build
             displayName: 'Build server'
             workingDirectory: 'server'
-
-          
+            
           - task: PublishBuildArtifacts@1
             inputs:
-              PathtoPublish: 'server' 
-              ArtifactName: 'server'
+              PathtoPublish: '$(Build.SourcesDirectory)'
+              ArtifactName: 'asd-app'
               publishLocation: 'Container'
-            displayName: 'Publish server artifact'
+            displayName: 'Publish application artifacts'
+
+  - stage: Deploy
+    displayName: 'Deploy to Azure'
+    dependsOn: Build
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      
+      - deployment: DeployToAzure
+        displayName: 'Deploy to Azure Web App'
+        environment: 'production'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                
+                - task: AzureWebApp@1
+                  inputs:
+                    azureSubscription: 'Your-Azure-Service-Connection'
+                    appName: 'your-azure-web-app-name'
+                    package: '$(Pipeline.Workspace)/asd-app'
+                    appSettings: |
+                      -NODE_ENV production
+                      -DATABASE_URL "file:./prod.db"
+                      -JWT_SECRET "$(JWT_SECRET)"
+                      -CORS_ORIGIN "$(CORS_ORIGIN)"

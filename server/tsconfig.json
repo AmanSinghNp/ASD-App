@@ -8,5 +8,6 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["src", "prisma/seed.ts", "__tests__"]
+  "include": ["src", "prisma/seed.ts"],
+  "exclude": ["__tests__", "node_modules", "dist"]
 }
