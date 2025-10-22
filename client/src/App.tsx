@@ -1,8 +1,7 @@
-// client/src/App.tsx
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';  // Import useNavigate
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';  
 import { CartProvider } from './context/CartContext';
-import { AuthProvider, useAuth } from './context/AuthContext';  // Import AuthProvider
+import { AuthProvider, useAuth } from './context/AuthContext';  
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { DeliveryInterface } from './pages/delivery/DeliveryInterface';
 import ProductCatalogue from './ProductCatalogue';
@@ -10,13 +9,14 @@ import Cart from './components/Cart';
 import Checkout from './Checkout';
 import FAQ from './pages/FAQ'; 
 import LiveChat from './pages/LiveChat';
-import { Settings, Truck, ShoppingCart, Package, User, LogIn, Edit, LogOut, HelpCircle } from 'lucide-react';
+import { Settings, Truck, ShoppingCart, Package, User, LogIn, LogOut, HelpCircle } from 'lucide-react';
 import './App.css';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Signup from './pages/Signup';
 import EditProfile from './pages/EditProfile';
 import OrderHistory from './pages/OrderHistory';
+import ProtectedAdminRoute from './context/ProtectAdminRoute';
 
 /**
  * Navigation component for the main application header
@@ -24,17 +24,17 @@ import OrderHistory from './pages/OrderHistory';
  */
 const Navigation: React.FC = () => {
   const location = useLocation();
-  const navigate = useNavigate();  // Hook to navigate programmatically
-  const { user, logout } = useAuth(); // Get user state and logout function from context
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const handleMouseEnter = (e: React.MouseEvent) => {
-    const target = e.currentTarget as HTMLElement;  // Cast the target to HTMLElement
+    const target = e.currentTarget as HTMLElement;
     target.style.backgroundColor = 'var(--bg-tertiary)';
     target.style.color = 'var(--text-primary)';
   };
 
   const handleMouseLeave = (e: React.MouseEvent) => {
-    const target = e.currentTarget as HTMLElement;  // Cast the target to HTMLElement
+    const target = e.currentTarget as HTMLElement;
     if (location.pathname !== target.getAttribute('href')) {
       target.style.backgroundColor = 'transparent';
       target.style.color = 'var(--text-secondary)';
@@ -42,11 +42,11 @@ const Navigation: React.FC = () => {
   };
 
   const handleLogout = () => {
-    logout();  // Perform logout
-    navigate('/');  // Redirect to home page after logout
+    logout();
+    navigate('/');
   };
 
-    return (
+  return (
     <nav style={{
       backgroundColor: 'var(--bg-primary)',
       boxShadow: 'var(--shadow-sm)',
@@ -77,22 +77,56 @@ const Navigation: React.FC = () => {
               ASD App
             </h1>
 
-            <div style={{
-              display: 'flex',
-              gap: 'var(--spacing-sm)',
-            }}>
+            <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
 
               {/* Navigation links */}
-              {[ 
+              {[
                 { to: '/', label: 'Product Catalogue', icon: Package },
                 { to: '/cart', label: 'Cart', icon: ShoppingCart },
                 { to: '/checkout', label: 'Checkout', icon: ShoppingCart },
                 { to: '/admin', label: 'Admin Dashboard', icon: Settings },
                 { to: '/delivery', label: 'Delivery Interface', icon: Truck },
                 { to: '/support', label: 'Support / FAQ', icon: HelpCircle },
-                { to: '/auth/profile', label: 'Profile', icon: User }, // Only show this if user is logged in
-              ].map(({ to, label, icon: Icon}) => (
-                (to === '/auth/profile' && user) || to !== '/auth/profile' ? (
+                { to: '/auth/profile', label: 'Profile', icon: User },
+              ].map(({ to, label, icon: Icon }) => {
+                // Show admin link ONLY if not logged in OR logged in but NOT customer
+                if (to === '/admin') {
+                  if (!user) {
+                    return (
+                      <Link
+                        key={to}
+                        to={to}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          padding: 'var(--spacing-sm) var(--spacing-md)',
+                          borderRadius: 'var(--radius-md)',
+                          fontSize: '0.875rem',
+                          fontWeight: '500',
+                          textDecoration: 'none',
+                          transition: 'all 0.2s ease',
+                          gap: 'var(--spacing-sm)',
+                          backgroundColor: location.pathname === to ? 'var(--primary-blue-light)' : 'transparent',
+                          color: location.pathname === to ? 'var(--primary-blue-dark)' : 'var(--text-secondary)',
+                        }}
+                        onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}
+                      >
+                        {Icon && <Icon size={16} />}
+                        {label}
+                      </Link>
+                    );
+                  }
+                  return null; // Hide if logged in as customer
+                }
+
+                // Show profile link only if user is logged in
+                if (to === '/auth/profile' && !user) {
+                  return null;
+                }
+
+                // Render other links normally
+                return (
                   <Link
                     key={to}
                     to={to}
@@ -115,10 +149,10 @@ const Navigation: React.FC = () => {
                     {Icon && <Icon size={16} />}
                     {label}
                   </Link>
-                ) : null
-              ))}
+                );
+              })}
 
-              {/* Conditionally render Login and Signup links if the user is not logged in */}
+              {/* Login & Signup shown only if NOT logged in */}
               {!user && (
                 <>
                   <Link
@@ -167,7 +201,7 @@ const Navigation: React.FC = () => {
                 </>
               )}
 
-              {/* Show Logout button if user is logged in */}
+              {/* Logout button shown only if logged in */}
               {user && (
                 <button
                   onClick={handleLogout}
@@ -191,6 +225,7 @@ const Navigation: React.FC = () => {
                   Logout
                 </button>
               )}
+
             </div>
           </div>
         </div>
@@ -205,25 +240,28 @@ const Navigation: React.FC = () => {
  */
 function App() {
   return (
-    <AuthProvider>  {/* Wrap your app with AuthProvider */}
+    <AuthProvider>
       <CartProvider>
         <Router>
           <div className="App">
-            {/* Global navigation header */}
             <Navigation />
-            {/* Application routes */}
             <Routes>
               <Route path="*" element={<ProductCatalogue />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/cart" element={<Cart />} />
-              <Route path="/admin" element={<AdminDashboard />} />
+              <Route
+                path="/admin"
+                element={
+                    <AdminDashboard />
+                }
+              />
               <Route path="/delivery" element={<DeliveryInterface />} />
               <Route path="/auth/login" element={<Login />} />
               <Route path="/auth/profile" element={<Profile />} />
               <Route path="/auth/signup" element={<Signup />} />
               <Route path="/edit-profile" element={<EditProfile />} />
-              <Route path="/orders/my-orders" element={<OrderHistory />}></Route>
-              <Route path="/support" element={<FAQ />} /> {/* ← 新增：FAQ 路由 */}
+              <Route path="/orders/my-orders" element={<OrderHistory />} />
+              <Route path="/support" element={<FAQ />} />
               <Route path="/support/chat" element={<LiveChat />} />
             </Routes>
           </div>
