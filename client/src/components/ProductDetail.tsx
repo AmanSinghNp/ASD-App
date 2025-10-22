@@ -53,10 +53,6 @@ const ProductDetail: React.FC = () => {
     );
   }
 
-  // const addToCart = () => {
-  //   // Add your cart logic here
-  // };
-
   return (
     <div style={{ minHeight: '100vh', background: '#f8f8f8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{

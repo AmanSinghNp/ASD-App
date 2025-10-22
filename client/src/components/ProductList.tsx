@@ -2,6 +2,7 @@ import React from 'react';
 import { useCartContext } from '../context/CartContext';
 import { useProductCatalogue } from '../hooks/useProductCatalogue';
 import ProductCard from './ProductCard';
+import { useNavigate } from 'react-router-dom';
 
 const ProductList: React.FC = () => {
   const {
@@ -45,7 +46,7 @@ const ProductList: React.FC = () => {
             style={{ padding: '8px', borderRadius: '4px', border: '1px solid var(--border-color)' }}
           >
             <option value="all">All Categories</option>
-            {categories.map((category) => (
+            {categories.map(category => (
               <option key={category.id} value={category.id}>
                 {category.name}
               </option>
@@ -118,7 +119,7 @@ const ProductList: React.FC = () => {
             }}
           >
             <h3>No products found</h3>
-            <p>Try adjusting your filters or search term.</p>
+            <p>Try adjusting your filters or search term</p>
           </div>
         )}
       </div>
