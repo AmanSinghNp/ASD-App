@@ -52,9 +52,12 @@ stages:
           - script: npm install
             displayName: 'Install server dependencies'
             workingDirectory: 'server'
-            
-          - script: npm test
-            displayName: 'Run server tests'
+          
+          - script: |
+              rm -rf dist
+              rm -rf node_modules/.cache
+              npm test -- --clearCache
+            displayName: 'Clean caches and run tests'
             workingDirectory: 'server'
 
   - stage: Build
