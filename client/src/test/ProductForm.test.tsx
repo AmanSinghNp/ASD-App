@@ -5,25 +5,26 @@
 
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ProductForm from '../components/admin/ProductForm';
 
 // Mock the AdminController
-jest.mock('../controllers/AdminController', () => ({
-  AdminController: jest.fn().mockImplementation(() => ({
-    createProduct: jest.fn(),
-    updateProduct: jest.fn(),
+vi.mock('../controllers/AdminController', () => ({
+  AdminController: vi.fn().mockImplementation(() => ({
+    createProduct: vi.fn(),
+    updateProduct: vi.fn(),
   })),
 }));
 
 describe('ProductForm', () => {
-  const mockOnSave = jest.fn();
-  const mockOnCancel = jest.fn();
+  const mockOnSave = vi.fn();
+  const mockOnCancel = vi.fn();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
-  test('renders form for new product', () => {
+  it('renders form for new product', () => {
     render(
       <ProductForm
         onSave={mockOnSave}
@@ -41,7 +42,7 @@ describe('ProductForm', () => {
     expect(screen.getByLabelText('Image URL *')).toBeInTheDocument();
   });
 
-  test('renders form for editing existing product', () => {
+  it('renders form for editing existing product', () => {
     const existingProduct = {
       id: 'PROD-TEST-001',
       sku: 'TEST-001',
@@ -70,7 +71,7 @@ describe('ProductForm', () => {
     expect(screen.getByDisplayValue('TEST-001')).toBeInTheDocument();
   });
 
-  test('validates required fields', async () => {
+  it('validates required fields', async () => {
     render(
       <ProductForm
         onSave={mockOnSave}
@@ -92,7 +93,7 @@ describe('ProductForm', () => {
     expect(mockOnSave).not.toHaveBeenCalled();
   });
 
-  test('calls onSave with correct data when form is valid', async () => {
+  it('calls onSave with correct data when form is valid', async () => {
     render(
       <ProductForm
         onSave={mockOnSave}
@@ -136,7 +137,7 @@ describe('ProductForm', () => {
     });
   });
 
-  test('calls onCancel when cancel button is clicked', () => {
+  it('calls onCancel when cancel button is clicked', () => {
     render(
       <ProductForm
         onSave={mockOnSave}
@@ -151,7 +152,7 @@ describe('ProductForm', () => {
     expect(mockOnCancel).toHaveBeenCalled();
   });
 
-  test('auto-generates SKU from product name and category', async () => {
+  it('auto-generates SKU from product name and category', async () => {
     render(
       <ProductForm
         onSave={mockOnSave}
@@ -173,7 +174,7 @@ describe('ProductForm', () => {
     });
   });
 
-  test('does not render when isOpen is false', () => {
+  it('does not render when isOpen is false', () => {
     render(
       <ProductForm
         onSave={mockOnSave}

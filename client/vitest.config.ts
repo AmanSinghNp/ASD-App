@@ -11,5 +11,11 @@ export default defineConfig({
     outputFile: {
       junit: './test-results.xml'
     },
+    // Add this to handle React components properly
+    server: {
+      deps: {
+        inline: ['@testing-library/jest-dom']
+      }
+    }
   },
 })

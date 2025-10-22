@@ -1,13 +1,14 @@
 import '@testing-library/jest-dom';
+import { vi } from 'vitest';
 
 // Mock dependencies
-jest.mock('react-router-dom', () => ({
+vi.mock('react-router-dom', () => ({
   useParams: () => ({ productId: '1' }),
-  useNavigate: () => jest.fn(),
+  useNavigate: () => vi.fn(),
 }));
 
-jest.mock('../../controllers/ProductCatalogueController', () => ({
-  ProductController: jest.fn().mockImplementation(() => ({
+vi.mock('../../controllers/ProductCatalogueController', () => ({
+  ProductController: vi.fn().mockImplementation(() => ({
     getProductDetails: () => ({
       id: '1',
       name: 'Test Product',
@@ -19,9 +20,9 @@ jest.mock('../../controllers/ProductCatalogueController', () => ({
   })),
 }));
 
-jest.mock('../../context/CartContext', () => ({
-  useCartContext: () => ({ 
-    addToCart: jest.fn(),
+vi.mock('../../context/CartContext', () => ({
+  useCartContext: () => ({
+    addToCart: vi.fn(),
     cartItems: []
   })
 }));
