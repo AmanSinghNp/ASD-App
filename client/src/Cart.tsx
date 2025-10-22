@@ -24,7 +24,7 @@ const Cart: React.FC = () => {
   if (isEmpty) {
     return (
       <div className="cart-container">
-        <h2 className="cart-title">Your Cart</h2>
+        {/* <h2 className="cart-title">Your Cart</h2> */}
         <div className="empty-cart">
           <p>Your cart is empty</p>
           <p className="empty-cart-subtitle">Add some products to get started!</p>

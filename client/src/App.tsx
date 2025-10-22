@@ -5,6 +5,7 @@ import { CartProvider } from './context/CartContext';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { DeliveryInterface } from './pages/delivery/DeliveryInterface';
 import ProductCatalogue from './ProductCatalogue';
+import Cart from './components/Cart';
 import Checkout from './Checkout';
 import FAQ from './pages/FAQ'; 
 import { Settings, Truck, ShoppingCart, Package, HelpCircle } from 'lucide-react';
@@ -19,6 +20,7 @@ const Navigation: React.FC = () => {
 
   const links = [
     { to: '/', label: 'Product Catalogue', icon: Package },
+    { to: '/cart', label: 'Cart', icon: ShoppingCart },
     { to: '/checkout', label: 'Checkout', icon: ShoppingCart },
     { to: '/admin', label: 'Admin Dashboard (F007)', icon: Settings },
     { to: '/delivery', label: 'Delivery Interface (F008)', icon: Truck },
@@ -112,7 +114,8 @@ function App() {
           <Navigation />
           {/* Application routes */}
           <Routes>
-            <Route path="/" element={<ProductCatalogue />} />
+            <Route path="/*" element={<ProductCatalogue />} />
+            <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/delivery" element={<DeliveryInterface />} />
