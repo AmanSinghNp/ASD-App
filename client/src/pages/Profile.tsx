@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext"; // Import useAuth to call logout
+import { API_ENDPOINTS } from "../config/api";
 import "../Auth.css";
 
 interface Customer {
@@ -31,7 +32,7 @@ function Profile() {
       }
 
       try {
-        const response = await fetch("http://localhost:4000/api/auth/profile", {
+        const response = await fetch(API_ENDPOINTS.profile, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -61,7 +62,7 @@ function Profile() {
     if (!window.confirm("Are you sure you want to delete your account?")) return;
 
     try {
-      const response = await fetch("http://localhost:4000/api/auth/delete", {
+      const response = await fetch(API_ENDPOINTS.deleteAccount, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

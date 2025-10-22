@@ -2,6 +2,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import "./Checkout.css";
 import { useCartContext } from "./context/CartContext";
 import { useAuth } from "./context/AuthContext";
+import { API_ENDPOINTS } from "./config/api";
 
 interface DeliverySlot {
   slotStart: string;
@@ -85,7 +86,7 @@ const Checkout: React.FC = () => {
       try {
         const today = new Date().toISOString().split("T")[0];
         const response = await fetch(
-          `http://localhost:4000/api/delivery/slots?date=${today}`
+          API_ENDPOINTS.deliverySlots(today)
         );
         const data = await response.json();
         if (data.data) {
@@ -111,7 +112,7 @@ const Checkout: React.FC = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:4000/api/delivery/validate-address",
+        API_ENDPOINTS.validateAddress,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -182,7 +183,7 @@ const Checkout: React.FC = () => {
 
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:4000/api/orders", {
+      const response = await fetch(API_ENDPOINTS.orders, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

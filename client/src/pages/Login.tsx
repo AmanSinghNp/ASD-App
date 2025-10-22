@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";  // Import useAuth to use login
+import { API_ENDPOINTS } from "../config/api";
 import "../Auth.css";
 
 function Login() {
@@ -14,7 +15,7 @@ function Login() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:4000/api/auth/login", {
+      const response = await fetch(API_ENDPOINTS.login, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";  // <-- import useNavigate
+import { API_ENDPOINTS } from "../config/api";
 import "../Auth.css";
 
 interface OrderItem {
@@ -24,7 +25,7 @@ const OrderHistory = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    fetch("http://localhost:4000/api/orders/my-orders", {
+    fetch(API_ENDPOINTS.myOrders, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
