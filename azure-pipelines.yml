@@ -96,12 +96,17 @@ stages:
               # Copy only essential files for deployment
               cp -r client/dist $(Build.ArtifactStagingDirectory)/deployment/client/
               cp -r server/dist $(Build.ArtifactStagingDirectory)/deployment/server/
-              cp -r server/prisma $(Build.ArtifactStagingDirectory)/deployment/server/
+              # Copy only Prisma schema and migrations (not the large dev.db)
+              mkdir -p $(Build.ArtifactStagingDirectory)/deployment/server/prisma
+              cp server/prisma/schema.prisma $(Build.ArtifactStagingDirectory)/deployment/server/prisma/
+              cp -r server/prisma/migrations $(Build.ArtifactStagingDirectory)/deployment/server/prisma/ 2>/dev/null || true
               cp package.json $(Build.ArtifactStagingDirectory)/deployment/
               cp server/package.json $(Build.ArtifactStagingDirectory)/deployment/server/
               # Copy only essential public assets (no large images)
               mkdir -p $(Build.ArtifactStagingDirectory)/deployment/client/public
               cp client/public/vite.svg $(Build.ArtifactStagingDirectory)/deployment/client/public/ 2>/dev/null || true
+              # Show package size for monitoring
+              du -sh $(Build.ArtifactStagingDirectory)/deployment
             displayName: 'Create optimized deployment package'
 
           - task: PublishBuildArtifacts@1
@@ -109,6 +114,8 @@ stages:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)/deployment'
               ArtifactName: 'asd-app-optimized'
               publishLocation: 'Container'
+              MaxArtifactSize: '500000000'  # 500MB limit to prevent memory issues
+              StoreAsTar: true  # Compress artifacts to reduce size
             displayName: 'Publish optimized application artifacts'
 
   - stage: Deploy
