@@ -100,7 +100,7 @@ stages:
   - stage: Deploy
     displayName: 'Deploy Stage'
     dependsOn: Build
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.SourceBranch'], 'refs/heads/dev-2')))
     jobs:
       - deployment: DeployToAzure
         displayName: 'Deploy to Azure App Service'
