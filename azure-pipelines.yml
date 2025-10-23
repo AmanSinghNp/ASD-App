@@ -96,3 +96,47 @@ stages:
               ArtifactName: 'asd-app'
               publishLocation: 'Container'
             displayName: 'Publish application artifacts'
+
+  - stage: Deploy
+    displayName: 'Deploy Stage'
+    dependsOn: Build
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - deployment: DeployToAzure
+        displayName: 'Deploy to Azure App Service'
+        environment: 'production'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                
+                - task: NodeTool@0
+                  inputs:
+                    versionSpec: $(nodeVersion)
+                  displayName: 'Install Node.js'
+
+                # Build client
+                - script: |
+                    cd client
+                    npm install
+                    npm run build
+                  displayName: 'Build client for production'
+
+                # Build server
+                - script: |
+                    cd server
+                    npm install
+                    npx prisma generate
+                    npm run build
+                  displayName: 'Build server for production'
+
+                # Deploy to Azure Web App
+                - task: AzureWebApp@1
+                  inputs:
+                    azureSubscription: '<Your-Azure-Service-Connection>'
+                    appType: 'webAppLinux'
+                    appName: '<Your-App-Service-Name>'
+                    package: '$(System.DefaultWorkingDirectory)'
+                    runtimeStack: 'NODE|20-lts'
+                    startUpCommand: 'cd server && npm start'
