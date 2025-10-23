@@ -146,3 +146,12 @@ server/prisma/dev.db
 package-lock.json
 client/package-lock.json
 server/package-lock.json
+
+# Exclude large image files from deployment
+client/public/*.jpeg
+client/public/*.jpg
+client/public/*.png
+client/public/*.gif
+client/public/*.svg
+client/dist/
+server/prisma/migrations/

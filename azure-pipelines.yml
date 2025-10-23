@@ -90,12 +90,26 @@ stages:
             displayName: 'Build server'
             workingDirectory: 'server'
             
+          # Create a clean deployment package without large files
+          - script: |
+              mkdir -p $(Build.ArtifactStagingDirectory)/deployment
+              # Copy only essential files for deployment
+              cp -r client/dist $(Build.ArtifactStagingDirectory)/deployment/client/
+              cp -r server/dist $(Build.ArtifactStagingDirectory)/deployment/server/
+              cp -r server/prisma $(Build.ArtifactStagingDirectory)/deployment/server/
+              cp package.json $(Build.ArtifactStagingDirectory)/deployment/
+              cp server/package.json $(Build.ArtifactStagingDirectory)/deployment/server/
+              # Copy only essential public assets (no large images)
+              mkdir -p $(Build.ArtifactStagingDirectory)/deployment/client/public
+              cp client/public/vite.svg $(Build.ArtifactStagingDirectory)/deployment/client/public/ 2>/dev/null || true
+            displayName: 'Create optimized deployment package'
+
           - task: PublishBuildArtifacts@1
             inputs:
-              PathtoPublish: '$(Build.SourcesDirectory)'
-              ArtifactName: 'asd-app'
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/deployment'
+              ArtifactName: 'asd-app-optimized'
               publishLocation: 'Container'
-            displayName: 'Publish application artifacts'
+            displayName: 'Publish optimized application artifacts'
 
   - stage: Deploy
     displayName: 'Deploy Stage'
@@ -137,7 +151,7 @@ stages:
                     azureSubscription: 'Azure-App-Service-Connection'
                     appType: 'webAppLinux'
                     appName: 'asd-app-aman2025'
-                    package: '$(System.DefaultWorkingDirectory)'
+                    package: '$(Pipeline.Workspace)/asd-app-optimized'
                     runtimeStack: 'NODE|20-lts'
                     startUpCommand: 'cd server && npm start'
                   displayName: 'Deploy to Azure App Service'
