@@ -1,4 +1,4 @@
-# ASD Project - Release 2.2
+# ASD Project - Release 2.2 - Azure Deployment Ready
 
 This release implements comprehensive e-commerce functionality including User Management, Cart functionality, Checkout/Payment system, Product Catalogue, Search & Filters, Admin Dashboard, Delivery tracking, Customer Support Chat, FAQ system, and Stock Management for the ASD (Advanced Software Development) project.
 
