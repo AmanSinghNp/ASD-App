@@ -2,6 +2,7 @@
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
+import path from "path";
 import prisma from "./utils/database";
 
 // Import your route handlers
@@ -26,22 +27,20 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // --- Middleware Setup ---
-// app.use(cors());
+// Configure CORS based on environment
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://asd-app-aman2025.azurewebsites.net', 'https://asd-app-aman2025.azurewebsites.net/']
+    : 'http://localhost:5173',
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
 
-app.use(cors({
-  origin: 'http://localhost:5173',  // Allow only your frontend domain
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],  // Specify allowed HTTP methods
-  allowedHeaders:["Content-Type", "Authorization"], 
-  credentials: true,  // Allow cookies to be sent with requests (if needed)
-}));
+app.use(cors(corsOptions));
 
 // Handle all OPTIONS requests
-app.options('*', cors({
-  origin: 'http://localhost:5173',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-}));
+app.options('*', cors(corsOptions));
 
 app.use(express.json());
 
@@ -59,10 +58,24 @@ app.use("/api/faqs", faqRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/auth", authRouter);
 
-// Health check route
-app.get("/", (_, res) => {
-  res.send("Welcome to the Supermarket API!");
-});
+// Serve static files from client/dist in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../../client/dist')));
+  
+  // Handle React routing - serve index.html for all non-API routes
+  app.get('*', (req, res) => {
+    // Skip API routes
+    if (req.path.startsWith('/api/')) {
+      return res.status(404).json({ error: 'API endpoint not found' });
+    }
+    res.sendFile(path.join(__dirname, '../../client/dist', 'index.html'));
+  });
+} else {
+  // Health check route for development
+  app.get("/", (_, res) => {
+    res.send("Welcome to the Supermarket API!");
+  });
+}
 
 // --- Server Start ---
 app.listen(PORT, () => {
