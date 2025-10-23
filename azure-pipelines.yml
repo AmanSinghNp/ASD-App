@@ -129,7 +129,7 @@ stages:
                     npm install
                     npx prisma generate
                     npm run build
-                  displayName: 'Build server'
+                  displayName: 'Build server for production'
 
                 # Deploy to Azure Web App
                 - task: AzureWebApp@1
