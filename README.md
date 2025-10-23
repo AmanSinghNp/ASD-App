@@ -226,6 +226,9 @@ This release implements comprehensive e-commerce functionality including User Ma
    ```
 
 5. **Access the application:**
+   - **Create .env file**:
+     DATABASE_URL="FILE:./dev.db"
+     JWT_SECRET="dev-secret"
    - **Frontend**: `http://localhost:5173`
    - **Backend API**: `http://localhost:3000`
    - **Database GUI**: `http://localhost:5555` (Prisma Studio)
